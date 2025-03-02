@@ -1,0 +1,24 @@
+.logo{
+/* width: 100px;
+height: 100px; */
+transform: scale(0.8);
+}
+body{
+    padding: 1%;
+}
+.wrapper{
+    padding: 0 10% 0 10%;
+    width: 100%;
+}
+.flex{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.nav-links{
+    gap: 30px;
+}
+
+.login-signup-btns{
+    gap: 30px;
+}
