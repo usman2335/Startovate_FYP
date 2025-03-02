@@ -1,14 +1,18 @@
 .logo{
-/* width: 100px;
-height: 100px; */
 transform: scale(0.8);
 }
 body{
     padding: 1%;
 }
 .wrapper{
-    padding: 0 10% 0 10%;
-    width: 100%;
+    /* padding: 1% 5% 0% 5%; */
+    /* margin: 5%; */
+    width: 80%;
+    margin: auto;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    font-size: 1.1em;
 }
 .flex{
     display: flex;
@@ -16,8 +20,41 @@ body{
     justify-content: space-between;
 }
 .nav-links{
-    gap: 30px;
+    gap: 50px;
+    cursor: pointer;
 }
+.nav-links a:hover{
+    transition: 0.1s;
+
+    transform: scale(1.1);
+}
+
+.nav-link{
+    text-decoration: none;
+    color: #1f1f1f;
+    position: relative;
+}
+.nav-link.active{
+
+
+}
+.nav-link.active::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -3px; 
+    width: 100%; 
+    height: 4px; 
+    background-color: #E85A51;
+    border-radius: 2px;
+    transform: translateX(-50%);
+    transition: 0.5s;
+  }
+.nav-link.active:hover::after {
+    width: 30%;
+    /* transform: translateX(-130%); */
+  }
+  
 
 .login-signup-btns{
     gap: 30px;

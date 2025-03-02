@@ -1,0 +1,23 @@
+.button{
+
+    cursor: pointer;
+    background: linear-gradient(90deg, #ED2567 0%, #EE343B 100%);
+    border-radius: 50px;
+    /* padding: 10% 30%; */
+    border: 0.1px;
+    /* color: white; */
+    font-size: large;
+    white-space: nowrap;
+    color: #f1f1f1;
+    font-family: Poppins;
+    font-weight: 300;
+    transition: 0.5s;
+
+}
+.button span{
+    color: #f1f1f1;
+    width: 100%;
+}
+.button:hover{
+    box-shadow: rgba(255, 69, 125, 0.4) 0px 5px, rgba(255, 69, 125, 0.3) 0px 10px, rgba(255, 69, 125, 0.2) 0px 15px, rgba(255, 69, 125, 0.1) 0px 20px, rgba(255, 69, 125, 0.05) 0px 25px;
+}
