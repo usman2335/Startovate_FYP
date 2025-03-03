@@ -2,18 +2,28 @@
 transform: scale(0.8);
 }
 body{
-    padding: 1%;
+    /* padding: 1%; */
 }
 .wrapper{
     /* padding: 1% 5% 0% 5%; */
     /* margin: 5%; */
-    width: 80%;
+    padding: 0 10%;
+    padding-top: 1%;
+    width: 100%;
     margin: auto;
-    position: sticky;
+    position: fixed;
     top: 0;
     z-index: 999;
     font-size: 1.1em;
+    transition: all 0.3s ease-in-out;
 }
+
+.navbar-scrolled {
+    background-color: rgba(255, 199, 199, 0.9);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    padding-bottom: 15px;
+}
+
 .flex{
     display: flex;
     align-items: center;
@@ -58,4 +68,6 @@ body{
 
 .login-signup-btns{
     gap: 30px;
+    position: relative;
+    right: 5%;
 }

@@ -1,6 +1,6 @@
 .content-wrapper{
     margin:auto;
-    margin-top: 2%;
+    margin-top: 8%;
     width: 80%;
 }
 .hero-left{
@@ -24,7 +24,7 @@
     
 }
 .lean-canvas{
-    padding-top: 20%;
+    /* margin-top: 15%; */
     gap: 10px;
 }
 .hero-right{
@@ -36,7 +36,7 @@
     background: linear-gradient(180deg, #FFD8D6 0%, #F9C2BF 100%);
     border: 1px solid #EDBBBB;
     border-radius: 8px;
-    padding-top: 5%;
+    padding-top: 3%;
     padding-left: 2%;
     padding-bottom: 12%;
     padding-right: 2%;
