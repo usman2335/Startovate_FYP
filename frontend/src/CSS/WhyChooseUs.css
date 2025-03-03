@@ -1,6 +1,8 @@
 .main{
     margin-top:15%;
     background-color: #F6F2F0;
+    background-color: #f1efee;
+    background-image: url("https://www.transparenttextures.com/patterns/cubes.png");
     width: 100%;
     text-align: center;
 }
