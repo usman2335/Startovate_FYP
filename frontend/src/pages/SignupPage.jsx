@@ -6,6 +6,9 @@ import "../CSS/Signup.css";
 const SignupPage = () => {
   return (
     <div className="signup-container">
+      {/* Background Vector */}
+      <div className="vector-background"></div>
+
       <SignupCard />
 
       <div className="signup-form">
@@ -33,7 +36,8 @@ const SignupPage = () => {
           />
         </form>
 
-        <p class name="card2-text">Already have an account? <a href="/login">Login</a> </p>
+        <p>Already have an account? <a href="/login">Login</a>
+        </p>
       </div>
     </div>
   );
