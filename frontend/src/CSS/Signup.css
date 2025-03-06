@@ -22,18 +22,17 @@
     padding-left: 200px;
 }
 
-.card {
+.Signupcard {
     padding: 30px 20px;
     border-radius: 60px;
     background: linear-gradient(to bottom right, #e60073, #ff4d4d);
     width: 450px;
     height: 600px;
+    transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
 }
 
-
-.icon {
-    width: 40px;
-    margin-bottom: 10px;
+.Signupcard h1 {
+    padding-bottom: 30px;
 }
 
 .signup-form h1 {
@@ -86,15 +85,22 @@
     line-height: 130%;
     color: #FFFFFF;
     text-align: left;
+    padding-bottom: 20px;
 }
 
 /* Card Text */
 .card2-text {
     font-family: 'Poppins', sans-serif;
     font-weight: 600;
-    font-size: 40px;
-    line-height: 60px;
+    font-size: 20px;
+    line-height: 25px;
     color: #FFEDCE;
     text-align: left;
 }
 
+.Signupcard:hover{
+    background: linear-gradient(90deg, #EE343B 0.17%, #ED2568 100%);
+    transform: scale(1.1);
+    color: white;
+
+}
