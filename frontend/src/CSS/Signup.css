@@ -1,0 +1,100 @@
+.signup-container {
+    display: flex;
+    align-items: center; 
+    justify-content: space-between; 
+    height: 100vh;
+    width: 80%; 
+    margin: 0 auto; 
+}
+
+.card-container {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start; 
+}
+
+.signup-form {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding-left: 200px;
+}
+
+.card {
+    padding: 30px 20px;
+    border-radius: 60px;
+    background: linear-gradient(to bottom right, #e60073, #ff4d4d);
+    width: 450px;
+    height: 600px;
+}
+
+
+.icon {
+    width: 40px;
+    margin-bottom: 10px;
+}
+
+.signup-form h1 {
+    color: #b22222;
+    font-size: 50px;
+    padding-bottom: 0px;
+    align-self: center;
+    padding-right: 110px;
+}
+
+.signup-form h2 {
+    color: #b22222;
+    font-size: 28px;
+    padding-bottom: 0px;
+    align-self: center;
+    padding-right: 110px;
+    padding-bottom: 30px;
+}
+
+.signup-form input {
+    display: block;
+    width: 175%;
+    padding: 15px;
+    margin: 10px 0;
+    border: 4px solid #A5A1A1;
+    border-radius: 10px;
+    background: #FFF9F0;
+    opacity: 0.2;
+    box-sizing: border-box;
+    font-size: 16px;
+    color: black;
+}
+
+/* Increase input opacity on focus */
+.signup-form input:focus {
+    opacity: 1;
+    outline: none;
+}
+
+.signup-form a {
+    color: #e60073;
+    font-weight: bold;
+}
+
+/* Start Your Journey text */
+.start-journey-text {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 130%;
+    color: #FFFFFF;
+    text-align: left;
+}
+
+/* Card Text */
+.card2-text {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 40px;
+    line-height: 60px;
+    color: #FFEDCE;
+    text-align: left;
+}
+
