@@ -15,7 +15,7 @@ const HeroSection = () => {
             <h1>Streamline Your Startup Journey with <span className = "LC-text">Lean Canvas</span></h1>
             <p>Effortlessly create, manage, and refine your Lean Canvas with guided templates, AI assistance, and seamless document export – all in one platform.</p>
             <div className='btn'>
-            <Button label = "GET STARTED ->" onClick={handleClick} padding = "3% 13%" color = "#f1f1f1" fontSize={"1.5em"}></Button>
+            <Button label = "GET STARTED ->" onClick={handleClick} padding = "3% 13%" color = "#f1f1f1" fontSize={"1.5em"} ></Button>
             </div>
         </div>
         <div className="hero-right">
