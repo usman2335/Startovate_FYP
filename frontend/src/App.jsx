@@ -11,6 +11,7 @@ function App() {
           <Route path="/" element={<LandingPage />}></Route>
           <Route path="/canvas" element={<CanvasPage />}></Route>
           {/* <Route path="/" element={<Navigate to="/LandingPage" />} /> */}
+          {/*comment*/}
         </Routes>
       </Router>
     </>
