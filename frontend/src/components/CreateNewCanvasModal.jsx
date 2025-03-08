@@ -1,6 +1,7 @@
 import React from "react";
-import { Modal, Box, TextField, Button, Typography } from "@mui/material";
+import { Modal, Box, TextField, Typography } from "@mui/material";
 import "../CSS/CreateNewCanvasModal.css";
+import Button from "../components/Button";  // Import the Button component
 
 const CreateNewCanvasModal = ({ open, handleClose }) => {
   return (
@@ -22,30 +23,46 @@ const CreateNewCanvasModal = ({ open, handleClose }) => {
           borderRadius: 2,
         }}
       >
-        <div class="modal-content">
+        <div className="modal-content">
           <h2>Create New Canvas</h2>
           <p>Fill all the required fields</p>
-          <TextField
-            fullWidth
-            label="Research Title"
-            variant="outlined"
-            sx={{ mt: 2 }}
-          />
-          <TextField
-            fullWidth
-            label="Author Name"
-            variant="outlined"
-            sx={{ mt: 2 }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ mt: 2 }}
-            onClick={handleClose}
-          >
-            Next
-          </Button>
+
+          {/* Text Field for Research Title */}
+          <div style={{ marginTop: 20 }}>
+            <Typography variant="body1" sx={{ marginBottom: 1 }}>
+              Research Title <span style={{ color: 'red' }}>*</span>
+            </Typography>
+            <TextField
+              fullWidth
+              variant="outlined"
+              sx={{ mb: 2 }}
+            />
+          </div>
+
+          {/* Text Field for Author Name */}
+          <div style={{ marginTop: 20 }}>
+            <Typography variant="body1" sx={{ marginBottom: 1 }}>
+              Author Name <span style={{ color: 'red' }}>*</span>
+            </Typography>
+            <TextField
+              fullWidth
+              variant="outlined"
+              sx={{ mb: 2 }}
+            />
+          </div>
+
+          {/* Centered Button */}
+          <div style={{ display: "flex", justifyContent: "center", marginTop: "10px" }}>
+            <Button
+              label="Save"
+              onClick={handleClose}
+              padding="12px"
+              color="white"
+              fontSize="18px"
+              width="50%" // Adjust the width as needed
+              marginTop="10px"
+            />
+          </div>
         </div>
       </Box>
     </Modal>
