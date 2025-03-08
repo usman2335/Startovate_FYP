@@ -28,7 +28,7 @@ const HowItWorks = () => {
                 </div>
             </div>
             <div className = "row">
-            <div className='number-text flex'>
+            <div className='number-text flex' style = {{display: "flex" ,justifyContent: "flex-start"}}>
             <img src = "src\assets\arrow2.svg"></img>
                     <img src='src\assets\2.png'></img>
                     <div className='instr-text flex-col'>
