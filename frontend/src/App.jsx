@@ -7,7 +7,7 @@ function App() {
     <>
       <Router>
         <Routes>
-          <Route path="/signup" element={<SignupPage />}></Route>
+          <Route path="/" element={<SignupPage />}></Route>
           <Route path="/" element={<LandingPage />}></Route>
           <Route path="/canvas" element={<CanvasPage />}></Route>
           {/* <Route path="/" element={<Navigate to="/LandingPage" />} /> */}
