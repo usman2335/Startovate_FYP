@@ -1,0 +1,33 @@
+.canvas-page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10%;
+  padding-bottom: 10%;
+  /* min-height: 100vh; */
+}
+
+.canvas-page-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+}
+.image-left,
+.image-right {
+  position: fixed;
+  z-index: -1;
+}
+
+.image-left {
+  left: 0%;
+  top: 50%;
+}
+.image-right {
+  right: -3%;
+  top: 50%;
+}
+.hide {
+  display: none;
+}

@@ -2,6 +2,7 @@ import React from "react";
 import "../CSS/HeroSection.css";
 import "../CSS/Utilities.css";
 import Button from "./Button";
+import LeanCanvas from "./LeanCanvas";
 
 const HeroSection = () => {
   const handleClick = () => {
@@ -31,7 +32,7 @@ const HeroSection = () => {
           </div>
         </div>
         <div className="hero-right">
-          <div className="lean-canvas flex-col">
+          {/* <div className="lean-canvas flex-col">
             <div className="row flex">
               <div className="lc-card">II - Literature Search</div>
               <div className="lc-card"> A - Existing Solutions</div>
@@ -49,7 +50,8 @@ const HeroSection = () => {
               <div className="lc-card"> E - Funding</div>
               <div className="lc-card"> F - Team Capacities</div>
             </div>
-          </div>
+          </div> */}
+          <LeanCanvas isBlurred={false} />
         </div>
       </div>
     </>
