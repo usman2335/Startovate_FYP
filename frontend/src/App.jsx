@@ -8,9 +8,9 @@ function App() {
     <>
       <Router>
         <Routes>
-          <Route path="/l" element={<LandingPage />}></Route>
+          <Route path="/" element={<LandingPage />}></Route>
           <Route path="/signup" element={<SignupPage />}></Route>
-          <Route path="/" element={<TestPage />}></Route>
+          <Route path="/test" element={<TestPage />}></Route>
           <Route path="/canvas" element={<CanvasPage />}></Route>
           {/* <Route path="/" element={<Navigate to="/LandingPage" />} /> */}
           {/*comment*/}
