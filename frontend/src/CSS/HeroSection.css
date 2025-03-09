@@ -22,10 +22,10 @@
   line-height: 200%;
   font-weight: 300;
 }
-.lean-canvas {
-  /* margin-top: 15%; */
-  gap: 10px;
-}
+/* .lean-canvas {
+  margin-top: 15%; 
+  gap: 0px;
+} */
 .hero-right {
 }
 .row {

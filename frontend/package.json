@@ -14,6 +14,7 @@
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^6.4.7",
     "antd": "^5.24.2",
+    "framer-motion": "^12.4.10",
     "hamburger-react": "^2.5.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

@@ -4,14 +4,15 @@ import Navbar from "../components/Navbar";
 import Button from "../components/Button";
 import CreateNewCanvasModal from "../components/CreateNewCanvasModal";
 import LeanCanvas from "../components/LeanCanvas";
-import { Typography } from "@mui/material";
+import { Breadcrumbs, Link, Typography } from "@mui/material";
+
 const CanvasPage = () => {
   const [view, setView] = useState("initial");
-
   const [clicked, setClicked] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [authorName, setAuthorName] = useState("");
   const [researchTitle, setResearchTitle] = useState("");
+  const [selectedComponent, setSelectedComponent] = useState(null);
 
   const handleCreateClick = () => {
     setClicked(true);
@@ -30,11 +31,18 @@ const CanvasPage = () => {
   };
 
   const goBack = () => {
-    if (view === "checklist") {
+    if (selectedComponent) {
+      setSelectedComponent(null);
       setView("canvas");
-    } else if (view === "canvas") {
+    } else {
       setView("initial");
     }
+  };
+
+  const handleComponentClick = (componentName) => {
+    setSelectedComponent(componentName);
+    console.log(selectedComponent);
+    setView("checklist");
   };
   return (
     <>
@@ -48,7 +56,10 @@ const CanvasPage = () => {
               handleClose={() => setShowModal(false)}
               handleSave={handleSaveCanvas}
             />
-            <LeanCanvas isBlurred={showModal}></LeanCanvas>
+            <LeanCanvas
+              isBlurred={showModal}
+              onComponentClick={null}
+            ></LeanCanvas>
           </>
         )}
         {/* If no modal and view == initial, show initial message */}
@@ -76,6 +87,16 @@ const CanvasPage = () => {
         {view === "canvas" && (
           <>
             <div className="canvas-view">
+              <div className="canvas-breadcrumbs">
+                <Breadcrumbs aria-label="breadcrumb">
+                  <Link underline="hover" color="inherit" href="/">
+                    Canvas
+                  </Link>
+                  <Typography sx={{ color: "text.primary" }}>
+                    Lean Canvas
+                  </Typography>
+                </Breadcrumbs>
+              </div>
               <div className="canvas-view-row">
                 <Button
                   padding="1% 0%"
@@ -120,16 +141,49 @@ const CanvasPage = () => {
                   </Typography>
                 </div>
               </div>
-
-              <LeanCanvas isBlurred={false} />
+              <LeanCanvas
+                isBlurred={false}
+                onComponentClick={handleComponentClick}
+              />
             </div>
           </>
         )}
-        {!showModal && view === "checklist" && (
+        {/* {!showModal && view === "checklist" && (
           <>
-            <LeanCanvas isBlurred={true} />
+            <LeanCanvas
+              isBlurred={true}
+              onComponentClick={handleComponentClick}
+            />
             <div></div>
           </>
+        )} */}
+
+        {/* If a component is selected, show the checklist */}
+        {view === "checklist" && selectedComponent && (
+          <div className="checklist-view">
+            <div className="canvas-breadcrumbs">
+              <Breadcrumbs aria-label="breadcrumb">
+                <Link underline="hover" color="inherit" href="/">
+                  Canvas
+                </Link>
+                <Typography sx={{ color: "text.primary" }}>
+                  Lean Canvas
+                </Typography>
+                <Typography sx={{ color: "text.primary" }}>
+                  {selectedComponent}
+                </Typography>
+              </Breadcrumbs>
+            </div>
+            <Button
+              padding="1% 0%"
+              color="#f1f1f1"
+              fontSize={"1.1em"}
+              label="<- Go Back"
+              onClick={goBack}
+              className="go-back-btn"
+            />
+            {/* <Checklist componentName={selectedComponent} /> */}
+          </div>
         )}
       </div>
     </>

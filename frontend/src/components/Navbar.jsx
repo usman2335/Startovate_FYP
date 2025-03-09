@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Button from "./Button";
 import { NavLink } from "react-router-dom";
-import Hamburger from "hamburger-react";
 import "../CSS/Navbar.css";
 
 const Navbar = () => {
   const [scrolling, setScrolling] = useState(false);
-  const [hamburgerOpen, setHamburgerOpen] = useState(false);
-
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 60) {
@@ -29,10 +26,6 @@ const Navbar = () => {
   const handleClick = () => {
     alert("Button Clicked");
   };
-  const toggleMenu = () => {
-    setHamburgerOpen(!hamburgerOpen);
-    console.log(hamburgerOpen);
-  };
 
   return (
     <>
@@ -40,8 +33,7 @@ const Navbar = () => {
         <div>
           <h1>Logo</h1>
         </div>
-        <Hamburger onToggle={toggleMenu}></Hamburger>
-        <div className="nav-links gap-1">
+        <div className="nav-links flex gap-1">
           <NavLink to="/" className="nav-link">
             Home
           </NavLink>
@@ -52,7 +44,7 @@ const Navbar = () => {
             Dashboard
           </NavLink>
         </div>
-        <div className="login-signup-btns ">
+        <div className="login-signup-btns flex">
           <a>Login</a>
           <Button label="Sign Up" onClick={handleClick} padding="10% 30%" />
         </div>
