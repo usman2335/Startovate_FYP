@@ -57,4 +57,4 @@ const Template1 = () => {
   );
 };
 
-export default Checklist;
+export default Template1;

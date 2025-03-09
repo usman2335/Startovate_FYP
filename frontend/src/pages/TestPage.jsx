@@ -2,17 +2,16 @@ import React from "react";
 import Navbar from "../components/Navbar";
 import CreateNewCanvasModal from "../components/CreateNewCanvasModal";
 import Template1 from "../components/Templates/Template1";
-// import "../CSS/Checklist.css";
+import Checklist1 from "../components/Checklist1";
 
 const TestPage = () => {
   return (
     <>
       <Navbar />
-      <div className="hero-section">
-        <Template1 />
+      <div >
+        <Checklist1></Checklist1>
       </div>
-      {/* <CreateNewCanvasModal /> */}
-    </>
+      </>
   );
 };
 
