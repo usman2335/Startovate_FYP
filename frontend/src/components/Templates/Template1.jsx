@@ -36,7 +36,7 @@ const Template1 = () => {
       <div className="button-group">
         <Button
           label="Reset"
-          onClick={() => {}} // Define reset functionality
+          onClick={() => {}}
           padding="10px 20px"
           color="white"
           fontSize="16px"
@@ -45,7 +45,7 @@ const Template1 = () => {
         />
         <Button
           label="Save"
-          onClick={() => {}} // Define save functionality
+          onClick={() => {}}
           padding="10px 20px"
           color="white"
           fontSize="16px"

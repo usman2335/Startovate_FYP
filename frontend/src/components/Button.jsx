@@ -1,11 +1,25 @@
-import React from 'react'
-import "../CSS/Button.css"
+import React from "react";
+import "../CSS/Button.css";
 
-const Button = ({label,onClick, padding, color, fontSize, width, marginTop}) => {
-
+const Button = ({
+  label,
+  onClick,
+  padding,
+  color,
+  fontSize,
+  width,
+  marginTop,
+  className,
+}) => {
   return (
-    <button className='button' onClick = {onClick } style = {{padding: padding, color: color, fontSize: fontSize, width: width, marginTop: marginTop}}><span>{label}</span></button>
-  )
-}
+    <button
+      className={`button ${className}`} // Include custom class
+      onClick={onClick}
+      style={{ padding, color, fontSize, width, marginTop }}
+    >
+      <span>{label}</span>
+    </button>
+  );
+};
 
-export default Button
+export default Button;
