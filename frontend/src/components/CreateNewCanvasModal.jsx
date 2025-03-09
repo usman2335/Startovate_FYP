@@ -1,12 +1,12 @@
 import React from "react";
 import { Modal, Box, TextField, Typography } from "@mui/material";
 import "../CSS/CreateNewCanvasModal.css";
-import Button from "../components/Button";  // Import the Button component
+import Button from "../components/Button";
 
 const CreateNewCanvasModal = ({ open, handleClose }) => {
   return (
     <Modal
-      open={open}
+      open={true}
       onClose={handleClose}
       aria-labelledby="create-canvas-modal"
     >
@@ -26,40 +26,32 @@ const CreateNewCanvasModal = ({ open, handleClose }) => {
         <div className="modal-content">
           <h2>Create New Canvas</h2>
           <p>Fill all the required fields</p>
-
-          {/* Text Field for Research Title */}
           <div style={{ marginTop: 20 }}>
             <Typography variant="body1" sx={{ marginBottom: 1 }}>
-              Research Title <span style={{ color: 'red' }}>*</span>
+              Research Title <span style={{ color: "red" }}>*</span>
             </Typography>
-            <TextField
-              fullWidth
-              variant="outlined"
-              sx={{ mb: 2 }}
-            />
+            <TextField fullWidth variant="outlined" sx={{ mb: 2 }} />
           </div>
-
-          {/* Text Field for Author Name */}
           <div style={{ marginTop: 20 }}>
             <Typography variant="body1" sx={{ marginBottom: 1 }}>
-              Author Name <span style={{ color: 'red' }}>*</span>
+              Author Name <span style={{ color: "red" }}>*</span>
             </Typography>
-            <TextField
-              fullWidth
-              variant="outlined"
-              sx={{ mb: 2 }}
-            />
+            <TextField fullWidth variant="outlined" sx={{ mb: 2 }} />
           </div>
-
-          {/* Centered Button */}
-          <div style={{ display: "flex", justifyContent: "center", marginTop: "10px" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "10px",
+            }}
+          >
             <Button
               label="Save"
               onClick={handleClose}
               padding="12px"
               color="white"
               fontSize="18px"
-              width="50%" // Adjust the width as needed
+              width="50%"
               marginTop="10px"
             />
           </div>
