@@ -8,9 +8,7 @@ const TestPage = () => {
   return (
     <>
       <Navbar />
-      <div className="hero-section">
-        <Template1 />
-      </div>
+      <div className="hero-section">{/* <Template1 /> */}</div>
       {/* <CreateNewCanvasModal /> */}
     </>
   );

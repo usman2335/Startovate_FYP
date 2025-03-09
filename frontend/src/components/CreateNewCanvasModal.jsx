@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { Modal, Box, TextField, Typography } from "@mui/material";
 import "../CSS/CreateNewCanvasModal.css";
 import Button from "../components/Button";
 
-const CreateNewCanvasModal = ({ open, handleClose }) => {
+const CreateNewCanvasModal = ({ open, handleClose, handleSave }) => {
+  const [researchTitle, setResearchTitle] = useState("");
+  const [authorName, setAuthorName] = useState("");
+  const handleSaveClick = () => {
+    if (researchTitle.trim() && authorName.trim()) {
+      handleSave(researchTitle, authorName); // Close modal & unblur Lean Canvas
+    } else {
+      alert("Fields are empty.");
+    }
+  };
   return (
     <Modal
       open={open}
@@ -30,13 +39,25 @@ const CreateNewCanvasModal = ({ open, handleClose }) => {
             <Typography variant="body1" sx={{ marginBottom: 1 }}>
               Research Title <span style={{ color: "red" }}>*</span>
             </Typography>
-            <TextField fullWidth variant="outlined" sx={{ mb: 2 }} />
+            <TextField
+              fullWidth
+              variant="outlined"
+              sx={{ mb: 2 }}
+              value={researchTitle}
+              onChange={(e) => setResearchTitle(e.target.value)}
+            />
           </div>
           <div style={{ marginTop: 20 }}>
             <Typography variant="body1" sx={{ marginBottom: 1 }}>
               Author Name <span style={{ color: "red" }}>*</span>
             </Typography>
-            <TextField fullWidth variant="outlined" sx={{ mb: 2 }} />
+            <TextField
+              fullWidth
+              variant="outlined"
+              sx={{ mb: 2 }}
+              value={authorName}
+              onChange={(e) => setAuthorName(e.target.value)}
+            />
           </div>
           <div
             style={{
@@ -47,7 +68,7 @@ const CreateNewCanvasModal = ({ open, handleClose }) => {
           >
             <Button
               label="Save"
-              onClick={handleClose}
+              onClick={handleSaveClick}
               padding="12px"
               color="white"
               fontSize="18px"

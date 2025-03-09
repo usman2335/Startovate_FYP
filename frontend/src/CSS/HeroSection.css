@@ -1,53 +1,49 @@
-.content-wrapper{
-    margin:auto;
-    margin-top: 13%;
-    width: 80%;
+.content-wrapper {
+  margin: auto;
+  margin-top: 13%;
+  width: 80%;
 }
-.hero-left{
-    width: 50%;
-    color: #1f1f1f;
-    gap: 30px;
-    display :flex;
-    flex-direction: column;
+.hero-left {
+  width: 50%;
+  color: #1f1f1f;
+  gap: 30px;
+  display: flex;
+  flex-direction: column;
 }
-.hero-left h1{
-    font-size: 3em;
+.hero-left h1 {
+  font-size: 3em;
 }
-.LC-text{
-    color: #E85A51;
+.LC-text {
+  color: #e85a51;
 }
-.hero-left p{
-    width: 80%;
-    font-size: 1.1em;
-    line-height: 200%;
-    font-weight: 300;
-    
+.hero-left p {
+  width: 80%;
+  font-size: 1.1em;
+  line-height: 200%;
+  font-weight: 300;
 }
-.lean-canvas{
-    /* margin-top: 15%; */
-    gap: 10px;
+.lean-canvas {
+  /* margin-top: 15%; */
+  gap: 10px;
 }
-.hero-right{
+.hero-right {
 }
-.row{
-    gap: 5px;
+.row {
+  gap: 5px;
 }
-.lc-card{
-    background: linear-gradient(180deg, #FFD8D6 0%, #F9C2BF 100%);
-    border: 1px solid #EDBBBB;
-    border-radius: 8px;
-    padding-top: 3%;
-    padding-left: 2%;
-    padding-bottom: 12%;
-    padding-right: 2%;
-    transition: transform 0.1s;
-
+.lc-card {
+  background: linear-gradient(180deg, #ffd8d6 0%, #f9c2bf 100%);
+  border: 1px solid #edbbbb;
+  border-radius: 8px;
+  padding-top: 3%;
+  padding-left: 2%;
+  padding-bottom: 12%;
+  padding-right: 2%;
+  transition: transform 0.1s;
 }
-.lc-card:hover{
-    background: linear-gradient(90deg, #EE343B 0.17%, #ED2568 100%);
-    border-radius: 8px;
-    color: #f1f1f1;
-    transform: scale(1.1);
-
-    
+.lc-card:hover {
+  background: linear-gradient(90deg, #ee343b 0.17%, #ed2568 100%);
+  border-radius: 8px;
+  color: #f1f1f1;
+  transform: scale(1.1);
 }
