@@ -6,7 +6,7 @@ const TestPage = () => {
   return (
     <>
       <Navbar></Navbar>
-      <CreateNewCanvasModal></CreateNewCanvasModal>
+      {/* <CreateNewCanvasModal></CreateNewCanvasModal> */}
     </>
   );
 };

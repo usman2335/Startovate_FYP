@@ -6,7 +6,7 @@ import Button from "../components/Button";
 const CreateNewCanvasModal = ({ open, handleClose }) => {
   return (
     <Modal
-      open={true}
+      open={open}
       onClose={handleClose}
       aria-labelledby="create-canvas-modal"
     >
