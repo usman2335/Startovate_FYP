@@ -40,7 +40,7 @@ const Checklist = ({ title = "Checklist", steps = [] }) => {
                   <p className="step-description">{step.description}</p>
                 </div>
               </div>
-              <button className={`step-button ${step.completed ? "edit" : "start"}`}>
+              <button className={`step-button ${step.completed ? "edit " : "start"}`}>
                 <img src="src\assets\pencil.png" alt="Edit" className="icon" />
                 {step.completed ? "Edit" : "Start"}
               </button>
