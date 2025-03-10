@@ -10,7 +10,6 @@ const Checklist = ({ title = "Checklist", steps = [] }) => {
 
   return (
     <div className="checklist-container">
-    <h2>My Checklist</h2>
     <div className="checklist-box">
      <Chip label="IN PROGRESS" className="custom-chip" style={{ backgroundColor: "#FFD7E4", color: "#ED1717", fontWeight: "bold" }}/>
 

@@ -5,6 +5,7 @@ import Button from "../components/Button";
 import CreateNewCanvasModal from "../components/CreateNewCanvasModal";
 import LeanCanvas from "../components/LeanCanvas";
 import { Breadcrumbs, Link, Typography } from "@mui/material";
+import Checklist from "../components/Checklist1";
 
 const CanvasPage = () => {
   const [view, setView] = useState("initial");
@@ -160,7 +161,7 @@ const CanvasPage = () => {
 
         {/* If a component is selected, show the checklist */}
         {view === "checklist" && selectedComponent && (
-          <div className="checklist-view">
+          <div className="canvas-view">
             <div className="canvas-breadcrumbs">
               <Breadcrumbs aria-label="breadcrumb">
                 <Link underline="hover" color="inherit" href="/">
@@ -174,15 +175,51 @@ const CanvasPage = () => {
                 </Typography>
               </Breadcrumbs>
             </div>
-            <Button
-              padding="1% 0%"
-              color="#f1f1f1"
-              fontSize={"1.1em"}
-              label="<- Go Back"
-              onClick={goBack}
-              className="go-back-btn"
-            />
-            {/* <Checklist componentName={selectedComponent} /> */}
+            <div className="canvas-view-row">
+                <Button
+                  padding="1% 0%"
+                  color="#f1f1f1"
+                  fontSize={"1.1em"}
+                  label="<- Go Back"
+                  onClick={goBack}
+                  className="go-back-btn"
+                />
+                <div className="canvas-heading">
+                  <Typography
+                    sx={{
+                      marginBottom: 1,
+                      fontSize: "2em",
+                      fontWeight: 600,
+                      textAlign: "center",
+                    }}
+                  >
+                    LCI Checklist - I: {selectedComponent}
+                  </Typography>
+                </div>
+                <div className="canvas-title">
+                  <Typography
+                    sx={{
+                      marginBottom: 1,
+                      fontSize: "1.5em",
+                      fontWeight: 600,
+                      maxWidth: "500px",
+                      textAlign: "right",
+                    }}
+                  >
+                    {`${researchTitle}`}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      marginBottom: 1,
+                      fontSize: "1.1em",
+                      fontWeight: 400,
+                    }}
+                  >
+                    {`${authorName}`}
+                  </Typography>
+                </div>
+              </div>
+            <Checklist />
           </div>
         )}
       </div>
