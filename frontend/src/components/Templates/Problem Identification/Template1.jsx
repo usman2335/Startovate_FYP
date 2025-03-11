@@ -1,14 +1,10 @@
 import React, { useState } from "react";
-import "../../CSS/Template1.css";
-import Button from "../Button";
+import "../../../CSS/Template1.css";
+import Button from "../../Button";
 
 const Template1 = () => {
   return (
     <div className="container">
-      <h2 className="title">
-        LCI Checklist - I:{" "}
-        <span className="highlight">Problem Identification</span>
-      </h2>
       <p className="description">
         <strong>What</strong> real-world practical problem or unmet need will be
         solved or met by the proposed invention?

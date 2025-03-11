@@ -12,16 +12,12 @@ const Navbar = () => {
       } else {
         setScrolling(false);
       }
-      console.log("Current scroll position:", window.scrollY); // Debugging log
     };
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-  useEffect(() => {
-    console.log("Scrolling state updated:", scrolling);
-  }, [scrolling]);
 
   const handleClick = () => {
     alert("Button Clicked");
