@@ -35,7 +35,6 @@ const CanvasPage = () => {
     setView("canvas");
     setResearchTitle(title);
     setAuthorName(author);
-    // setIsBlurred(false);
   };
 
   const goBack = () => {

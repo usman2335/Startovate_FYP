@@ -10,13 +10,11 @@ function App() {
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<LandingPage />}></Route>
-          <Route path="/signup" element={<SignupPage />}></Route>
-          <Route path="/test" element={<Testpage1 />}></Route>
-          <Route path="/canvas" element={<CanvasPage />}></Route>
-
-          {/* <Route path="/" element={<Navigate to="/LandingPage" />} /> */}
-          {/*comment*/}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/test" element={<Testpage1 />} />
+          <Route path="/canvas" element={<CanvasPage />} />
+          <Route path="/test1" element={<TestPage />} />
         </Routes>
       </Router>
     </>
