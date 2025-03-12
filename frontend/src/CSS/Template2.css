@@ -1,75 +1,143 @@
 
-.stakeholder-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  width: 400px;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 5px;
-  width: 350px;
-  height: 350px;
-  border: 3px solid #333;
-  border-radius: 10px;
-  position: relative;
-  overflow: hidden;
-}
-
-.box {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: bold;
-  border: 1px solid #ddd;
-  padding: 20px;
-  font-size: 14px;
-  text-align: center;
-  color: #fff;
-}
-
-.work-close { background-color: #007bff; }
-.keep-satisfied { background-color: #28a745; }
-.show-consideration { background-color: #dc3545; }
-.minimal-effort { background-color: #6c757d; }
-
-.stakeholder {
-  position: absolute;
-  background-color: #fff;
-  padding: 8px 12px;
-  border-radius: 5px;
-  font-size: 14px;
-  font-weight: bold;
-  border: 2px solid #333;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.form {
-  margin-top: 20px;
-  display: flex;
-  gap: 10px;
-}
-
-.form input, .form select, .form button {
-  padding: 8px;
-  font-size: 14px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-.form button {
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.form button:hover {
-  background-color: #0056b3;
-}
+  
+  /* Matrix Container */
+  .matrix-container {
+    position: relative;
+    width: 80vw;
+    height: 80vh;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Axis */
+  .axis {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .x-axis {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: black;
+    top: 50%;
+    left: 0;
+  }
+  
+  .x-axis::before,
+  .x-axis::after {
+    content: "";
+    position: absolute;
+    border-width: 6px;
+    border-style: solid;
+  }
+  
+  .x-axis::before {
+    border-color: transparent black transparent transparent;
+    left: -6px;
+    top: -4px;
+    transform: rotate(180deg);
+  }
+  
+  .x-axis::after {
+    border-color: transparent transparent transparent black;
+    right: -6px;
+    top: -4px;
+  }
+  
+  .y-axis {
+    position: absolute;
+    height: 100%;
+    width: 2px;
+    background: black;
+    left: 50%;
+    top: 0;
+  }
+  
+  .y-axis::before,
+  .y-axis::after {
+    content: "";
+    position: absolute;
+    border-width: 6px;
+    border-style: solid;
+  }
+  
+  .y-axis::before {
+    border-color: black transparent transparent transparent;
+    top: -6px;
+    left: -4px;
+  }
+  
+  .y-axis::after {
+    border-color: transparent transparent black transparent;
+    bottom: -6px;
+    left: -4px;
+  }
+  
+  /* Quadrants */
+  .quadrant {
+    position: absolute;
+    width: 45%;
+    height: 45%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 10px;
+  }
+  
+  /* Quadrant Titles */
+  .quadrant-title {
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 10px;
+  }
+  
+  .q1 .quadrant-title { background: red; }
+  .q2 .quadrant-title { background: brown; }
+  .q3 .quadrant-title { background: yellow; color: black; }
+  .q4 .quadrant-title { background: teal; }
+  
+  /* Input Box */
+  .input-container {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .input-box {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    width: 200px;
+  }
+  
+  .add-btn {
+    background: #ff3366;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    margin-left: 8px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  /* Stakeholders List */
+  .stakeholders {
+    width: 80%;
+    height: 70%;
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+    overflow-y: auto;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  

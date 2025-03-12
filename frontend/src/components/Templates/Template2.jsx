@@ -1,53 +1,125 @@
 import React, { useState } from "react";
 import "../../CSS/Template2.css";
 
+const StakeholderMatrix = () => {
+  const [stakeholders, setStakeholders] = useState({
+    q1: [],
+    q2: [],
+    q3: [],
+    q4: []
+  });
 
-const StakeholderMapping = () => {
-    return (
-      <div className="stakeholder-container">
-        {/* Stakeholder Identification Form */}
-        <div className="stakeholder-form">
-          <h2>Stakeholder Identification</h2>
-          <form>
-            <input type="text" placeholder="Stakeholder Name" />
-            <input type="text" placeholder="Role" />
-            <input type="text" placeholder="Interest Level" />
-            <input type="text" placeholder="Influence Level" />
-            <button type="submit">Add Stakeholder</button>
-          </form>
+  const [inputs, setInputs] = useState({
+    q1: "",
+    q2: "",
+    q3: "",
+    q4: ""
+  });
+
+  const handleAddStakeholder = (quadrant) => {
+    if (inputs[quadrant].trim() !== "") {
+      setStakeholders((prev) => ({
+        ...prev,
+        [quadrant]: [...prev[quadrant], inputs[quadrant]]
+      }));
+      setInputs((prev) => ({ ...prev, [quadrant]: "" }));
+    }
+  };
+
+  return (
+    <div className="matrix-container">
+      {/* Axis */}
+      <div className="axis">
+        <div className="x-axis"></div>
+        <div className="y-axis"></div>
+      </div>
+
+      {/* Quadrants */}
+      <div className="quadrant q1" style={{ top: "5%", left: "5%" }}>
+        <div className="quadrant-title">High Interest, Low Influence</div>
+        <div className="stakeholders">
+          {stakeholders.q1.map((name, index) => (
+            <p key={index}>{name}</p>
+          ))}
         </div>
-  
-        {/* Stakeholder Mapping Matrix */}
-        <div className="stakeholder-matrix">
-          <h2>Stakeholder Mapping Matrix</h2>
-          <div className="matrix-grid">
-            <div className="quadrant high-interest-low-influence">
-              <p>High Interest, Low Influence</p>
-              <input type="text" placeholder="Enter Answer" />
-            </div>
-            <div className="quadrant high-interest-high-influence">
-              <p>High Interest, High Influence</p>
-              <input type="text" placeholder="Enter Answer" />
-            </div>
-            <div className="quadrant low-interest-low-influence">
-              <p>Low Interest, Low Influence</p>
-              <input type="text" placeholder="Enter Answer" />
-            </div>
-            <div className="quadrant low-interest-high-influence">
-              <p>Low Interest, High Influence</p>
-              <input type="text" placeholder="Enter Answer" />
-            </div>
-          </div>
-        </div>
-  
-        {/* Two-Minute Pitch Section */}
-        <div className="pitch-section">
-          <h2>Two-Minute Pitch</h2>
-          <textarea placeholder="Write your two-minute pitch here..."></textarea>
+        <div className="input-container">
+          <input
+            type="text"
+            className="input-box"
+            placeholder="Enter stakeholder"
+            value={inputs.q1}
+            onChange={(e) => setInputs({ ...inputs, q1: e.target.value })}
+          />
+          <button className="add-btn" onClick={() => handleAddStakeholder("q1")}>
+            Add
+          </button>
         </div>
       </div>
-    );
-  };
-  
-  export default StakeholderMapping;
-  
+
+      <div className="quadrant q2" style={{ top: "5%", right: "5%" }}>
+        <div className="quadrant-title">High Interest, High Influence</div>
+        <div className="stakeholders">
+          {stakeholders.q2.map((name, index) => (
+            <p key={index}>{name}</p>
+          ))}
+        </div>
+        <div className="input-container">
+          <input
+            type="text"
+            className="input-box"
+            placeholder="Enter stakeholder"
+            value={inputs.q2}
+            onChange={(e) => setInputs({ ...inputs, q2: e.target.value })}
+          />
+          <button className="add-btn" onClick={() => handleAddStakeholder("q2")}>
+            Add
+          </button>
+        </div>
+      </div>
+
+      <div className="quadrant q3" style={{ bottom: "5%", left: "5%" }}>
+        <div className="quadrant-title">Low Interest, Low Influence</div>
+        <div className="stakeholders">
+          {stakeholders.q3.map((name, index) => (
+            <p key={index}>{name}</p>
+          ))}
+        </div>
+        <div className="input-container">
+          <input
+            type="text"
+            className="input-box"
+            placeholder="Enter stakeholder"
+            value={inputs.q3}
+            onChange={(e) => setInputs({ ...inputs, q3: e.target.value })}
+          />
+          <button className="add-btn" onClick={() => handleAddStakeholder("q3")}>
+            Add
+          </button>
+        </div>
+      </div>
+
+      <div className="quadrant q4" style={{ bottom: "5%", right: "5%" }}>
+        <div className="quadrant-title">Low Interest, High Influence</div>
+        <div className="stakeholders">
+          {stakeholders.q4.map((name, index) => (
+            <p key={index}>{name}</p>
+          ))}
+        </div>
+        <div className="input-container">
+          <input
+            type="text"
+            className="input-box"
+            placeholder="Enter stakeholder"
+            value={inputs.q4}
+            onChange={(e) => setInputs({ ...inputs, q4: e.target.value })}
+          />
+          <button className="add-btn" onClick={() => handleAddStakeholder("q4")}>
+            Add
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default StakeholderMatrix;
