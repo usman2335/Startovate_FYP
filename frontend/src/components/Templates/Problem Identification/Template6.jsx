@@ -1,7 +1,7 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import "../../CSS/Template6.css";
+import "../../../CSS/Template6.css";
 const problems = [
   { id: 1, label: "**PSKH 1" },
   { id: 2, label: "**PSKH 2" },

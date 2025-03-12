@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../../CSS/Template2.1.css";
+import "../../../CSS/Template2.css";
 import Button from "../../Button";
 import { TextField } from "@mui/material";
 

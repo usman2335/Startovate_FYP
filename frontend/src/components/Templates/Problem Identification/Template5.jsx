@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../CSS/Template5.css";
+import "../../../CSS/Template5.css";
 
 const StakeholderMatrix = () => {
   const [stakeholders, setStakeholders] = useState({
