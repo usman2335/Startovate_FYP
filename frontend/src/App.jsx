@@ -4,19 +4,17 @@ import SignupPage from "./pages/SignupPage";
 import CanvasPage from "./pages/CanvasPage";
 import TestPage from "./pages/TestPage";
 import Testpage1 from "./pages/Testpage1";
+
 function App() {
   return (
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<LandingPage />}></Route>
-          <Route path="/signup" element={<SignupPage />}></Route>
-          <Route path="/test" element={<Testpage1/>}></Route>
-          <Route path="/canvas" element={<CanvasPage />}></Route>
-          
-          
-          {/* <Route path="/" element={<Navigate to="/LandingPage" />} /> */}
-          {/*comment*/}
+          <Route path="/Landingpage" element={<LandingPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/test" element={<Testpage1 />} />
+          <Route path="/canvas" element={<CanvasPage />} />
+          <Route path="/" element={<TestPage />} />
         </Routes>
       </Router>
     </>

@@ -1,0 +1,53 @@
+.container {
+    width: 60%;
+    margin: auto;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    position: relative;
+    padding: 20px;
+  }
+  
+  .template-title {
+    color: #8b0000;
+    font-weight: bold;
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+  
+  .description {
+    font-size: 16px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .form-container {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 24px;
+    margin-top: 20px;
+    border: 1px solid #d0b5b5;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  }
+  
+  .column {
+    width: 100%;
+    text-align: left;
+  }
+  
+  textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+    overflow: hidden;
+    min-height: 50px;
+  }
+  
+  .button-group {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  

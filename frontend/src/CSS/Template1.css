@@ -1,9 +1,9 @@
-.hero-section {
+.tem1-hero-section {
   margin-top: 80px; /* Adjust based on your Navbar height */
   padding: 20px; /* Adds some spacing */
 }
 
-.container {
+.tem1-container {
   width: 60%;
   margin: auto;
   text-align: center;
@@ -12,24 +12,24 @@
   padding: 20px;
 }
 
-.title {
+.tem1-title {
   font-size: 24px;
   margin-top: 40px;
   margin-bottom: 10px;
 }
 
-.highlight {
+.tem1-highlight {
   color: red;
   font-weight: bold;
 }
 
-.description {
+.tem1-description {
   font-size: 16px;
   margin-top: 10px;
   margin-bottom: 20px;
 }
 
-.form-container {
+.tem1-form-container {
   background: #f9f9f9;
   padding: 20px;
   border-radius: 10px;
@@ -39,24 +39,24 @@
   border-radius: 24px;
 }
 
-.row {
+.tem1-row {
   display: flex;
   justify-content: space-between;
   margin-bottom: 15px;
 }
 
-.column {
+.tem1-column {
   width: 48%;
   text-align: left;
 }
 
-label {
+.tem1-label {
   display: block;
   font-size: 14px;
   margin-bottom: 5px;
 }
 
-input {
+.tem1-input {
   width: 100%;
   padding: 8px;
   border: 1px solid #ccc;
