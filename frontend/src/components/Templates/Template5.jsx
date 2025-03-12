@@ -1,26 +1,26 @@
 import React, { useState } from "react";
-import "../../CSS/Template2.css";
+import "../../CSS/Template5.css";
 
 const StakeholderMatrix = () => {
   const [stakeholders, setStakeholders] = useState({
     q1: [],
     q2: [],
     q3: [],
-    q4: []
+    q4: [],
   });
 
   const [inputs, setInputs] = useState({
     q1: "",
     q2: "",
     q3: "",
-    q4: ""
+    q4: "",
   });
 
   const handleAddStakeholder = (quadrant) => {
     if (inputs[quadrant].trim() !== "") {
       setStakeholders((prev) => ({
         ...prev,
-        [quadrant]: [...prev[quadrant], inputs[quadrant]]
+        [quadrant]: [...prev[quadrant], inputs[quadrant]],
       }));
       setInputs((prev) => ({ ...prev, [quadrant]: "" }));
     }
@@ -50,7 +50,10 @@ const StakeholderMatrix = () => {
             value={inputs.q1}
             onChange={(e) => setInputs({ ...inputs, q1: e.target.value })}
           />
-          <button className="add-btn" onClick={() => handleAddStakeholder("q1")}>
+          <button
+            className="add-btn"
+            onClick={() => handleAddStakeholder("q1")}
+          >
             Add
           </button>
         </div>
@@ -71,7 +74,10 @@ const StakeholderMatrix = () => {
             value={inputs.q2}
             onChange={(e) => setInputs({ ...inputs, q2: e.target.value })}
           />
-          <button className="add-btn" onClick={() => handleAddStakeholder("q2")}>
+          <button
+            className="add-btn"
+            onClick={() => handleAddStakeholder("q2")}
+          >
             Add
           </button>
         </div>
@@ -92,7 +98,10 @@ const StakeholderMatrix = () => {
             value={inputs.q3}
             onChange={(e) => setInputs({ ...inputs, q3: e.target.value })}
           />
-          <button className="add-btn" onClick={() => handleAddStakeholder("q3")}>
+          <button
+            className="add-btn"
+            onClick={() => handleAddStakeholder("q3")}
+          >
             Add
           </button>
         </div>
@@ -113,7 +122,10 @@ const StakeholderMatrix = () => {
             value={inputs.q4}
             onChange={(e) => setInputs({ ...inputs, q4: e.target.value })}
           />
-          <button className="add-btn" onClick={() => handleAddStakeholder("q4")}>
+          <button
+            className="add-btn"
+            onClick={() => handleAddStakeholder("q4")}
+          >
             Add
           </button>
         </div>
