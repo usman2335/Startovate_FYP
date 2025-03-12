@@ -1,39 +1,35 @@
-import React, { useState } from "react";
-import "../../CSS/Template1.css";
-import Button from "../Button";
+import React from "react";
+import "../../../CSS/Template1.css";
+import Button from "../../Button";
 
 const Template1 = () => {
   return (
-    <div className="container">
-      <h2 className="title">
-        LCI Checklist - I:{" "}
-        <span className="highlight">Problem Identification</span>
-      </h2>
-      <p className="description">
+    <div className="tem1-container">
+      <p className="tem1-description">
         <strong>What</strong> real-world practical problem or unmet need will be
         solved or met by the proposed invention?
       </p>
 
-      <div className="form-container">
+      <div className="tem1-form-container">
         {[...Array(4)].map((_, index) => (
-          <div className="row" key={index}>
-            <div className="column">
-              <label>
+          <div className="tem1-row" key={index}>
+            <div className="tem1-column">
+              <label className="tem1-label">
                 <strong>Why?</strong> Explore a root cause
               </label>
-              <input type="text" />
+              <input className="tem1-input" type="text" />
             </div>
-            <div className="column">
-              <label>
+            <div className="tem1-column">
+              <label className="tem1-label">
                 <strong>References</strong>
               </label>
-              <input type="text" />
+              <input className="tem1-input" type="text" />
             </div>
           </div>
         ))}
       </div>
 
-      <div className="button-group">
+      <div className="tem1-button-group">
         <Button
           label="Reset"
           onClick={() => {}}
