@@ -9,7 +9,10 @@ const TestPage = () => {
     <>
       <Navbar />
       <div >
-        <Checklist1></Checklist1>
+        {/* <Checklist1></Checklist1> */}
+        {/* <Template1></Template1> */}
+        <ProblemInvestigation></ProblemInvestigation>
+        {/* <StakeholderMapping></StakeholderMapping> */}
       </div>
       </>
   );
