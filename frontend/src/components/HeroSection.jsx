@@ -3,6 +3,7 @@ import "../CSS/HeroSection.css";
 import "../CSS/Utilities.css";
 import Button from "./Button";
 import LeanCanvas from "./LeanCanvas";
+import { NavLink } from "react-router-dom";
 
 const HeroSection = () => {
   const handleClick = () => {
@@ -22,13 +23,14 @@ const HeroSection = () => {
             platform.
           </p>
           <div className="btn">
-            <Button
-              label="GET STARTED ->"
-              onClick={handleClick}
-              padding="3% 13%"
-              color="#f1f1f1"
-              fontSize={"1.5em"}
-            ></Button>
+            <NavLink to="/Canvas" className="nav-link">
+              <Button
+                label="GET STARTED ->"
+                padding="3% 13%"
+                color="#f1f1f1"
+                fontSize={"1.5em"}
+              ></Button>
+            </NavLink>
           </div>
         </div>
         <div className="hero-right">
