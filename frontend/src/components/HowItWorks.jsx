@@ -35,12 +35,12 @@ const HowItWorks = () => {
               className="number-text flex"
               style={{ display: "flex", justifyContent: "flex-start" }}
             >
-              <img src="src\assets\1.png"></img>
+              <img src="/assets/1.png"></img>
               <div className="instr-text flex-col">
                 <h3>Select a Lean Canvas Component</h3>
                 <p>Choose a component from the Lean Canvas to begin.</p>
               </div>
-              <img src="src\assets\arrow1.svg"></img>
+              <img src="/assets/arrow1.svg"></img>
             </div>
           </div>
           <div className="row">
@@ -48,8 +48,8 @@ const HowItWorks = () => {
               className="number-text flex"
               style={{ display: "flex", justifyContent: "flex-start" }}
             >
-              <img src="src\assets\arrow2.svg"></img>
-              <img src="src\assets\2.png"></img>
+              <img src="/assets/arrow2.svg"></img>
+              <img src="/assets/2.png"></img>
               <div className="instr-text flex-col">
                 <h3>Fill Out the Checklist</h3>
                 <p>
@@ -64,7 +64,7 @@ const HowItWorks = () => {
               className="number-text flex"
               style={{ display: "flex", justifyContent: "flex-start" }}
             >
-              <img src="src\assets\3.png"></img>
+              <img src="/assets/3.png"></img>
               <div className="instr-text flex-col">
                 <h3>Complete the Template</h3>
                 <p>
@@ -79,8 +79,8 @@ const HowItWorks = () => {
               className="number-text flex"
               style={{ display: "flex", justifyContent: "flex-start" }}
             >
-              <img src="src\assets\arrow3.svg"></img>
-              <img src="src\assets\4.png"></img>
+              <img src="/assets/arrow3.svg"></img>
+              <img src="/assets/4.png"></img>
               <div className="instr-text flex-col">
                 <h3>Export Your Canvas</h3>
                 <p>
