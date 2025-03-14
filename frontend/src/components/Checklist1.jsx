@@ -51,13 +51,13 @@ const Checklist = ({
                     <span className="step-icon">
                       {step.completed ? (
                         <img
-                          src="src/assets/checkmak.png"
+                          src="/assets/checkmak.png"
                           alt="Completed"
                           className="icon-size"
                         />
                       ) : (
                         <img
-                          src="src/assets/crossmark.png"
+                          src="/assets/crossmark.png"
                           alt="Not Completed"
                           className="icon-size"
                         />
@@ -76,11 +76,7 @@ const Checklist = ({
                       onChecklistPointClick(step.id);
                     }}
                   >
-                    <img
-                      src="src\assets\pencil.png"
-                      alt="Edit"
-                      className="icon"
-                    />
+                    <img src="/assets/pencil.png" alt="Edit" className="icon" />
                     {step.completed ? "Edit" : "Start"}
                   </button>
                 </div>
