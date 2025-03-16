@@ -53,6 +53,15 @@
   padding-bottom: 30px;
 }
 
+.signup-form h3 {
+  color: #b22222;
+  font-size: 28px;
+  padding-bottom: 0px;
+  align-self: center;
+  padding-right: 110px;
+  visibility: hidden;
+}
+
 .signup-form input {
   display: block;
   width: 175%;
