@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import SignupCard from "../components/SignupCard"; // Import the Card component
 import Button from "../components/Button"; // Import your reusable Button component
 import "../CSS/Signup.css";
+import { TextField } from "@mui/material";
 
 const LoginPage = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
   return (
     <div className="signup-container">
       {/* Background Vector */}
@@ -13,27 +16,41 @@ const LoginPage = () => {
 
       <div className="signup-form">
         <h1>Logo</h1>
-        <h3>Create your account now</h3>
+        <h2>Create your account now</h2>
 
-        <form>
-          <label>Email Address</label>
-          <input type="email" placeholder="Enter your email" />
+        <form className="form1">
+          <div className="signup-input-container">
+            <label className="signup-input-label">Email</label>
+            <TextField
+              id="outlined-basic"
+              label="Enter your email"
+              variant="outlined"
+              fullWidth
+            />
+          </div>
 
-          <label>Password</label>
-          <input type="password" placeholder="Enter your password" />
-
+          <div className="signup-input-container">
+            <label className="signup-input-label">Password</label>
+            <TextField
+              id="outlined-basic"
+              type={showPassword ? "text" : "password"}
+              label="Enter your password"
+              variant="outlined"
+              fullWidth
+            />
+          </div>
           <Button
             label="Login"
-            onClick={() => console.log("Signup clicked!")}
             padding="12px"
             color="white"
             fontSize="18px"
-            width="175%"
+            width="100%"
             marginTop="10px"
           />
         </form>
 
-        <p>Create an New Account? <a href="/Signup">Sign Up</a>
+        <p>
+          Create an New Account? <a href="/Signup">Sign Up</a>
         </p>
       </div>
     </div>

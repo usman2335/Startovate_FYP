@@ -40,9 +40,13 @@ const Navbar = () => {
             Dashboard
           </NavLink>
         </div>
-        <div className="login-signup-btns flex">
-          <a>Login</a>
-          <Button label="Sign Up" onClick={handleClick} padding="10% 30%" />
+        <div className="login-signup-btns flex nav-links">
+          <NavLink to="/Login" className="nav-link">
+            Login
+          </NavLink>
+          <NavLink to="/Signup">
+            <Button label="Sign Up" padding="10% 30%" />
+          </NavLink>
         </div>
       </div>
     </>

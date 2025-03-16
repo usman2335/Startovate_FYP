@@ -4,6 +4,7 @@
   justify-content: space-between;
   height: 100vh;
   width: 80%;
+  /* margin: 0; */
   margin: 0 auto;
 }
 
@@ -11,6 +12,13 @@
   flex: 1;
   display: flex;
   justify-content: flex-start;
+  height: 100%;
+}
+.signup-input-container {
+  width: 100%;
+}
+.form1 label {
+  /* font-weight: 200; */
 }
 
 .signup-form {
@@ -18,18 +26,41 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-start;
-  padding-left: 200px;
+  align-items: center;
+  width: 30%;
+  /* padding-left: 200px; */
 }
-
+.form1 {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
 .Signupcard {
-  padding: 30px 20px;
+  padding: 10% 0% 10% 5%;
+  height: 80%;
+  width: 50%;
+  min-width: 400px;
   border-radius: 60px;
   background: linear-gradient(to bottom right, #e60073, #ff4d4d);
-  width: 450px;
-  height: 600px;
   transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
   color: #ffedce;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.signup-input-label {
+  font-weight: 500;
+}
+.bulb {
+  width: 70px;
+  height: 70px;
+  position: relative;
+  right: 2%;
 }
 
 .Signupcard h1 {
@@ -41,7 +72,7 @@
   font-size: 50px;
   padding-bottom: 0px;
   align-self: center;
-  padding-right: 110px;
+  /* padding-right: 110px; */
 }
 
 .signup-form h2 {
@@ -49,7 +80,7 @@
   font-size: 28px;
   padding-bottom: 0px;
   align-self: center;
-  padding-right: 110px;
+  /* padding-right: 110px; */
   padding-bottom: 30px;
 }
 
@@ -60,20 +91,6 @@
   align-self: center;
   padding-right: 110px;
   visibility: hidden;
-}
-
-.signup-form input {
-  display: block;
-  width: 175%;
-  padding: 15px;
-  margin: 10px 0;
-  border: 4px solid #a5a1a1;
-  border-radius: 10px;
-  background: #fff9f0; /* Keep the light background */
-  box-sizing: border-box;
-  font-size: 16px;
-  color: black;
-  opacity: 1; /* Ensure full opacity */
 }
 
 /* Increase input opacity on focus */
@@ -91,21 +108,22 @@
 .start-journey-text {
   font-family: "Poppins", sans-serif;
   font-weight: 700;
-  font-size: 40px;
-  line-height: 130%;
+  font-size: 2.5em;
   color: #ffffff;
   text-align: left;
+  width: 80%;
   padding-bottom: 20px;
+  margin-top: 10%;
 }
 
 /* Card Text */
 .card2-text {
   font-family: "Poppins", sans-serif;
   font-weight: 600;
-  font-size: 20px;
-  line-height: 25px;
+  font-size: 1.5em;
   color: #ffedce;
   text-align: left;
+  width: 80%;
 }
 
 .Signupcard:hover {

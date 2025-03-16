@@ -2,6 +2,7 @@ import React from "react";
 import SignupCard from "../components/SignupCard"; // Import the Card component
 import Button from "../components/Button"; // Import your reusable Button component
 import "../CSS/Signup.css";
+import { TextField } from "@mui/material";
 
 const SignupPage = () => {
   return (
@@ -15,15 +16,46 @@ const SignupPage = () => {
         <h1>Logo</h1>
         <h2>Create your account now</h2>
 
-        <form>
-          <label>Full Name</label>
-          <input type="text" placeholder="Enter your full name" />
+        <form className="form1">
+          <div className="signup-input-container">
+            <label className="signup-input-label">Full Name</label>
+            {/* <input type="text" placeholder="Enter your full name" /> */}
+            <TextField
+              id="outlined-basic"
+              label="Enter your full name"
+              variant="outlined"
+              fullWidth
+            />
+          </div>
+          <div className="signup-input-container">
+            <label className="signup-input-label">Email Address</label>
+            <TextField
+              id="outlined-basic"
+              label="Enter your email"
+              variant="outlined"
+              fullWidth
+            />
+          </div>
 
-          <label>Email Address</label>
-          <input type="email" placeholder="Enter your email" />
+          <div className="signup-input-container">
+            <label className="signup-input-label">Password</label>
+            <TextField
+              id="outlined-basic"
+              label="Enter your password"
+              variant="outlined"
+              fullWidth
+            />
+          </div>
+          <div className="signup-input-container">
+            <label className="signup-input-label">Re-Enter Password</label>
 
-          <label>Password</label>
-          <input type="password" placeholder="Enter your password" />
+            <TextField
+              id="outlined-basic"
+              label="Re-enter your password"
+              variant="outlined"
+              fullWidth
+            />
+          </div>
 
           <Button
             label="Signup"
@@ -31,12 +63,13 @@ const SignupPage = () => {
             padding="12px"
             color="white"
             fontSize="18px"
-            width="175%"
+            width="100%"
             marginTop="10px"
           />
         </form>
 
-        <p>Already have an account? <a href="/login">Login</a>
+        <p>
+          Already have an account? <a href="/login">Login</a>
         </p>
       </div>
     </div>
