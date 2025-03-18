@@ -1,5 +1,4 @@
 import React from "react";
-import "../../../CSS/Template8.css";
 import Button from "../../Button";
 
 const Template8 = () => {

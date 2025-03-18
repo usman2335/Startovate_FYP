@@ -5,8 +5,8 @@ const SignupCard = () => {
   return (
     <div className="card-container">
       <div className="Signupcard">
-        <h1>Logo</h1>
-        <h2 className="start-journey-text">Start Your journey with us</h2>
+        <img src="../../public/assets/bulb.svg" className="bulb" />
+        <h2 className="start-journey-text">Start your journey with us</h2>
         <p className="card2-text">
           Lean Canvas. A new way to shape your ideas.
         </p>

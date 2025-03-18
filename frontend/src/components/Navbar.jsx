@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Button from "./Button";
 import { NavLink } from "react-router-dom";
 import "../CSS/Navbar.css";
+import { AuthContext } from "../context/authContext";
 
 const Navbar = () => {
+  const { user } = useContext(AuthContext);
   const [scrolling, setScrolling] = useState(false);
   useEffect(() => {
     const handleScroll = () => {
@@ -41,8 +43,18 @@ const Navbar = () => {
           </NavLink>
         </div>
         <div className="login-signup-btns flex">
-          <a>Login</a>
-          <Button label="Sign Up" onClick={handleClick} padding="10% 30%" />
+          {user ? (
+            <p>Welcome, {user.fullName}!</p>
+          ) : (
+            <>
+              <NavLink to="/Login" className="nav-link">
+                Login
+              </NavLink>
+              <NavLink to="/Signup">
+                <Button label="Sign Up" padding="20% 50%" />
+              </NavLink>
+            </>
+          )}
         </div>
       </div>
     </>

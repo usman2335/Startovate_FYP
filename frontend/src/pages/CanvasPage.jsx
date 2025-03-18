@@ -112,11 +112,11 @@ const CanvasPage = () => {
               fontSize={"1.5em"}
             />
             <img
-              src="src\assets\blurred_canvas.png"
+              src="/assets/blurred_canvas.png"
               className={`image-left ${clicked ? "hide" : ""}`}
             ></img>
             <img
-              src="src\assets\blurred_canvas.png"
+              src="/assets/blurred_canvas.png"
               className={`image-right ${clicked ? "hide" : ""}`}
             ></img>
           </div>
