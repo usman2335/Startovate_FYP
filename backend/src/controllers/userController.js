@@ -2,20 +2,38 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+const generateToken = (user) => {
+  return jwt.sign(
+    {
+      id: user._id,
+      email: user.email,
+      role: user.role,
+      canvasId: user.canvasId,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "1d",
+    }
+  );
+};
+
 exports.signup = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { fullName, email, password } = req.body;
+    if (!fullName || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({ error: "User already exists" });
     }
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
     user = new User({
-      name,
+      fullName,
       email,
       password: hashedPassword,
       role: "user", // Default to 'user' if not provided
@@ -37,16 +55,57 @@ exports.signup = async (req, res) => {
   }
 };
 
-exports.getUser = async (req, res) => {
+exports.login = async (req, res) => {
   try {
-    const user = await User.findById(req.params.userId);
-
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
     if (!user) {
-      return res.stats(404).json({ message: "User not found" });
+      return res.status(400).json({ error: "Invalid email or password" });
     }
 
-    res.stats(200).json(user);
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ error: "Invalid email or password" });
+    }
+    const token = generateToken(user);
+    res.cookie("Bearer", token, {
+      httpOnly: false, // Prevents client-side access (XSS protection)
+      secure: true, // HTTPS in production
+      sameSite: "Strict", // CSRF protection
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
+    res.status(200).json({
+      message: "Login successful",
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+      },
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+exports.getUser = async (req, res) => {
+  try {
+    // const user = req.user;
+    const userId = req.user.id;
+    const user = await User.findById(userId).select("fullName email role");
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json({
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ error: "500" + error.message });
   }
 };

@@ -5,20 +5,25 @@ import CanvasPage from "./pages/CanvasPage";
 import TestPage from "./pages/TestPage";
 import Testpage1 from "./pages/Testpage1";
 import LoginPage from "./pages/LoginPage";
+import { AuthProvider } from "./context/authContext.jsx";
 
 function App() {
   return (
     <>
-      <Router>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/test" element={<Testpage1 />} />
-          <Route path="/canvas" element={<CanvasPage />} />
-          <Route path="/test1" element={<TestPage />} />
-        </Routes>
-      </Router>
+      <AuthProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/homepage" element={<LandingPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/Login" element={<LoginPage />} />
+            {/* <Route path="/" element={<LoginPage />} /> */}
+            <Route path="/test" element={<Testpage1 />} />
+            <Route path="/canvas" element={<CanvasPage />} />
+            <Route path="/test1" element={<TestPage />} />
+          </Routes>
+        </Router>
+      </AuthProvider>
     </>
   );
 }

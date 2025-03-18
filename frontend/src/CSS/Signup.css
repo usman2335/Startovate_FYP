@@ -28,6 +28,8 @@
   justify-content: center;
   align-items: center;
   width: 30%;
+  margin-right: 5%;
+
   /* padding-left: 200px; */
 }
 .form1 {
@@ -41,7 +43,7 @@
 .Signupcard {
   padding: 10% 0% 10% 5%;
   height: 80%;
-  width: 50%;
+  width: 55%;
   min-width: 400px;
   border-radius: 60px;
   background: linear-gradient(to bottom right, #e60073, #ff4d4d);
@@ -147,6 +149,6 @@
 }
 
 .signup-form p {
-  padding-top: 10px;
-  padding-left: 10px;
+  /* padding-top: 10px; */
+  /* padding-left: 10px; */
 }
