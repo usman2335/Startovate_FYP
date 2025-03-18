@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
+import { TextField } from "@mui/material";
 import Button from "../../Button";
 
 const Template8 = () => {
-  const handleInput = (event) => {
-    event.target.style.height = "auto";
-    event.target.style.height = event.target.scrollHeight + "px";
+  const [inputValue, setInputValue] = useState("");
+
+  const handleChange = (event) => {
+    setInputValue(event.target.value);
   };
 
   return (
@@ -12,20 +14,27 @@ const Template8 = () => {
       <p className="description">
         <strong>Code of relevant industry</strong> available at Standard Industry
       </p>
-      
+
       <div className="form-container">
         <div className="column">
           <label>
             <strong>Enter Code of Relevant Industry</strong>
           </label>
-          <textarea rows="5" placeholder="Enter text here..." onInput={handleInput}></textarea>
+          <TextField
+            placeholder="Enter text here..."
+            multiline
+            fullWidth
+            variant="outlined"
+            value={inputValue}
+            onChange={handleChange}
+          />
         </div>
       </div>
 
       <div className="button-group">
         <Button
           label="Reset"
-          onClick={() => {}}
+          onClick={() => setInputValue("")}
           padding="10px 20px"
           color="white"
           fontSize="16px"
@@ -34,7 +43,7 @@ const Template8 = () => {
         />
         <Button
           label="Save"
-          onClick={() => {}}
+          onClick={() => console.log("Saved Value:", inputValue)}
           padding="10px 20px"
           color="white"
           fontSize="16px"
