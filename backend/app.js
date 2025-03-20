@@ -15,6 +15,8 @@ app.use(express.json());
 
 const userRoutes = require("./src/routes/userRoutes");
 app.use("/api/users", userRoutes);
+const canvasRoutes = require("./src/routes/canvasRoutes");
+app.use("/api/canvas", canvasRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is running");

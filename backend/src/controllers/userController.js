@@ -68,8 +68,8 @@ exports.login = async (req, res) => {
       return res.status(400).json({ error: "Invalid email or password" });
     }
     const token = generateToken(user);
-    res.cookie("Bearer", token, {
-      httpOnly: false, // Prevents client-side access (XSS protection)
+    res.cookie("token", token, {
+      httpOnly: true, // Prevents client-side access (XSS protection)
       secure: true, // HTTPS in production
       sameSite: "Strict", // CSRF protection
       maxAge: 24 * 60 * 60 * 1000, // 1 day
@@ -87,6 +87,18 @@ exports.login = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+exports.logout = async (req, res) => {
+  res.cookie("token", "", {
+    httpOnly: true,
+    secure: true, // Use only in production with HTTPS
+    sameSite: "Strict",
+    expires: new Date(0), // Expire immediately
+  });
+
+  res.status(200).json({ message: "Logged out successfully" });
+};
+
 exports.getUser = async (req, res) => {
   try {
     // const user = req.user;
@@ -108,4 +120,11 @@ exports.getUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "500" + error.message });
   }
+};
+
+exports.updateHasCanvas = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    await User.findByIdAndUpdate(userId, { hasCanvas: true });
+  } catch (error) {}
 };

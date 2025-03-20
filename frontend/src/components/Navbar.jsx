@@ -3,9 +3,21 @@ import Button from "./Button";
 import { NavLink } from "react-router-dom";
 import "../CSS/Navbar.css";
 import { AuthContext } from "../context/authContext";
-
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 const Navbar = () => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   const { user } = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
   const [scrolling, setScrolling] = useState(false);
   useEffect(() => {
     const handleScroll = () => {
@@ -21,9 +33,9 @@ const Navbar = () => {
     };
   }, []);
 
-  const handleClick = () => {
-    alert("Button Clicked");
-  };
+  // const handleClick = () => {
+  //   alert("Button Clicked");
+  // };
 
   return (
     <>
@@ -31,7 +43,7 @@ const Navbar = () => {
         <div>
           <h1>Logo</h1>
         </div>
-        <div className="nav-links flex gap-1">
+        <div className="nav-links">
           <NavLink to="/" className="nav-link">
             Home
           </NavLink>
@@ -44,7 +56,27 @@ const Navbar = () => {
         </div>
         <div className="login-signup-btns flex">
           {user ? (
-            <p>Welcome, {user.fullName}!</p>
+            <>
+              <AccountCircleOutlinedIcon
+                fontSize="large"
+                sx={{ color: "#1f1f1f" }}
+              />
+              <p>{user.fullName}</p>
+
+              <ExpandMoreIcon onClick={handleClick} />
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  "aria-labelledby": "basic-button",
+                }}
+              >
+                <MenuItem onClick={handleClose}>My account</MenuItem>
+                <MenuItem onClick={logout}>Logout</MenuItem>
+              </Menu>
+            </>
           ) : (
             <>
               <NavLink to="/Login" className="nav-link">

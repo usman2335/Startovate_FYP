@@ -50,9 +50,9 @@ const LoginPage = () => {
         timer: 1500,
         showConfirmButton: false,
       });
-      checkAuthStatus();
+      // checkAuthStatus();
 
-      setTimeout(() => navigate("/homepage"), 1500);
+      setTimeout(() => navigate("/  "), 1500);
     } catch (error) {
       Swal.fire({
         icon: "error",
