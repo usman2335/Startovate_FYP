@@ -16,7 +16,7 @@ function App() {
           <Route path="/Login" element={<LoginPage />} />
           <Route path="/test" element={<Testpage1 />} />
           <Route path="/canvas" element={<CanvasPage />} />
-          <Route path="/test1" element={<TestPage />} />
+          <Route path="/test" element={<TestPage />} />
         </Routes>
       </Router>
     </>

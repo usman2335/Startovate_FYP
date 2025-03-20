@@ -1,10 +1,12 @@
-// // import React from "react";
-// // import Navbar from "../components/Navbar";
+import React from "react";
+import Navbar from "../components/Navbar";
 // // // import CreateNewCanvasModal from "../components/CreateNewCanvasModal";
-// // // import Template1 from "../components/Templates/Problem Identification/Template1";
-// // // import Template2 from "../components/Templates/Problem Identification/Template2";
-// // // import Template3 from "../components/Templates/Problem Identification/Template3";
-// // // import Template7 from "../components/Templates/Problem Identification/Template7";
+import Template1 from "../components/Templates/Research Questions/Template1";
+import Template2 from "../components/Templates/Research Questions/Template2";
+import Template3 from "../components/Templates/Research Questions/Template3";
+import Template4 from "../components/Templates/Research Questions/Template4";
+import Template5 from "../components/Templates/Research Questions/Template5";
+import Template6 from "../components/Templates/Research Questions/Template6";
 // // // import Template8 from "../components/Templates/Problem Identification/Template8";
 // // // import Checklist1 from "../components/Checklist1";
 // // import ProblemInvestigation from "../components/Templates/Template3";
@@ -13,10 +15,9 @@
 const TestPage = () => {
   return (
     <>
-      <Navbar />
       <div>
         {/* <Checklist1></Checklist1> */}
-        {/* <Template1></Template1> */}
+        <Template6></Template6>
         {/* <ProblemInvestigation></ProblemInvestigation> */}
         {/* <StakeholderMapping></StakeholderMapping> */}
       </div>
