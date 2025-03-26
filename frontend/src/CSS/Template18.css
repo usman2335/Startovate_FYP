@@ -1,0 +1,28 @@
+.container {
+  margin: 6% auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 60%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.table-title-row {
+  text-align: center;
+  justify-content: center;
+}
+
+.table-title {
+  justify-content: center;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 12px;
+  color: rgb(5, 5, 5); /* Text color for contrast */
+  width: 100%;
+}

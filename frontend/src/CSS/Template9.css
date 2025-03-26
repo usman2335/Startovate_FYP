@@ -10,6 +10,22 @@
   justify-content: space-around;
   align-items: flex-start;
 }
+.heading {
+  margin: 6% auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  padding: 20px;
+  
+  /* Flex column layout to stack heading and TextField */
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  gap: 10px;
+  justify-content: center;
+  align-items: center; /* Center align */
+  text-align: center; /* Center text */
+}
 
 /* Individual Column Styling */
 .column {
@@ -21,8 +37,27 @@
   text-align: center;
 }
 
+/* Override Global Input/Textarea Styling for MUI TextField */
+/* .MuiTextField-root {
+  width: 100% !important;
+}
+
+.MuiInputBase-root {
+  width: 100% !important;
+}
+
+/* Ensure specific widths */
+/* .problem-box .MuiTextField-root {
+  width: 50% !important;
+}
+
+.solution-box .MuiTextField-root,
+.context-box .MuiTextField-root {
+  width: 80% !important;
+} */ */
+
 /* Responsive Design */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .container {
     flex-direction: column;
     align-items: center;
@@ -31,4 +66,4 @@
   .column {
     width: 90%;
   }
-}
+} */

@@ -1,4 +1,4 @@
-.container {
+/* .container {
   margin-top: 6%;
   margin-bottom: 3%;
 
@@ -31,24 +31,24 @@ h4 {
 .form-group {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Ensures left alignment */
+  align-items: flex-start; 
   margin-bottom: 1rem;
-  width: 100%; /* Matches Box width */
+  width: 100%; 
 }
 
 .form-group textarea {
-  width: 100%; /* Ensures textarea takes full width */
+  width: 100%; 
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
-  resize: vertical; /* Allows vertical resizing */
+  resize: vertical; 
 }
 
 .form-group label {
   text-align: left;
   margin-bottom: 5px;
-  font-weight: normal; /* Ensures label is not bold */
+  font-weight: normal; 
 }
 
 .form-group textarea:focus {
@@ -79,14 +79,12 @@ textarea {
   border-radius: 5px;
 }
 
-/* Container styling */
 .table-container {
   width: 90%;
   margin: 20px auto;
   font-family: Arial, sans-serif;
 }
 
-/* Table styling */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -106,7 +104,7 @@ th {
   text-transform: uppercase;
 }
 
-/* Input box */
+
 .input-box {
   width: 100%;
   padding: 8px;
@@ -114,21 +112,14 @@ th {
   border-radius: 4px;
 }
 
-/* Checkbox labels */
+
 td label {
   display: flex;
   align-items: center;
   gap: 5px;
   font-size: 14px;
 }
-/* width: 60%;
-    margin: auto;
-    text-align: center;
-    font-family: Arial, sans-serif;
-    position: relative;
-    padding: 20px;
-  }
-   */
+
 .template-title {
   color: #8b0000;
   font-weight: bold;
@@ -171,4 +162,4 @@ textarea {
   display: flex;
   justify-content: center;
   gap: 10px;
-}
+} */

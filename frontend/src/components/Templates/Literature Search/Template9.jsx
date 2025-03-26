@@ -8,113 +8,59 @@ const Template9 = () => {
     <div className="container">
       {/* Column 1: Problem */}
       <div className="column">
-        <h3>Problem</h3>
-        <Box
-          component="form"
-          sx={{
-            "& > :not(style)": { m: 1, width: "50%" },
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-          noValidate
-          autoComplete="off"
-        >
-          <TextField
-            id="standard-multiline-flexible"
-            label="Multiline"
-            multiline
-            variant="standard"
-          />
-          <TextField
-            label="Synonym II"
-            variant="outlined"
-            multiline
-            minRows={1}
-          />
-          <TextField
-            label="Synonym III"
-            variant="outlined"
-            multiline
-            minRows={1}
-            maxRows={5}
-          />
-        </Box>
+        <div className="heading">
+          <h3>Problem</h3>
+        </div>
+        <div className="heading">
+          <h4>Synonym I</h4>
+          <TextField id="outlined-basic" variant="outlined" />
+        </div>
+        <div className="heading">
+          <h4>Synonym II</h4>
+          <TextField id="outlined-basic" variant="outlined" />
+        </div>
+        <div className="heading">
+          <h4>Synonym III</h4>
+          <TextField id="outlined-basic" variant="outlined" />
+        </div>
       </div>
 
       {/* Column 2: Problem Solution */}
       <div className="column">
-        <h3>Problem Solution</h3>
-        <Box
-          component="form"
-          sx={{
-            "& > :not(style)": { m: 1, width: "80%" },
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-          noValidate
-          autoComplete="off"
-        >
-          <TextField
-            label="Synonym I"
-            variant="outlined"
-            multiline
-            minRows={1}
-            maxRows={5}
-          />
-          <TextField
-            label="Synonym II"
-            variant="outlined"
-            multiline
-            minRows={1}
-            maxRows={5}
-          />
-          <TextField
-            label="Synonym III"
-            variant="outlined"
-            multiline
-            minRows={1}
-            maxRows={5}
-          />
-        </Box>
+        <div className="heading">
+          <h3>Problem Solution</h3>
+        </div>
+        <div className="heading">
+          <h4>Synonym I</h4>
+          <TextField id="outlined-multiline-flexible" multiline maxRows={4} />
+        </div>
+        <div className="heading">
+          <h4>Synonym II</h4>
+          <TextField id="outlined-multiline-flexible" multiline maxRows={4} />
+        </div>
+        <div className="heading">
+          <h4>Synonym III</h4>
+          <TextField id="outlined-multiline-flexible" multiline maxRows={4} />
+        </div>
       </div>
 
+      {/* Column 3: Context of Application */}
       <div className="column">
-        <h3>Context of Application</h3>
-        <Box
-          component="form"
-          sx={{
-            "& > :not(style)": { m: 1, width: "80%" },
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-          noValidate
-          autoComplete="off"
-        >
-          <TextField
-            label="Synonym I"
-            variant="outlined"
-            multiline
-            minRows={1}
-            maxRows={5}
-          />
-          <TextField
-            label="Synonym II"
-            variant="outlined"
-            multiline
-            minRows={1}
-            maxRows={5}
-          />
-          <TextField
-            label="Synonym III"
-            variant="outlined"
-            multiline
-            minRows={1}
-            maxRows={5}
-          />
-        </Box>
+        <div className="heading">
+          <h3>Context Of Application</h3>
+        </div>
+        <div className="heading">
+          <h4>Synonym I</h4>
+          <TextField id="outlined-multiline-flexible" multiline maxRows={4} />
+        </div>
+        <div className="heading">
+          <h4>Synonym II</h4>
+          <TextField id="outlined-multiline-flexible" multiline maxRows={4} />
+        </div>
+        <div className="heading">
+          <h4>Synonym III</h4>
+          <TextField id="outlined-multiline-flexible" multiline maxRows={4} />
+        </div>
       </div>
     </div>
   );
