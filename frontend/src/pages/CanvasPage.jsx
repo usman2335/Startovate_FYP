@@ -21,6 +21,9 @@ const CanvasPage = () => {
   const [templateKey, setTemplateKey] = useState(null);
   const [canvasId, setCanvasId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  if (selectedChecklistPoint) {
+    console.log(selectedChecklistPoint.id);
+  }
 
   useEffect(() => {
     const fetchCanvas = async () => {
@@ -83,7 +86,7 @@ const CanvasPage = () => {
     setView("checklist");
   };
 
-  const handleChecklistPointClick = (pointId) => {
+  const handleChecklistPointClick = async (pointId) => {
     // Find the correct checklist category
     const checklistCategory = checklistData[selectedComponent];
 
@@ -95,13 +98,26 @@ const CanvasPage = () => {
 
       if (selectedPoint) {
         setSelectedChecklistPoint(selectedPoint);
-
-        // Dynamically set the template key (assuming templates follow a naming pattern)
         const templateKeyString = `${selectedComponent.replace(
           /\s+/g,
           ""
         )}-Step${selectedPoint.id}`;
         setTemplateKey(templateKeyString);
+        // try {
+        //   const response = await axios.post(
+        //     "http://localhost:5000/api/template/start",
+        //     {
+        //       canvasId,
+        //       templateId: templateKeyString,
+        //       componentName: selectedComponent,
+        //       checklistStep: selectedPoint.id,
+        //     },
+        //     { withCredentials: true }
+        //   );
+        //   console.log("Template fetched/created:", response.data.template);
+        // } catch (error) {
+        //   console.error("Error fetching/creating template:", error);
+        // }
 
         setView("template");
       } else {
@@ -111,6 +127,29 @@ const CanvasPage = () => {
       console.error("Checklist category not found");
     }
   };
+  useEffect(() => {
+    if (selectedChecklistPoint && templateKey) {
+      console.log("Selected Checklist Point Updated:", selectedChecklistPoint);
+
+      axios
+        .post(
+          "http://localhost:5000/api/template/start",
+          {
+            canvasId,
+            templateId: templateKey,
+            componentName: selectedComponent,
+            checklistStep: selectedChecklistPoint.id,
+          },
+          { withCredentials: true }
+        )
+        .then((response) => {
+          console.log("Template fetched/created:", response.data.template);
+        })
+        .catch((error) => {
+          console.error("Error fetching/creating template:", error);
+        });
+    }
+  }, [selectedChecklistPoint, templateKey, canvasId]);
   return (
     <>
       <Navbar></Navbar>
@@ -349,7 +388,11 @@ const CanvasPage = () => {
                 </Typography>
               </div>
             </div>
-            <TemplateComponent templateKey={templateKey} />
+            <TemplateComponent
+              templateKey={templateKey}
+              canvasId={canvasId}
+              // templateId={templateKey}
+            />
           </div>
         )}
       </div>

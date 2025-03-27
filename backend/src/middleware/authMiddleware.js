@@ -4,14 +4,20 @@ const protect = async (req, res, next) => {
   let token = req.header("Cookie");
   if (!token) {
     return res.status(404).json({ error: "Access denied. No token provided" });
-  } else {
-    token = token.split(";")[0].replace("Bearer=", "");
-    console.log(`token is:${token}`);
+  } //else {
+  //   token = token.split(";")[0].replace("Bearer=", "");
+  //   console.log(`token is:${token}`);
+  // }
+
+  const match = token.match(/token=([^;]*)/);
+  if (!match) {
+    return res.status(404).json({ error: "Access denied. Token not found" });
   }
 
-  try {
-    // console.log(`token is:${token}`);
+  token = match[1]; // Extracted token value
+  console.log(`Extracted token: ${token}`);
 
+  try {
     const decoded = jwt.verify(
       token.replace("token=", ""),
       process.env.JWT_SECRET

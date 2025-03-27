@@ -41,27 +41,6 @@ const Template2 = () => {
           ></textarea>
         </div>
       </div>
-
-      <div className="template-button-group">
-        <Button
-          label="Reset"
-          onClick={() => {}}
-          padding="10px 20px"
-          color="white"
-          fontSize="16px"
-          width="auto"
-          marginTop="10px"
-        />
-        <Button
-          label="Save"
-          onClick={() => {}}
-          padding="10px 20px"
-          color="white"
-          fontSize="16px"
-          width="auto"
-          marginTop="10px"
-        />
-      </div>
     </div>
   );
 };

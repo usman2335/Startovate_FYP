@@ -14,6 +14,19 @@ exports.createCanvas = async (req, res) => {
       user: userId,
       researchTitle: researchTitle,
       authorName: authorName,
+      components: [
+        { name: "Problem Identification", status: "not started" },
+        { name: "Literature Search", status: "not started" },
+        { name: "Existing Solutions", status: "not started" },
+        { name: "Market Landscape", status: "not started" },
+        { name: "Novelty", status: "not started" },
+        { name: "Research Question", status: "not started" },
+        { name: "Research Methodology", status: "not started" },
+        { name: "Key Resources", status: "not started" },
+        { name: "Funding", status: "not started" },
+        { name: "Team Capacities", status: "not started" },
+        { name: "Research Outcome", status: "not started" },
+      ],
     });
 
     await newCanvas.save();
