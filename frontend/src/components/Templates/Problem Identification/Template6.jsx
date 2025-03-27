@@ -22,7 +22,7 @@ const ProblemInvestigation = () => {
       <Box
         component="form"
         sx={{
-          "& > :not(style)": { m: 1, width: "30ch" },
+          "& > :not(style)": { m: 1, width: "50%" },
           display: "flex",
         }}
         noValidate
@@ -39,7 +39,7 @@ const ProblemInvestigation = () => {
       <Box
         component="form"
         sx={{
-          "& > :not(style)": { m: 1, width: "35ch" },
+          "& > :not(style)": { m: 1, width: "100%" },
           display: "flex",
         }}
         noValidate
@@ -72,7 +72,7 @@ const ProblemInvestigation = () => {
         sx={{
           "& .MuiTextField-root": { m: 1, width: "100%" },
           display: "flex",
-          width: "100%", // Ensures the Box takes full width
+          //width: "100%", // Ensures the Box takes full width
         }}
         noValidate
         autoComplete="off"
@@ -81,7 +81,7 @@ const ProblemInvestigation = () => {
           id="outlined-textarea"
           label="Two Minute Story"
           multiline
-          fullWidth // Ensures TextField takes full width
+          // fullWidth // Ensures TextField takes full width
         />
       </Box>
       <Box
@@ -109,7 +109,7 @@ const ProblemInvestigation = () => {
           "& .MuiTextField-root": { m: 1, width: "100%" },
           display: "flex",
           flexDirection: "column", // Stack elements vertically
-          width: "100%", // Ensures the Box takes full width
+          //width: "100%", // Ensures the Box takes full width
         }}
         noValidate
         autoComplete="off"
