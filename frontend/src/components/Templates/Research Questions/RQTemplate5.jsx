@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { TextField } from "@mui/material";
+import "../../../CSS/Template3.css";
 import Button from "../../Button";
+import { TextField } from "@mui/material";
 
-const Template8 = () => {
+const Template5 = () => {
   const [inputValue, setInputValue] = useState("");
 
   const handleChange = (event) => {
@@ -10,18 +11,18 @@ const Template8 = () => {
   };
 
   return (
-    <div className="container">
-      <p className="description">
-        <strong>Code of relevant industry</strong> available at Standard Industry
+    <div className="container" style={{ maxWidth: "90%", margin: "0 auto" }}>
+      <p className="description" style={{ textAlign: "center" }}>
+        <strong>LCI Template XXIV</strong> 
       </p>
 
-      <div className="form-container">
-        <div className="column">
+      <div className="form-container" style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <div className="column" style={{ width: "100%" }}>
           <label>
-            <strong>Enter Code of Relevant Industry</strong>
+            <strong>Supportive Objectives and Tentative Hypothesis.</strong>
           </label>
           <TextField
-            placeholder="Enter text here..."
+            placeholder="Enter Text here..."
             multiline
             fullWidth
             variant="outlined"
@@ -31,7 +32,7 @@ const Template8 = () => {
         </div>
       </div>
 
-      <div className="button-group">
+      <div className="button-group" style={{ display: "flex", justifyContent: "center", gap: "1rem", marginTop: "20px" }}>
         <Button
           label="Reset"
           onClick={() => setInputValue("")}
@@ -39,7 +40,6 @@ const Template8 = () => {
           color="white"
           fontSize="16px"
           width="auto"
-          marginTop="10px"
         />
         <Button
           label="Save"
@@ -48,11 +48,10 @@ const Template8 = () => {
           color="white"
           fontSize="16px"
           width="auto"
-          marginTop="10px"
         />
       </div>
     </div>
   );
 };
 
-export default Template8;
+export default Template5;

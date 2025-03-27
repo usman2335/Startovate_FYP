@@ -1,46 +1,53 @@
 import React, { useState } from "react";
 import "../../../CSS/Template3.css";
 import Button from "../../Button";
+import { TextField } from "@mui/material";
 
 const Template3 = () => {
-  const handleInput = (event) => {
-    event.target.style.height = "auto";
-    event.target.style.height = event.target.scrollHeight + "px";
+  const [inputValue, setInputValue] = useState("");
+
+  const handleChange = (event) => {
+    setInputValue(event.target.value);
   };
 
   return (
-    <div className="container">
-      <p className="description">
+    <div className="container" style={{ maxWidth: "90%", margin: "0 auto" }}>
+      <p className="description" style={{ textAlign: "center" }}>
         <strong>Motivation and justification</strong> of the proposed invention for solving the real-world practical problem.
       </p>
 
-      <div className="form-container">
-        <div className="column">
+      <div className="form-container" style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <div className="column" style={{ width: "100%" }}>
           <label>
             <strong>Enter Motivation and Justification</strong>
           </label>
-          <textarea rows="5" placeholder="Enter text here..." onInput={handleInput}></textarea>
+          <TextField
+            placeholder="Enter text here..."
+            multiline
+            fullWidth
+            variant="outlined"
+            value={inputValue}
+            onChange={handleChange}
+          />
         </div>
       </div>
 
-      <div className="button-group">
+      <div className="button-group" style={{ display: "flex", justifyContent: "center", gap: "1rem", marginTop: "20px" }}>
         <Button
           label="Reset"
-          onClick={() => {}}
+          onClick={() => setInputValue("")}
           padding="10px 20px"
           color="white"
           fontSize="16px"
           width="auto"
-          marginTop="10px"
         />
         <Button
           label="Save"
-          onClick={() => {}}
+          onClick={() => console.log("Saved Value:", inputValue)}
           padding="10px 20px"
           color="white"
           fontSize="16px"
           width="auto"
-          marginTop="10px"
         />
       </div>
     </div>
