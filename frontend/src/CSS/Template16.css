@@ -1,5 +1,5 @@
 .container {
-  margin: 6% auto;
+  /* margin: 6% auto; */
   background: white;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -13,8 +13,9 @@
   text-align: center;
 }
 .header {
-  background-color: rgb(255, 192, 189);
-  width: 90%;
+  background-color: rgb(233, 85, 90);
+
+  width: 100%;
 }
 .table-title-row {
   text-align: center;
@@ -27,6 +28,5 @@
   font-size: 18px;
   font-weight: bold;
   padding: 12px;
-  color: rgb(5, 5, 5); /* Text color for contrast */
   width: 100%;
 }

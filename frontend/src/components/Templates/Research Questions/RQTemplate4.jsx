@@ -13,13 +13,19 @@ const Template4 = () => {
   return (
     <div className="container" style={{ maxWidth: "90%", margin: "0 auto" }}>
       <p className="description" style={{ textAlign: "center" }}>
-        <strong>LCI Template XXXIII</strong> 
+        <strong>LCI Template XXXIII</strong>
       </p>
 
-      <div className="form-container" style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <div
+        className="form-container"
+        style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+      >
         <div className="column" style={{ width: "100%" }}>
           <label>
-            <strong>Demonstration of orginality and relevancy with different theories/models.</strong>
+            <strong>
+              Demonstration of orginality and relevancy with different
+              theories/models.
+            </strong>
           </label>
           <TextField
             placeholder="Enter Demonstration here..."
@@ -30,25 +36,6 @@ const Template4 = () => {
             onChange={handleChange}
           />
         </div>
-      </div>
-
-      <div className="button-group" style={{ display: "flex", justifyContent: "center", gap: "1rem", marginTop: "20px" }}>
-        <Button
-          label="Reset"
-          onClick={() => setInputValue("")}
-          padding="10px 20px"
-          color="white"
-          fontSize="16px"
-          width="auto"
-        />
-        <Button
-          label="Save"
-          onClick={() => console.log("Saved Value:", inputValue)}
-          padding="10px 20px"
-          color="white"
-          fontSize="16px"
-          width="auto"
-        />
       </div>
     </div>
   );

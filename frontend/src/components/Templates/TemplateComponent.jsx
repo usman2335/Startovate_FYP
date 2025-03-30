@@ -3,6 +3,7 @@ import templateMapping from "../../content/templateMapping";
 import Button from "../Button";
 import { saveTemplates } from "../../utils/api";
 import axios from "axios";
+import "../../CSS/TemplateComponent.css";
 
 const TemplateComponent = ({ templateKey, canvasId }) => {
   const DynamicComponent =
@@ -51,22 +52,22 @@ const TemplateComponent = ({ templateKey, canvasId }) => {
   return (
     <>
       <DynamicComponent answers={answers} onInputChange={handleInputChange} />
-      <div className="tem1-button-group">
+      <div className="tem-button-group">
         <Button
           label="Reset"
           onClick={() => {}}
-          padding="10px 20px"
+          padding="10px 10px"
           color="white"
           fontSize="16px"
-          width="auto"
+          width="50%"
           marginTop="10px"
         />
         <Button
           label="Save"
-          padding="10px 20px"
+          padding="10px 10px"
           color="white"
           fontSize="16px"
-          width="auto"
+          width="50%"
           marginTop="10px"
           onClick={handleSave}
         />

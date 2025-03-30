@@ -1,5 +1,5 @@
 .container {
-  margin: 6% auto;
+  /* margin: 6% auto; */
   background: white;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -15,7 +15,8 @@
 
 /* Header Styling */
 .header {
-  background-color: rgb(234, 157, 157);
+  background-color: rgb(233, 85, 90);
+
   color: white;
   text-align: center;
   font-size: 20px;

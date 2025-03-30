@@ -46,35 +46,6 @@ const Template2 = () => {
           />
         </div>
       </div>
-
-      <div
-        className="template-button-group"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          gap: "1rem",
-          marginTop: "1rem",
-        }}
-      >
-        <Button
-          label="Reset"
-          onClick={() => {}}
-          padding="10px 20px"
-          color="white"
-          fontSize="16px"
-          width="auto"
-          marginTop="10px"
-        />
-        <Button
-          label="Save"
-          onClick={() => {}}
-          padding="10px 20px"
-          color="white"
-          fontSize="16px"
-          width="auto"
-          marginTop="10px"
-        />
-      </div>
     </div>
   );
 };

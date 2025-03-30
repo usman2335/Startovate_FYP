@@ -1,5 +1,5 @@
 .container {
-  margin: 6% auto;
+  /* margin: 6% auto; */
   background: white;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -17,7 +17,7 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 80%;
   padding: 20px;
-  
+
   /* Flex column layout to stack heading and TextField */
   display: flex;
   flex-direction: column; /* Stack items vertically */
@@ -28,14 +28,14 @@
 }
 
 /* Individual Column Styling */
-.column {
+/* .column {
   background: rgb(250, 240, 240);
   border-radius: 10px;
   padding: 20px;
   width: 30%;
   min-height: 200px;
   text-align: center;
-}
+} */
 
 /* Override Global Input/Textarea Styling for MUI TextField */
 /* .MuiTextField-root {
@@ -54,7 +54,7 @@
 .solution-box .MuiTextField-root,
 .context-box .MuiTextField-root {
   width: 80% !important;
-} */ */
+} */
 
 /* Responsive Design */
 /* @media (max-width: 768px) {

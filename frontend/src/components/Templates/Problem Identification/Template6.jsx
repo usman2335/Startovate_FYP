@@ -22,25 +22,32 @@ const ProblemInvestigation = () => {
       <Box
         component="form"
         sx={{
-          "& > :not(style)": { m: 1, width: "50%" },
           display: "flex",
+          width: "100%",
+          gap: "10px",
         }}
         noValidate
         autoComplete="off"
       >
-        <TextField id="outlined-basic" label="Name" variant="outlined" />
+        <TextField
+          id="outlined-basic"
+          label="Name"
+          variant="outlined"
+          fullWidth
+        />
         <TextField
           id="outlined-basic"
           label="Institutional Association"
           variant="outlined"
+          fullWidth
         />
       </Box>
 
       <Box
         component="form"
         sx={{
-          "& > :not(style)": { m: 1, width: "100%" },
           display: "flex",
+          width: "100%",
         }}
         noValidate
         autoComplete="off"
@@ -49,13 +56,14 @@ const ProblemInvestigation = () => {
           id="outlined-basic"
           label="Research Expertise"
           variant="outlined"
+          fullWidth
         />
       </Box>
 
       <Box
         component="form"
         sx={{
-          "& > :not(style)": { m: 1, width: "100%" },
+          width: "100%",
           display: "flex",
         }}
         noValidate
@@ -65,14 +73,14 @@ const ProblemInvestigation = () => {
           id="outlined-basic"
           label="Objective of conducting research"
           variant="outlined"
+          fullWidth
         />
       </Box>
       <Box
         component="form"
         sx={{
-          "& .MuiTextField-root": { m: 1, width: "100%" },
           display: "flex",
-          //width: "100%", // Ensures the Box takes full width
+          width: "100%",
         }}
         noValidate
         autoComplete="off"
@@ -81,15 +89,14 @@ const ProblemInvestigation = () => {
           id="outlined-textarea"
           label="Two Minute Story"
           multiline
-          // fullWidth // Ensures TextField takes full width
+          fullWidth
         />
       </Box>
       <Box
         component="form"
         sx={{
-          "& .MuiTextField-root": { m: 1, width: "100%" },
           display: "flex",
-          width: "100%", // Ensures the Box takes full width
+          width: "100%",
         }}
         noValidate
         autoComplete="off"
@@ -98,7 +105,7 @@ const ProblemInvestigation = () => {
           id="outlined-textarea"
           label="What is required from this interview?"
           multiline
-          fullWidth // Ensures TextField takes full width
+          fullWidth
         />
       </Box>
 
@@ -106,10 +113,10 @@ const ProblemInvestigation = () => {
       <Box
         component="form"
         sx={{
-          "& .MuiTextField-root": { m: 1, width: "100%" },
           display: "flex",
-          flexDirection: "column", // Stack elements vertically
-          //width: "100%", // Ensures the Box takes full width
+          flexDirection: "column",
+          gap: "10px",
+          width: "100%",
         }}
         noValidate
         autoComplete="off"
@@ -132,8 +139,8 @@ const ProblemInvestigation = () => {
       <Box
         component="form"
         sx={{
-          "& > :not(style)": { m: 1, width: "100%" },
           display: "flex",
+          width: "100%",
         }}
         noValidate
         autoComplete="off"
@@ -153,8 +160,8 @@ const ProblemInvestigation = () => {
       <Box
         component="form"
         sx={{
-          "& > :not(style)": { m: 1, width: "100%" },
           display: "flex",
+          width: "100%",
         }}
         noValidate
         autoComplete="off"
@@ -166,7 +173,7 @@ const ProblemInvestigation = () => {
         <table>
           <thead>
             <tr>
-              <th colSpan="6" className="table-title">
+              <th colSpan="6">
                 Intensity of Problems (To be asked by Stakeholders)
               </th>
             </tr>
@@ -183,11 +190,7 @@ const ProblemInvestigation = () => {
                 <td>{problem.id}</td>
                 <td>{problem.label}</td>
                 <td>
-                  <input
-                    type="text"
-                    className="input-box"
-                    placeholder="Enter details..."
-                  />
+                  <TextField multiline fullWidth minRows={1} />
                 </td>
                 <td>
                   <label>
@@ -229,8 +232,8 @@ const ProblemInvestigation = () => {
             <tr>
               <th>No.</th>
               <th>Problems</th>
-              <th>Detail of Problems</th>
-              <th>
+              <th colSpan="1">Detail of Problems</th>
+              <th colSpan="5">
                 Rank on Emergency Scale (1 - Not Crucial, 10 - Must Solve Now)
               </th>
             </tr>
@@ -240,9 +243,9 @@ const ProblemInvestigation = () => {
               <tr key={problem.id}>
                 <td>{problem.id}</td>
                 <td>{problem.label}</td>
-                <td>
-                  <input
-                    type="text"
+                <td colSpan="1">
+                  <TextField
+                    size="small"
                     className="input-box"
                     placeholder="Enter details..."
                   />
@@ -277,8 +280,8 @@ const ProblemInvestigation = () => {
       <Box
         component="form"
         sx={{
-          "& > :not(style)": { m: 1, width: "100%" },
           display: "flex",
+          width: "100%",
         }}
         noValidate
         autoComplete="off"

@@ -38,12 +38,18 @@ const Template1 = () => {
   ];
 
   return (
-    <div className="template-container" style={{ maxWidth: "90%", margin: "0 auto" }}>
+    <div
+      className="template-container"
+      style={{ maxWidth: "90%", margin: "0 auto" }}
+    >
       <p className="template-description">
         <strong>LCI Template XX</strong>
       </p>
 
-      <div className="template-form" style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <div
+        className="template-form"
+        style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+      >
         <div className="template-column" style={{ flex: "1" }}>
           <label className="template-label" htmlFor="ProblemStatment-textarea">
             <strong>Problem Statement Derived</strong>
@@ -65,7 +71,8 @@ const Template1 = () => {
               <TableRow>
                 <TableCell
                   sx={{
-                    background: "linear-gradient(90deg, #ed2567 0%, #ee343b 100%)",
+                    background:
+                      "linear-gradient(90deg, #ed2567 0%, #ee343b 100%)",
                     color: "white",
                   }}
                 >
@@ -76,7 +83,8 @@ const Template1 = () => {
                     key={index}
                     align="center"
                     sx={{
-                      background: "linear-gradient(90deg, #ed2567 0%, #ee343b 100%)",
+                      background:
+                        "linear-gradient(90deg, #ed2567 0%, #ee343b 100%)",
                       color: "white",
                     }}
                   >
@@ -105,27 +113,6 @@ const Template1 = () => {
             </TableBody>
           </Table>
         </TableContainer>
-
-        <div className="template-button-group" style={{ display: "flex", justifyContent: "center", gap: "1rem", marginTop: "1rem" }}>
-          <Button
-            label="Reset"
-            onClick={() => {}}
-            padding="10px 20px"
-            color="white"
-            fontSize="16px"
-            width="auto"
-            marginTop="10px"
-          />
-          <Button
-            label="Save"
-            onClick={() => {}}
-            padding="10px 20px"
-            color="white"
-            fontSize="16px"
-            width="auto"
-            marginTop="10px"
-          />
-        </div>
       </div>
     </div>
   );

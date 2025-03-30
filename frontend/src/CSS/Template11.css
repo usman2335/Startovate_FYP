@@ -1,5 +1,5 @@
 .container {
-  margin: 6% auto;
+  /* margin: 6% auto; */
   background: white;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -15,17 +15,11 @@
 
 /* Header styling */
 .header {
-  /* background-color: black;
-  color: white;
-  text-align: center;
-  padding: 10px;
-  font-size: 18px;
-  font-weight: bold; */
-  background: rgb(237, 183, 183);
+  background-color: rgb(233, 85, 90);
   font-weight: bold;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 80%;
+  width: 100%;
   padding: 20px;
   display: flex;
   justify-content: center;
@@ -65,9 +59,4 @@
   border: 1px solid #ddd;
   padding: 10px;
   text-align: left;
-}
-
-.table th {
-  background-color: #f0f0f0;
-  font-weight: bold;
 }

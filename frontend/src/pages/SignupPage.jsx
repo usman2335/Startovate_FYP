@@ -182,7 +182,7 @@ const SignupPage = () => {
           />
         </form>
 
-        <p>
+        <p style={{ marginTop: "3%" }}>
           Already have an account? <a href="/login">Login</a>
         </p>
       </div>

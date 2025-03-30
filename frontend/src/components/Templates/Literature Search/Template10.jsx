@@ -14,6 +14,7 @@ const Template10 = () => {
           id="unique-textfield"
           multiline
           className="unique-textfield"
+          placeholder="Enter text here..."
         />
       </div>
     </div>

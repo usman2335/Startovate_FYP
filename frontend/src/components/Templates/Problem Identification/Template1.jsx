@@ -51,30 +51,6 @@ const Template1 = () => {
           </div>
         ))}
       </div>
-
-      <div
-        className="tem1-button-group"
-        style={{ flexDirection: isSmallScreen ? "column" : "row" }}
-      >
-        <Button
-          label="Reset"
-          onClick={() => {}}
-          padding="10px 20px"
-          color="white"
-          fontSize="16px"
-          width={isSmallScreen ? "100%" : "auto"}
-          marginTop="10px"
-        />
-        <Button
-          label="Save"
-          onClick={() => {}}
-          padding="10px 20px"
-          color="white"
-          fontSize="16px"
-          width={isSmallScreen ? "100%" : "auto"}
-          marginTop="10px"
-        />
-      </div>
     </div>
   );
 };

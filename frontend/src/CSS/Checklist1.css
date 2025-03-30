@@ -4,14 +4,14 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* margin-top: 10%; */
+  margin-top: 1%;
 }
 .checklist-box {
   padding: 20px;
   background: white;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 50%;
+  width: 100%;
   /* max-width: 600px; */
   /* margin: auto; */
 }
@@ -107,7 +107,7 @@
 .step-description {
   color: gray;
   font-size: 1em;
-  padding-right: 3%;
+  width: 100%;
 }
 
 .step-button {

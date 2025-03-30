@@ -11,9 +11,17 @@ const Template7 = () => {
   };
 
   return (
-    <div className="container" style={{ maxWidth: "800px", margin: "0 auto", padding: "20px" }}>
+    <div
+      className="container"
+      style={{ maxWidth: "800px", margin: "0 auto", padding: "20px" }}
+    >
       <p className="description" style={{ textAlign: "center" }}>
-        <strong>Supportive Associations/ Foundations/ Standards/ Regulations</strong> e.g., Food and Drug Administration, Federal Communications Commission, Federal Energy Regulatory Commission, Federal Trade Commission, IEEE Standards Committees etc.
+        <strong>
+          Supportive Associations/ Foundations/ Standards/ Regulations
+        </strong>{" "}
+        e.g., Food and Drug Administration, Federal Communications Commission,
+        Federal Energy Regulatory Commission, Federal Trade Commission, IEEE
+        Standards Committees etc.
       </p>
 
       <div className="form-container" style={{ marginBottom: "20px" }}>
@@ -30,27 +38,6 @@ const Template7 = () => {
             onChange={handleChange}
           />
         </div>
-      </div>
-
-      <div className="button-group" style={{ display: "flex", justifyContent: "center", gap: "20px" }}>
-        <Button
-          label="Reset"
-          onClick={() => setInputValue("")}
-          padding="10px 20px"
-          color="white"
-          fontSize="16px"
-          width="auto"
-          marginTop="10px"
-        />
-        <Button
-          label="Save"
-          onClick={() => console.log("Saved Value:", inputValue)}
-          padding="10px 20px"
-          color="white"
-          fontSize="16px"
-          width="auto"
-          marginTop="10px"
-        />
       </div>
     </div>
   );

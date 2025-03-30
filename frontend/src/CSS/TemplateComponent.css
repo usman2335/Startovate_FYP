@@ -1,0 +1,5 @@
+.tem-button-group {
+  width: 30%;
+  display: flex;
+  gap: 10px;
+}

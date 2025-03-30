@@ -1,7 +1,7 @@
 import React from "react";
 
 const Template13 = () => {
-  return <div></div>;
+  return <div> Tepmlate 13</div>;
 };
 
 export default Template13;
