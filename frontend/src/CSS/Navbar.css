@@ -5,8 +5,6 @@ body {
   /* padding: 1%; */
 }
 .wrapper {
-  /* padding: 1% 5% 0% 5%; */
-  /* margin: 5%; */
   padding: 0 10%;
   padding-top: 1%;
   width: 100%;
@@ -30,8 +28,13 @@ body {
   justify-content: space-between;
 }
 .nav-links {
+  width: 50%;
   gap: 50px;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
 }
 .nav-links a:hover {
   transition: 0.1s;
@@ -64,7 +67,8 @@ body {
 }
 
 .login-signup-btns {
-  gap: 30px;
+  /* width: 15%; */
+  gap: 5px;
   position: relative;
-  right: 5%;
+  /* right: 5%; */
 }

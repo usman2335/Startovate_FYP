@@ -8,6 +8,7 @@ import { Breadcrumbs, Link, Typography } from "@mui/material";
 import Checklist from "../components/Checklist1";
 import TemplateComponent from "../components/Templates/TemplateComponent";
 import checklistData from "../content/checklistData";
+import axios from "axios";
 
 const CanvasPage = () => {
   const [view, setView] = useState("initial");
@@ -18,23 +19,54 @@ const CanvasPage = () => {
   const [selectedComponent, setSelectedComponent] = useState(null);
   const [selectedChecklistPoint, setSelectedChecklistPoint] = useState(null);
   const [templateKey, setTemplateKey] = useState(null);
+  const [canvasId, setCanvasId] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  if (selectedChecklistPoint) {
+    console.log(selectedChecklistPoint.id);
+  }
 
   useEffect(() => {
-    console.log("View updated:", view);
-    console.log("Component updated:", selectedComponent);
-    console.log("ChecklistPoint updated:", selectedChecklistPoint);
-  }, [view]);
+    const fetchCanvas = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/api/canvas/getCanvas",
+          { withCredentials: true }
+        );
+        console.log("user is found in canvas");
+        setResearchTitle(response.data.researchTitle);
+        setAuthorName(response.data.authorName);
+        setCanvasId(response.data._id);
+        setView("canvas");
+        console.log("response is:", response);
+      } catch (error) {
+        console.log("No existing canvas found");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchCanvas();
+  }, []);
 
   const handleCreateClick = () => {
     setClicked(true);
     setShowModal(true);
   };
 
-  const handleSaveCanvas = (title, author) => {
-    setShowModal(false);
-    setView("canvas");
-    setResearchTitle(title);
-    setAuthorName(author);
+  const handleSaveCanvas = async (title, author) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/canvas/createCanvas",
+        { researchTitle: title, authorName: author },
+        { withCredentials: true }
+      );
+      setShowModal(false);
+      setView("canvas");
+      setResearchTitle(title);
+      setAuthorName(author);
+      setCanvasId(response.data._id);
+    } catch (error) {
+      console.error("Error creating canvas", error);
+    }
   };
 
   const goBack = () => {
@@ -54,7 +86,7 @@ const CanvasPage = () => {
     setView("checklist");
   };
 
-  const handleChecklistPointClick = (pointId) => {
+  const handleChecklistPointClick = async (pointId) => {
     // Find the correct checklist category
     const checklistCategory = checklistData[selectedComponent];
 
@@ -66,13 +98,26 @@ const CanvasPage = () => {
 
       if (selectedPoint) {
         setSelectedChecklistPoint(selectedPoint);
-
-        // Dynamically set the template key (assuming templates follow a naming pattern)
         const templateKeyString = `${selectedComponent.replace(
           /\s+/g,
           ""
         )}-Step${selectedPoint.id}`;
         setTemplateKey(templateKeyString);
+        // try {
+        //   const response = await axios.post(
+        //     "http://localhost:5000/api/template/start",
+        //     {
+        //       canvasId,
+        //       templateId: templateKeyString,
+        //       componentName: selectedComponent,
+        //       checklistStep: selectedPoint.id,
+        //     },
+        //     { withCredentials: true }
+        //   );
+        //   console.log("Template fetched/created:", response.data.template);
+        // } catch (error) {
+        //   console.error("Error fetching/creating template:", error);
+        // }
 
         setView("template");
       } else {
@@ -82,6 +127,29 @@ const CanvasPage = () => {
       console.error("Checklist category not found");
     }
   };
+  useEffect(() => {
+    if (selectedChecklistPoint && templateKey) {
+      console.log("Selected Checklist Point Updated:", selectedChecklistPoint);
+
+      axios
+        .post(
+          "http://localhost:5000/api/template/start",
+          {
+            canvasId,
+            templateId: templateKey,
+            componentName: selectedComponent,
+            checklistStep: selectedChecklistPoint.id,
+          },
+          { withCredentials: true }
+        )
+        .then((response) => {
+          console.log("Template fetched/created:", response.data.template);
+        })
+        .catch((error) => {
+          console.error("Error fetching/creating template:", error);
+        });
+    }
+  }, [selectedChecklistPoint, templateKey, canvasId]);
   return (
     <>
       <Navbar></Navbar>
@@ -141,7 +209,6 @@ const CanvasPage = () => {
                   color="#f1f1f1"
                   fontSize={"1.1em"}
                   label="<- Go Back"
-                  onClick={goBack}
                   className="go-back-btn"
                 />
                 <div className="canvas-heading">
@@ -321,7 +388,11 @@ const CanvasPage = () => {
                 </Typography>
               </div>
             </div>
-            <TemplateComponent templateKey={templateKey} />
+            <TemplateComponent
+              templateKey={templateKey}
+              canvasId={canvasId}
+              // templateId={templateKey}
+            />
           </div>
         )}
       </div>

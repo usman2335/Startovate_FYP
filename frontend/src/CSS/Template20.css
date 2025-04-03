@@ -1,0 +1,74 @@
+.container {
+  /* margin: 6% auto; */
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* Header Styling */
+.header {
+  background-color: rgb(233, 85, 90);
+
+  color: white;
+  text-align: center;
+  font-size: 20px;
+  padding: 12px;
+  font-weight: bold;
+}
+
+/* CAGR Container */
+.cagr-container {
+  display: flex;
+  align-items: center;
+  background-color: #dc4c64;
+  padding: 10px;
+  margin-top: 10px;
+  width: 90%;
+  border-radius: 10px;
+}
+
+.cagr-label {
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+/* Table Styling */
+/* .table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+} */
+
+/* Table Headers */
+/* th {
+  padding: 10px;
+  border: 1px solid #ddd;
+  background-color: #d3d3d3;
+  text-align: center;
+  font-weight: bold;
+} */
+
+/* Table Cells */
+/* td {
+  padding: 8px;
+  border: 1px solid #ddd;
+  text-align: center;
+} */
+
+/* Input Styling */
+/* .input-box {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  border: none;
+  outline: none;
+} */
