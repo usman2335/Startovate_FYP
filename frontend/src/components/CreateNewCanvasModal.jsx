@@ -8,7 +8,7 @@ const CreateNewCanvasModal = ({ open, handleClose, handleSave }) => {
   const [authorName, setAuthorName] = useState("");
   const handleSaveClick = () => {
     if (researchTitle.trim() && authorName.trim()) {
-      handleSave(researchTitle, authorName); // Close modal & unblur Lean Canvas
+      handleSave(researchTitle, authorName);
     } else {
       alert("Fields are empty.");
     }
