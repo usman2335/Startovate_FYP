@@ -4,7 +4,7 @@ import Button from "../../Button";
 import "../../../CSS/Template1.css";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-const Template1 = () => {
+const Template1 = ({ answers, onInputChange }) => {
   const isSmallScreen = useMediaQuery("(max-width:600px)");
 
   return (
@@ -32,6 +32,8 @@ const Template1 = () => {
                 variant="outlined"
                 fullWidth
                 height="20px"
+                onChange={(e) => onInputChange(e, `why_${index}`)}
+                value={answers?.[`why_${index}`] || ""}
               />
             </div>
             <div className="tem1-column" style={{ width: "100%" }}>
@@ -46,6 +48,8 @@ const Template1 = () => {
                 size="small"
                 variant="outlined"
                 fullWidth
+                onChange={(e) => onInputChange(e, `references_${index}`)}
+                value={answers?.[`references_${index}`] || ""}
               />
             </div>
           </div>

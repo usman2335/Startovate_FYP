@@ -4,6 +4,7 @@ import Button from "../Button";
 import { saveTemplates } from "../../utils/api";
 import axios from "axios";
 import "../../CSS/TemplateComponent.css";
+import { Snackbar } from "@mui/material";
 
 const TemplateComponent = ({ templateKey, canvasId }) => {
   const DynamicComponent =
@@ -11,6 +12,7 @@ const TemplateComponent = ({ templateKey, canvasId }) => {
     templateMapping["ProblemIdentification-Step1"];
 
   const [answers, setAnswers] = useState({});
+  const [snackBarOpen, setSnackBarOpen] = useState(false);
 
   const handleInputChange = (e, field) => {
     setAnswers((prev) => ({ ...prev, [field]: e.target.value }));
@@ -19,10 +21,13 @@ const TemplateComponent = ({ templateKey, canvasId }) => {
   const handleSave = async () => {
     try {
       await saveTemplates(canvasId, templateKey, answers);
-      alert("Answers saved successfully!");
+      setSnackBarOpen(true);
     } catch (error) {
       alert("Failed to save answers.");
     }
+  };
+  const handleClose = () => {
+    setSnackBarOpen(false);
   };
   console.log("Passing Props:", { canvasId, templateKey });
   useEffect(() => {
@@ -72,6 +77,13 @@ const TemplateComponent = ({ templateKey, canvasId }) => {
           onClick={handleSave}
         />
       </div>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={snackBarOpen}
+        onClose={handleClose}
+        message="Template saved successfully"
+        // key={vertical + horizontal}
+      />
     </>
   );
 };
