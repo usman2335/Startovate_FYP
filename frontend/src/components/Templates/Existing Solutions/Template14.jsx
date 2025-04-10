@@ -2,7 +2,7 @@ import React from "react";
 import TextField from "@mui/material/TextField";
 import "../../../CSS/Template11.css";
 
-const Template14 = () => {
+const Template14 = ({ answers, onInputChange }) => {
   return (
     <div className="container">
       {/* Header Section */}
@@ -14,7 +14,13 @@ const Template14 = () => {
       {/* Search Bar Section */}
       <div className="search-container">
         <span className="search-label">Keywords:</span>
-        <TextField id="outlined-search" type="search" fullWidth />
+        <TextField
+          id="outlined-search"
+          type="search"
+          fullWidth
+          value={answers?.[`keywords_`] || ""}
+          onChange={(e) => onInputChange(e, `keywords_`)}
+        />
       </div>
 
       {/* Table Section */}
@@ -37,10 +43,22 @@ const Template14 = () => {
             <tr key={index}>
               <td>{index + 1}</td> {/* Automatically fills No. column */}
               <td>
-                <input type="text" className="input-box" />
+                <input
+                  type="text"
+                  className="input-box"
+                  value={answers?.[`existingSolutions_${index}`] || ""}
+                  onChange={(e) =>
+                    onInputChange(e, `existingSolutions_${index}`)
+                  }
+                />
               </td>
               <td>
-                <input type="text" className="input-box" />
+                <input
+                  type="text"
+                  className="input-box"
+                  value={answers?.[`featuresOffered_${index}`] || ""}
+                  onChange={(e) => onInputChange(e, `featuresOffered_${index}`)}
+                />
               </td>
             </tr>
           ))}

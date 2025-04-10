@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../../../CSS/Template2.css";
 import Button from "../../Button";
 import {
@@ -11,11 +11,11 @@ import {
   TableRow,
   Paper,
   Radio,
-  RadioGroup,
   FormControlLabel,
+  Box,
 } from "@mui/material";
 
-const Template1 = () => {
+const Template1 = ({ answers, onInputChange }) => {
   const criteria = [
     "Feasible",
     "Does Academic Inventor possess enough capability to investigate the MVRq?",
@@ -37,6 +37,15 @@ const Template1 = () => {
     "5 - Strongly Agree",
   ];
 
+  const [selections, setSelections] = useState({});
+
+  const handleRadioClick = (criterionIndex, optionIndex) => {
+    const key = `criterion_${criterionIndex}`;
+    const current = answers?.[key];
+    const newValue = current === optionIndex ? null : optionIndex;
+    onInputChange({ target: { value: newValue } }, key);
+  };
+
   return (
     <div
       className="template-container"
@@ -50,6 +59,7 @@ const Template1 = () => {
         className="template-form"
         style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
       >
+        {/* Problem Statement */}
         <div className="template-column" style={{ flex: "1" }}>
           <label className="template-label" htmlFor="ProblemStatment-textarea">
             <strong>Problem Statement Derived</strong>
@@ -61,10 +71,12 @@ const Template1 = () => {
             variant="outlined"
             fullWidth
             sx={{ backgroundColor: "#fff" }}
+            value={answers?.[`problemStatement_`] || ""}
+            onChange={(e) => onInputChange(e, `problemStatement_`)}
           />
         </div>
 
-        {/* Selection Box Table */}
+        {/* Selection Table */}
         <TableContainer component={Paper} style={{ marginTop: "2rem" }}>
           <Table>
             <TableHead>
@@ -74,6 +86,9 @@ const Template1 = () => {
                     background:
                       "linear-gradient(90deg, #ed2567 0%, #ee343b 100%)",
                     color: "white",
+                    fontWeight: "bold",
+                    width: "30%",
+                    minWidth: "200px",
                   }}
                 >
                   Elements
@@ -86,6 +101,9 @@ const Template1 = () => {
                       background:
                         "linear-gradient(90deg, #ed2567 0%, #ee343b 100%)",
                       color: "white",
+                      fontWeight: "bold",
+                      width: `${70 / options.length}%`,
+                      minWidth: "100px",
                     }}
                   >
                     {option}
@@ -93,23 +111,48 @@ const Template1 = () => {
                 ))}
               </TableRow>
             </TableHead>
+
             <TableBody>
-              {criteria.map((criterion, index) => (
-                <TableRow key={index}>
-                  <TableCell>{criterion}</TableCell>
-                  {options.map((_, optionIndex) => (
-                    <TableCell key={optionIndex} align="center">
-                      <RadioGroup row name={`criterion-${index}`}>
-                        <FormControlLabel
-                          value={optionIndex + 1}
-                          control={<Radio />}
-                          label=""
-                        />
-                      </RadioGroup>
+              {criteria.map((criterion, criterionIndex) => {
+                const selectedOption = answers?.[`criterion_${criterionIndex}`];
+                return (
+                  <TableRow key={criterionIndex}>
+                    <TableCell
+                      sx={{
+                        padding: "12px",
+                        fontWeight: "bold",
+                        verticalAlign: "middle",
+                      }}
+                    >
+                      {criterion}
                     </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+                    {options.map((_, optionIndex) => (
+                      <TableCell key={optionIndex} align="center">
+                        <Box
+                          display="flex"
+                          justifyContent="center"
+                          alignItems="center"
+                          height="100%"
+                          minHeight="50px"
+                          ml={3}
+                        >
+                          <FormControlLabel
+                            control={
+                              <Radio
+                                checked={selectedOption === optionIndex}
+                                onClick={() =>
+                                  handleRadioClick(criterionIndex, optionIndex)
+                                }
+                              />
+                            }
+                            label=""
+                          />
+                        </Box>
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>
@@ -117,5 +160,4 @@ const Template1 = () => {
     </div>
   );
 };
-
 export default Template1;

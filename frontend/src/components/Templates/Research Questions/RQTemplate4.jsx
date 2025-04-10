@@ -3,7 +3,7 @@ import "../../../CSS/Template3.css";
 import Button from "../../Button";
 import { TextField } from "@mui/material";
 
-const Template4 = () => {
+const Template4 = ({ answers, onInputChange }) => {
   const [inputValue, setInputValue] = useState("");
 
   const handleChange = (event) => {
@@ -32,8 +32,8 @@ const Template4 = () => {
             multiline
             fullWidth
             variant="outlined"
-            value={inputValue}
-            onChange={handleChange}
+            value={answers?.[`demonstration_`] || ""}
+            onChange={(e) => onInputChange(e, `demonstration_`)}
           />
         </div>
       </div>

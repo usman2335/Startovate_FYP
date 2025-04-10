@@ -1,7 +1,7 @@
 import React from "react";
 import TextField from "@mui/material/TextField";
 import "../../../CSS/Template26.css";
-const Template26 = () => {
+const Template26 = ({ answers, onInputChange }) => {
   return (
     <div className="container">
       <div className="header">
@@ -17,6 +17,8 @@ const Template26 = () => {
           placeholder="Enter Here ..."
           multiline
           className="unique-textfield"
+          value={answers?.[`probability_]`] || ""}
+          onChange={(e) => onInputChange(e, `probability_]`)}
         />
       </div>
       <div className="header">
@@ -31,6 +33,8 @@ const Template26 = () => {
           placeholder="Enter Here ..."
           multiline
           className="unique-textfield"
+          value={answers?.[`pay_`] || ""}
+          onChange={(e) => onInputChange(e, `pay_`)}
         />
       </div>
     </div>

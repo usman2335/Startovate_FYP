@@ -2,7 +2,7 @@ import React from "react";
 import TextField from "@mui/material/TextField";
 import "../../../CSS/Template23.css";
 
-const Template23 = () => {
+const Template23 = ({ answers, onInputChange }) => {
   return (
     <div className="container">
       <div className="header">
@@ -17,6 +17,8 @@ const Template23 = () => {
           placeholder="Enter Here ..."
           multiline
           className="unique-textfield"
+          value={answers?.[`identification_`] || ""}
+          onChange={(e) => onInputChange(e, `identification_`)}
         />
       </div>
     </div>
