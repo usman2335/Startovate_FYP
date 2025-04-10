@@ -3,13 +3,7 @@ import "../../../CSS/Template7.css";
 import Button from "../../Button";
 import { TextField } from "@mui/material";
 
-const Template7 = () => {
-  const [inputValue, setInputValue] = useState("");
-
-  const handleChange = (event) => {
-    setInputValue(event.target.value);
-  };
-
+const Template7 = ({ answers, onInputChange }) => {
   return (
     <div
       className="container"
@@ -34,8 +28,8 @@ const Template7 = () => {
             multiline
             fullWidth
             variant="outlined"
-            value={inputValue}
-            onChange={handleChange}
+            value={answers?.[`committees_`] || ""}
+            onChange={(e) => onInputChange(e, `committees_`)}
           />
         </div>
       </div>
