@@ -2,7 +2,7 @@ import React from "react";
 import TextField from "@mui/material/TextField";
 import "../../../CSS/Template19.css";
 
-const Template19 = () => {
+const Template19 = ({ answers, onInputChange }) => {
   return (
     <div className="container">
       <h4>
@@ -14,6 +14,8 @@ const Template19 = () => {
           id="unique-textfield"
           multiline
           className="unique-textfield"
+          value={answers?.[`justification_`] || ""}
+          onChange={(e) => onInputChange(e, `justification_`)}
         />
       </div>
     </div>

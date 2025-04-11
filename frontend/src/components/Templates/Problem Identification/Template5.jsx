@@ -28,12 +28,6 @@ const StakeholderMatrix = () => {
 
   return (
     <div className="matrix-container">
-      {/* Axis */}
-      <div className="axis">
-        <div className="x-axis"></div>
-        <div className="y-axis"></div>
-      </div>
-
       {/* Quadrants */}
       <div className="quadrant q1" style={{ top: "5%", left: "5%" }}>
         <div className="quadrant-title">High Interest, Low Influence</div>

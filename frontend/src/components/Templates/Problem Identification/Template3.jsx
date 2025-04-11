@@ -1,15 +1,9 @@
 import React, { useState } from "react";
 import "../../../CSS/Template3.css";
-import Button from "../../Button";
+
 import { TextField } from "@mui/material";
 
-const Template3 = () => {
-  const [inputValue, setInputValue] = useState("");
-
-  const handleChange = (event) => {
-    setInputValue(event.target.value);
-  };
-
+const Template3 = ({ answers, onInputChange }) => {
   return (
     <div className="container" style={{ maxWidth: "90%", margin: "0 auto" }}>
       <p className="description" style={{ textAlign: "center" }}>
@@ -30,10 +24,10 @@ const Template3 = () => {
             multiline
             fullWidth
             variant="outlined"
-            value={inputValue}
-            onChange={handleChange}
             minRows={2}
             sx={{ backgroundColor: "#fff" }}
+            value={answers?.[`motivation_`] || ""}
+            onChange={(e) => onInputChange(e, `motivation_`)}
           />
         </div>
       </div>

@@ -13,7 +13,7 @@ const problems = [
   { id: 8, label: "*PAC 5" },
 ];
 
-const ProblemInvestigation = () => {
+const ProblemInvestigation = ({ answers, onInputChange }) => {
   return (
     <div className="container">
       <h2>Problem Investigation Script</h2>
@@ -34,12 +34,16 @@ const ProblemInvestigation = () => {
           label="Name"
           variant="outlined"
           fullWidth
+          value={answers?.[`name_`] || ""}
+          onChange={(e) => onInputChange(e, `name_`)}
         />
         <TextField
           id="outlined-basic"
           label="Institutional Association"
           variant="outlined"
           fullWidth
+          value={answers?.[`instAsso_`] || ""}
+          onChange={(e) => onInputChange(e, `instAsso_`)}
         />
       </Box>
 
@@ -57,6 +61,8 @@ const ProblemInvestigation = () => {
           label="Research Expertise"
           variant="outlined"
           fullWidth
+          value={answers?.[`resExp_`] || ""}
+          onChange={(e) => onInputChange(e, `resExp_`)}
         />
       </Box>
 
@@ -74,6 +80,8 @@ const ProblemInvestigation = () => {
           label="Objective of conducting research"
           variant="outlined"
           fullWidth
+          value={answers?.[`obj_`] || ""}
+          onChange={(e) => onInputChange(e, `obj_`)}
         />
       </Box>
       <Box
@@ -90,6 +98,8 @@ const ProblemInvestigation = () => {
           label="Two Minute Story"
           multiline
           fullWidth
+          value={answers?.[`twominstory_`] || ""}
+          onChange={(e) => onInputChange(e, `twominstory_`)}
         />
       </Box>
       <Box
@@ -106,6 +116,8 @@ const ProblemInvestigation = () => {
           label="What is required from this interview?"
           multiline
           fullWidth
+          value={answers?.[`whatIsRequired_`] || ""}
+          onChange={(e) => onInputChange(e, `whatIsRequired_`)}
         />
       </Box>
 
@@ -128,6 +140,8 @@ const ProblemInvestigation = () => {
             label={`Problem ${num}`}
             multiline
             fullWidth
+            onChange={(e) => onInputChange(e, `problem_${num}`)}
+            value={answers?.[`problem_${num}`] || ""}
           />
         ))}
       </Box>
@@ -145,7 +159,12 @@ const ProblemInvestigation = () => {
         noValidate
         autoComplete="off"
       >
-        <TextField multiline fullWidth />
+        <TextField
+          multiline
+          fullWidth
+          value={answers?.[`threeMainProblems_`] || ""}
+          onChange={(e) => onInputChange(e, `threeMainProblems_`)}
+        />
       </Box>
 
       <h5>
@@ -166,7 +185,12 @@ const ProblemInvestigation = () => {
         noValidate
         autoComplete="off"
       >
-        <TextField multiline fullWidth />
+        <TextField
+          multiline
+          fullWidth
+          value={answers?.[`limitations_`] || ""}
+          onChange={(e) => onInputChange(e, `limitations_`)}
+        />
       </Box>
 
       <div className="table-container">
@@ -190,21 +214,66 @@ const ProblemInvestigation = () => {
                 <td>{problem.id}</td>
                 <td>{problem.label}</td>
                 <td>
-                  <TextField multiline fullWidth minRows={1} />
+                  <TextField
+                    multiline
+                    fullWidth
+                    minRows={1}
+                    value={answers?.[`detail_${problem.id}`] || ""}
+                    onChange={(e) => onInputChange(e, `detail_${problem.id}`)}
+                  />
                 </td>
                 <td>
                   <label>
-                    <input type="checkbox" /> High
+                    <input
+                      type="checkbox"
+                      checked={
+                        answers?.[`intensity_high_${problem.id}`] || false
+                      }
+                      onChange={(e) =>
+                        onInputChange(
+                          e,
+                          `intensity_high_${problem.id}`,
+                          e.target.checked
+                        )
+                      }
+                    />
+                    High
                   </label>
                 </td>
                 <td>
                   <label>
-                    <input type="checkbox" /> Moderate
+                    <input
+                      type="checkbox"
+                      checked={
+                        answers?.[`intensity_moderate_${problem.id}`] || false
+                      }
+                      onChange={(e) =>
+                        onInputChange(
+                          e,
+                          `intensity_moderate_${problem.id}`,
+                          e.target.checked
+                        )
+                      }
+                    />{" "}
+                    Moderate
                   </label>
                 </td>
                 <td>
                   <label>
-                    <input type="checkbox" /> Low
+                    <input
+                      type="checkbox"
+                      checked={
+                        answers?.[`intensity_low_${problem.id}`] || false
+                      }
+                      onChange={(e) =>
+                        onInputChange(
+                          e,
+                          `intensity_low_${problem.id}`,
+                          e.target.checked
+                        )
+                      }
+                    />{" "}
+                    Low
                   </label>
                 </td>
               </tr>
@@ -248,6 +317,8 @@ const ProblemInvestigation = () => {
                     size="small"
                     className="input-box"
                     placeholder="Enter details..."
+                    value={answers?.[`detail_${problem.id}`] || ""}
+                    onChange={(e) => onInputChange(e, `detail_${problem.id}`)}
                   />
                 </td>
                 <td>
@@ -257,6 +328,8 @@ const ProblemInvestigation = () => {
                     min="1"
                     max="10"
                     placeholder="1-10"
+                    value={answers?.[`rank_${problem.id}`] || ""}
+                    onChange={(e) => onInputChange(e, `rank_${problem.id}`)}
                   />
                 </td>
               </tr>
@@ -286,133 +359,13 @@ const ProblemInvestigation = () => {
         noValidate
         autoComplete="off"
       >
-        <TextField multiline fullWidth />
+        <TextField
+          multiline
+          fullWidth
+          value={answers?.[`standards_`] || ""}
+          onChange={(e) => onInputChange(e, `standards_`)}
+        />
       </Box>
-
-      {/* <div className="form-group">
-        <label>
-          1. What are three main problems stakeholders are facing? / What tasks
-          are difficult to achieve? Where changes are possible?
-        </label>
-        <textarea rows="3"></textarea>
-      </div> */}
-
-      {/* 
-      <div className="form-group">
-        <label>Research Expertise:</label>
-        <input type="text" />
-      </div>
-
-      <div className="form-group">
-        <label>Objective of conducting research:</label>
-        <input type="text" />
-      </div>
-
-      <div className="form-group">
-        <label>Two Minute Story:</label>
-        <textarea rows="3"></textarea>
-      </div>
-
-      <div className="form-group">
-        <label>What is required from this interview?</label>
-        <textarea rows="2"></textarea>
-      </div>
-
-      <div className="form-group">
-        <label>Why is it important to have this interview?</label>
-        <textarea rows="2"></textarea>
-      </div>
-
-      <h3>Problems Identified through 5 Whys Technique</h3>
-      {[1, 2, 3, 4, 5].map((num) => (
-        <div key={num} className="form-group">
-          <label>Problem {num}:</label>
-          <input type="text" />
-        </div>
-      ))}
-
-      <div className="form-group">
-        <label>
-          1. What are three main problems stakeholders are facing? / What tasks
-          are difficult to achieve? Where changes are possible?
-        </label>
-        <textarea rows="3"></textarea>
-      </div>
-
-      <h3>Stakeholder Discussion</h3>
-      <div className="form-group">
-        <label>
-          2. Share the already identified 5 problems with the stakeholders and
-          discuss these one by one?
-        </label>
-        <textarea rows="3"></textarea>
-      </div>
-
-      <h3>Intensity of Problems (To be asked by Stakeholders)</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>No.</th>
-            <th>Problems</th>
-            <th>Detail of Problems</th>
-            <th colSpan="3">Intensity of Problem</th>
-          </tr>
-        </thead>
-        <tbody>
-          {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
-            <tr key={num}>
-              <td>{num}</td>
-              <td>**PSKH {num}</td>
-              <td>
-                <input type="text" />
-              </td>
-              <td>
-                <input type="checkbox" /> High
-              </td>
-              <td>
-                <input type="checkbox" /> Moderate
-              </td>
-              <td>
-                <input type="checkbox" /> Low
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <h3>Rank Problems on Emergency Scale</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>No.</th>
-            <th>Problems</th>
-            <th>Detail of Problems</th>
-            <th>Rank on Emergency Scale (1 - Not Crucial, 10 - Must Solve Now)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
-            <tr key={num}>
-              <td>{num}</td>
-              <td>**PSKH {num}</td>
-              <td>
-                <input type="text" />
-              </td>
-              <td>
-                <input type="number" min="1" max="10" />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <div className="form-group">
-        <label>
-          3. What Standards and Regulations exist within the industry and what
-          impact do these involve on the real-world practical problem?
-        </label>
-        <textarea rows="3"></textarea>
-      </div> */}
     </div>
   );
 };

@@ -107,7 +107,11 @@ const CanvasPage = () => {
           const response = await axios.post(
             "http://localhost:5000/api/template/start",
             {
+<<<<<<< HEAD
               canvasI
+=======
+              canvasId,
+>>>>>>> b0dc6278558fe6ec8abee9f3aefd8425bbbb9512
               templateId: templateKeyString,
               componentName: selectedComponent,
               checklistStep: selectedPoint.id,
@@ -131,23 +135,23 @@ const CanvasPage = () => {
     if (selectedChecklistPoint && templateKey) {
       console.log("Selected Checklist Point Updated:", selectedChecklistPoint);
 
-      // axios
-      //   .post(
-      //     "http://localhost:5000/api/template/start",
-      //     {
-      //       canvasId,
-      //       templateId: templateKey,
-      //       componentName: selectedComponent,
-      //       checklistStep: selectedChecklistPoint.id,
-      //     },
-      //     { withCredentials: true }
-      //   )
-      //   .then((response) => {
-      //     console.log("Template fetched/created:", response.data.template);
-      //   })
-      //   .catch((error) => {
-      //     console.error("Error fetching/creating template:", error);
-      //   });
+      axios
+        .post(
+          "http://localhost:5000/api/template/start",
+          {
+            canvasId,
+            templateId: templateKey,
+            componentName: selectedComponent,
+            checklistStep: selectedChecklistPoint.id,
+          },
+          { withCredentials: true }
+        )
+        .then((response) => {
+          console.log("Template fetched/created:", response.data.template);
+        })
+        .catch((error) => {
+          console.error("Error fetching/creating template:", error);
+        });
     }
   }, [selectedChecklistPoint, templateKey, canvasId]);
   return (

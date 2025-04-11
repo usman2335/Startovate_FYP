@@ -2,7 +2,7 @@ import React from "react";
 import TextField from "@mui/material/TextField";
 import "../../../CSS/Template21.css";
 
-const Template21 = () => {
+const Template21 = ({ answers, onInputChange }) => {
   return (
     <div className="container">
       {/* Header Section */}
@@ -11,11 +11,18 @@ const Template21 = () => {
       </div>
 
       {/* CAGR Input Section */}
-      <div className="cagr-container21">
-        <span className="cagr-label21">
+      <div className="cagr-container">
+        <span className="cagr-label">
           <strong>Compound Annual Growth Rate (CAGR)</strong>
         </span>
-        <TextField id="cagr-input" variant="outlined" fullWidth />
+        <TextField
+          id="cagr-input"
+          variant="outlined"
+          fullWidth
+          className="bg-white"
+          value={answers?.[`CAGR_`] || ""}
+          onChange={(e) => onInputChange(e, `CAGR_`)}
+        />
       </div>
 
       {/* Table Section */}

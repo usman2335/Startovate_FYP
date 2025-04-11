@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import "../../../CSS/Template16.css";
 
-const Template16 = () => {
+const Template16 = ({ answers, onInputChange }) => {
   return (
     <div className="container">
       {/* Header Section */}
@@ -37,7 +37,14 @@ const Template16 = () => {
                   noValidate
                   autoComplete="off"
                 >
-                  <TextField id="outlined-basic" variant="outlined" />
+                  <TextField
+                    id="outlined-basic"
+                    variant="outlined"
+                    value={answers?.[`limitationsObserved_${index}`] || ""}
+                    onChange={(e) =>
+                      onInputChange(e, `limitationsObserved_${index}`)
+                    }
+                  />
                 </Box>
               </td>
             </tr>
