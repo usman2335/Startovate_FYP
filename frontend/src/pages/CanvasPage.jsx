@@ -53,25 +53,25 @@ const CanvasPage = () => {
   };
 
   const handleSaveCanvas = async (title, author) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/api/canvas/createCanvas",
-        { researchTitle: title, authorName: author },
-        { withCredentials: true }
-      );
-      const response = await axios.post(
-        "http://localhost:5000/api/canvas/createCanvas",
-        { researchTitle: title, authorName: author },
-        { withCredentials: true }
-      );
-      setShowModal(false);
-      setView("canvas");
-      setResearchTitle(title);
-      setAuthorName(author);
-      setCanvasId(response.data._id);
-    } catch (error) {
-      console.error("Error creating canvas", error);
-    }
+    // try {
+    //   const response = await axios.post(
+    //     "http://localhost:5000/api/canvas/createCanvas",
+    //     { researchTitle: title, authorName: author },
+    //     { withCredentials: true }
+    //   );
+    //   const response = await axios.post(
+    //     "http://localhost:5000/api/canvas/createCanvas",
+    //     { researchTitle: title, authorName: author },
+    //     { withCredentials: true }
+    //   );
+    //   setShowModal(false);
+    //   setView("canvas");
+    //   setResearchTitle(title);
+    //   setAuthorName(author);
+    //   setCanvasId(response.data._id);
+    // } catch (error) {
+    //   console.error("Error creating canvas", error);
+    // }
   };
 
   const goBack = () => {

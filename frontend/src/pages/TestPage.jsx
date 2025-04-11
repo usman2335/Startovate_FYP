@@ -26,17 +26,19 @@ import Template26 from "../components/Templates/Market Landscape/Template26";
 import Template27 from "../components/Templates/Novelty/Template27";
 import Template28 from "../components/Templates/Novelty/Template28";
 import Template29 from "../components/Templates/Novelty/Template29";
+import StakeholderMatrix from "../components/Templates/Problem Identification/Template5.jsx";
+import Template1 from "../components/Templates/Research Questions/RQTemplate1";
 
 const TestPage = () => {
   return (
     <>
       <div>
         {/* <Checklist1></Checklist1> */}
-        <RQTemplate1></RQTemplate1>
+        {/* <RQTemplate1></RQTemplate1> */}
         {/* <ProblemInvestigation></ProblemInvestigation> */}
         {/* <StakeholderMapping></StakeholderMapping> */}
         {/* <Template9></Template9> */}
-        <Template21 />
+        <Template1 />
       </div>
     </>
   );
