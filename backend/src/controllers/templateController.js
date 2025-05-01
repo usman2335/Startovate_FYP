@@ -54,3 +54,24 @@ exports.getTemplate = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
+exports.getAllTemplates = async (req, res) => {
+  console.log("Export fetch called");
+  try {
+    const { canvasId } = req.params;
+    console.log("Canvas ID:", canvasId);
+    const templates = await Template.find({ canvasId }).lean();
+
+    const sortedTemplates = templates.sort((a, b) => {
+      if (a.componentName !== b.componentName) {
+        return a.componentName.localeCompare(b.componentName);
+      }
+      return Number(a.checklistStep) - Number(b.checklistStep);
+    });
+
+    res.status(200).json(sortedTemplates);
+  } catch (error) {
+    console.error("Export fetch error:", error);
+    res.status(500).json({ error: "Failed to fetch templates for export." });
+  }
+};
