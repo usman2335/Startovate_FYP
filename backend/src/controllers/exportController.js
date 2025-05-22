@@ -1,6 +1,5 @@
-const docx = require("docx");
-const { Document, Packer, Paragraph, TextRun, AlignmentType } = docx;
-const Template = require("../models/Template");
+const { Document, Packer, Paragraph, TextRun, AlignmentType } = require("docx");
+const Template = require("../models/Template"); // adjust path as needed
 
 exports.exportToDocx = async (req, res) => {
   console.log("Exporting DOCX...");
@@ -9,7 +8,7 @@ exports.exportToDocx = async (req, res) => {
     const { canvasId } = req.params;
     const templates = await Template.find({ canvasId }).lean();
 
-    // Sort templates
+    // Sort templates by componentName and step
     const sortedTemplates = templates.sort((a, b) => {
       if (a.componentName !== b.componentName) {
         return a.componentName.localeCompare(b.componentName);
@@ -17,7 +16,20 @@ exports.exportToDocx = async (req, res) => {
       return Number(a.checklistStep) - Number(b.checklistStep);
     });
 
-    // Initialize sections with title and blank space
+    // Group templates by componentName
+    const groupedByComponent = {};
+    sortedTemplates.forEach((template) => {
+      const { componentName, checklistStep, content } = template;
+      if (!groupedByComponent[componentName]) {
+        groupedByComponent[componentName] = [];
+      }
+      groupedByComponent[componentName].push({
+        step: checklistStep,
+        content,
+      });
+    });
+
+    // Start building DOCX content
     const sectionChildren = [
       new Paragraph({
         children: [
@@ -28,51 +40,109 @@ exports.exportToDocx = async (req, res) => {
           }),
         ],
         alignment: AlignmentType.CENTER,
+        spacing: { after: 300 },
       }),
-      new Paragraph({ children: [new TextRun({ text: " " })] }),
     ];
 
-    // Add content for each template to the section
-    sortedTemplates.forEach((template) => {
-      // Heading for each step
+    // Loop through grouped components
+    for (const [componentName, steps] of Object.entries(groupedByComponent)) {
+      // Main heading
       sectionChildren.push(
         new Paragraph({
           children: [
             new TextRun({
-              text: `${template.componentName} (Step ${template.checklistStep})`,
+              text: componentName,
               bold: true,
-              size: 24,
+              size: 28,
             }),
           ],
+          spacing: { after: 200 },
         })
       );
 
-      // Format and display each key-value pair in template.content
-      if (template.content && typeof template.content === "object") {
-        Object.entries(template.content).forEach(([key, value]) => {
-          const label = key
-            .replace(/_/g, " ")
-            .replace(/([a-z])([A-Z])/g, "$1 $2") // camelCase to spaced
-            .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize
+      // Sort steps within the component
+      steps.sort((a, b) => Number(a.step) - Number(b.step));
 
-          sectionChildren.push(
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: `${label}: ${value}`,
-                  size: 20,
-                }),
-              ],
-            })
-          );
-        });
-      }
+      steps.forEach(({ step, content }) => {
+        // Step heading
+        sectionChildren.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: `Step ${step}`,
+                bold: true,
+                size: 24,
+              }),
+            ],
+            spacing: { after: 100 },
+          })
+        );
 
-      // Add a blank line after each template
+        // Parse and group content
+        if (content && typeof content === "object") {
+          const grouped = {};
+
+          Object.entries(content).forEach(([key, value]) => {
+            const cleanedKey = key.replace(/_\d+|\d+$/, ""); // remove trailing indexes
+            const label = cleanedKey
+              .replace(/_/g, " ")
+              .replace(/([a-z])([A-Z])/g, "$1 $2")
+              .replace(/\b\w/g, (char) => char.toUpperCase());
+
+            if (!grouped[label]) grouped[label] = [];
+            grouped[label].push(value);
+          });
+
+          // Render grouped content
+          Object.entries(grouped).forEach(([label, values]) => {
+            if (values.length === 1) {
+              sectionChildren.push(
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: `${label}: ${values[0]}`,
+                      size: 20,
+                    }),
+                  ],
+                })
+              );
+            } else {
+              sectionChildren.push(
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: `${label}:`,
+                      bold: true,
+                      size: 20,
+                    }),
+                  ],
+                })
+              );
+              values.forEach((val) => {
+                sectionChildren.push(
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: `- ${val}`,
+                        size: 20,
+                      }),
+                    ],
+                  })
+                );
+              });
+            }
+          });
+        }
+
+        // Space after step
+        sectionChildren.push(new Paragraph({ children: [new TextRun(" ")] }));
+      });
+
+      // Extra space between components
       sectionChildren.push(new Paragraph({ children: [new TextRun(" ")] }));
-    });
+    }
 
-    // Create the DOCX document
+    // Finalize the document
     const doc = new Document({
       creator: "Startovate App",
       title: "Lean Canvas Export",
