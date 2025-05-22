@@ -27,7 +27,10 @@ import Template27 from "../components/Templates/Novelty/Template27";
 import Template28 from "../components/Templates/Novelty/Template28";
 import Template29 from "../components/Templates/Novelty/Template29";
 import StakeholderMatrix from "../components/Templates/Problem Identification/Template5.jsx";
-import Template1 from "../components/Templates/Research Questions/RQTemplate1";
+import Template2 from "../components/Templates/Problem Identification/Template2.jsx";
+import Template3 from "../components/Templates/Problem Identification/Template3.jsx";
+import Template1 from "../components/Templates/Problem Identification/Template1.jsx";
+import Template7 from "../components/Templates/Problem Identification/Template7.jsx";
 
 const TestPage = () => {
   return (
@@ -38,7 +41,7 @@ const TestPage = () => {
         {/* <ProblemInvestigation></ProblemInvestigation> */}
         {/* <StakeholderMapping></StakeholderMapping> */}
         {/* <Template9></Template9> */}
-        <Template1 />
+        <Template7 />
       </div>
     </>
   );

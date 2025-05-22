@@ -53,25 +53,20 @@ const CanvasPage = () => {
   };
 
   const handleSaveCanvas = async (title, author) => {
-    // try {
-    //   const response = await axios.post(
-    //     "http://localhost:5000/api/canvas/createCanvas",
-    //     { researchTitle: title, authorName: author },
-    //     { withCredentials: true }
-    //   );
-    //   const response = await axios.post(
-    //     "http://localhost:5000/api/canvas/createCanvas",
-    //     { researchTitle: title, authorName: author },
-    //     { withCredentials: true }
-    //   );
-    //   setShowModal(false);
-    //   setView("canvas");
-    //   setResearchTitle(title);
-    //   setAuthorName(author);
-    //   setCanvasId(response.data._id);
-    // } catch (error) {
-    //   console.error("Error creating canvas", error);
-    // }
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/canvas/createCanvas",
+        { researchTitle: title, authorName: author },
+        { withCredentials: true }
+      );
+      setShowModal(false);
+      setView("canvas");
+      setResearchTitle(title);
+      setAuthorName(author);
+      setCanvasId(response.data._id);
+    } catch (error) {
+      console.error("Error creating canvas", error);
+    }
   };
 
   const goBack = () => {
@@ -151,23 +146,23 @@ const CanvasPage = () => {
     if (selectedChecklistPoint && templateKey) {
       console.log("Selected Checklist Point Updated:", selectedChecklistPoint);
 
-      // axios
-      //   .post(
-      //     "http://localhost:5000/api/template/start",
-      //     {
-      //       canvasId,
-      //       templateId: templateKey,
-      //       componentName: selectedComponent,
-      //       checklistStep: selectedChecklistPoint.id,
-      //     },
-      //     { withCredentials: true }
-      //   )
-      //   .then((response) => {
-      //     console.log("Template fetched/created:", response.data.template);
-      //   })
-      //   .catch((error) => {
-      //     console.error("Error fetching/creating template:", error);
-      //   });
+      axios
+        .post(
+          "http://localhost:5000/api/template/start",
+          {
+            canvasId,
+            templateId: templateKey,
+            componentName: selectedComponent,
+            checklistStep: selectedChecklistPoint.id,
+          },
+          { withCredentials: true }
+        )
+        .then((response) => {
+          console.log("Template fetched/created:", response.data.template);
+        })
+        .catch((error) => {
+          console.error("Error fetching/creating template:", error);
+        });
     }
   }, [selectedChecklistPoint, templateKey, canvasId]);
   return (

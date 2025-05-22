@@ -1,0 +1,23 @@
+{
+  "templateId": "ProblemIdentification-Step1",
+  "componentName": "Problem Identification",
+  "checklistStep": "1",
+  "questions": [
+    {
+      "question": "Why? Explore a root cause",
+      "reference": "References"
+    },
+    {
+      "question": "Why? Explore a root cause",
+      "reference": "References"
+    },
+    {
+      "question": "Why? Explore a root cause",
+      "reference": "References"
+    },
+    {
+      "question": "Why? Explore a root cause",
+      "reference": "References"
+    }
+  ]
+}

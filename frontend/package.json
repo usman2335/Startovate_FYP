@@ -16,6 +16,7 @@
     "@mui/material": "^6.4.7",
     "antd": "^5.24.2",
     "axios": "^1.8.3",
+    "docx": "^9.4.1",
     "framer-motion": "^12.4.10",
     "hamburger-react": "^2.5.2",
     "react": "^19.0.0",

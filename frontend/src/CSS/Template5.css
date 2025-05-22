@@ -1,92 +1,34 @@
 /* Matrix Container */
 .matrix-container {
-  position: relative;
-  width: 80vw;
-  height: 80vh;
-  background: white;
+  background: rgb(255, 255, 255);
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  display: flex;
-  justify-content: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 1000px;
+  padding: 30px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 20px;
+  justify-items: center;
   align-items: center;
-}
-
-/* Axis */
-.axis {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-}
-
-.x-axis {
-  position: absolute;
-  width: 100%;
-  height: 2px;
-  background: black;
-  top: 50%;
-  left: 0;
-}
-
-.x-axis::before,
-.x-axis::after {
-  content: "";
-  position: absolute;
-  border-width: 6px;
-  border-style: solid;
-}
-
-.x-axis::before {
-  border-color: transparent black transparent transparent;
-  left: -6px;
-  top: -4px;
-  transform: rotate(180deg);
-}
-
-.x-axis::after {
-  border-color: transparent transparent transparent black;
-  right: -6px;
-  top: -4px;
-}
-
-.y-axis {
-  position: absolute;
-  height: 100%;
-  width: 2px;
-  background: black;
-  left: 50%;
-  top: 0;
-}
-
-.y-axis::before,
-.y-axis::after {
-  content: "";
-  position: absolute;
-  border-width: 6px;
-  border-style: solid;
-}
-
-.y-axis::before {
-  border-color: black transparent transparent transparent;
-  top: -6px;
-  left: -4px;
-}
-
-.y-axis::after {
-  border-color: transparent transparent black transparent;
-  bottom: -6px;
-  left: -4px;
+  margin: 50px auto;
+  position: relative;
 }
 
 /* Quadrants */
 .quadrant {
-  position: absolute;
-  width: 45%;
-  height: 45%;
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   border-radius: 10px;
+  padding: 20px;
+  background: #f6b3b3;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Quadrant Titles */
@@ -96,22 +38,37 @@
   font-weight: bold;
   color: white;
   margin-bottom: 10px;
+  font-size: 16px;
+  text-align: center;
 }
 
+.q1 {
+  background: #f4f0ff;
+}
 .q1 .quadrant-title {
-  background: red;
+  background: #7f5af0;
+}
+
+.q2 {
+  background: #ebfaf5;
 }
 .q2 .quadrant-title {
-  background: brown;
-}
-.q3 .quadrant-title {
-  background: yellow;
-  color: black;
-}
-.q4 .quadrant-title {
-  background: teal;
+  background: #2cb67d;
 }
 
+.q3 {
+  background: #fff4e6;
+}
+.q3 .quadrant-title {
+  background: #ff8906;
+}
+
+.q4 {
+  background: #edf4ff;
+}
+.q4 .quadrant-title {
+  background: #3a86ff;
+}
 /* Input Box */
 .input-container {
   display: flex;
@@ -139,11 +96,38 @@
 
 /* Stakeholders List */
 .stakeholders {
-  width: 80%;
-  height: 70%;
+  width: 90%;
+  height: 180px;
   background: white;
   border-radius: 10px;
   padding: 10px;
   overflow-y: auto;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Individual Stakeholder Item */
+.stakeholder-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f9f9f9;
+  padding: 6px 10px;
+  margin-bottom: 6px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+}
+
+.remove-btn {
+  background: transparent;
+  border: none;
+  color: #ff4d4d;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 5px;
+  transition: transform 0.2s ease;
+}
+
+.remove-btn:hover {
+  transform: scale(1.2);
 }

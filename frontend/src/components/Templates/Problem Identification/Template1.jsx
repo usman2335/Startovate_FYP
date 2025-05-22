@@ -3,9 +3,46 @@ import { TextField } from "@mui/material";
 import Button from "../../Button";
 import "../../../CSS/Template1.css";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import axios from "axios";
 
-const Template1 = ({ answers, onInputChange }) => {
+const Template1 = ({ answers, onInputChange, canvasId, templateId }) => {
   const isSmallScreen = useMediaQuery("(max-width:600px)");
+
+  const downloadWord = async () => {
+    // const token = localStorage.getItem("token"); // or sessionStorage.getItem("token")
+
+    // if (!token) {
+    //   console.error("No token found.");
+    //   return;
+    // }
+
+    try {
+      console.log("canvasId:", canvasId);
+      console.log("templateId:", templateId);
+      const response = await axios.get(
+        `http://localhost:5000/api/template/export/${canvasId}/${templateId}`,
+        // { canvasId: canvasId, templateId: templateId },
+        { withCredentials: true }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error response from server:", errorData);
+        return;
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "template1_export.docx");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Error exporting Word document:", error);
+    }
+  };
 
   return (
     <div className="tem1-container">
@@ -54,6 +91,7 @@ const Template1 = ({ answers, onInputChange }) => {
             </div>
           </div>
         ))}
+        <Button onClick={downloadWord}>Export to Word</Button>
       </div>
     </div>
   );
