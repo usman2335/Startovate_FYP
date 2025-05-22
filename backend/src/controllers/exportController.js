@@ -1,14 +1,30 @@
-const { Document, Packer, Paragraph, TextRun, AlignmentType } = require("docx");
-const Template = require("../models/Template"); // adjust path as needed
+const docx = require("docx");
+const { Document, Packer, Paragraph, TextRun, AlignmentType } = docx;
+const Template = require("../models/Template");
+const StepDescription = require("../models/StepDescriptions"); // Import your descriptions model
 
 exports.exportToDocx = async (req, res) => {
-  console.log("Exporting DOCX...");
-
   try {
     const { canvasId } = req.params;
-    const templates = await Template.find({ canvasId }).lean();
 
-    // Sort templates by componentName and step
+    // Fetch templates and step descriptions
+    const templates = await Template.find({ canvasId }).lean();
+    const descriptions = await StepDescription.find({}).lean();
+
+    // Create a map for quick lookup of descriptions by componentName-stepNumber
+    const descriptionMap = {};
+    descriptions.forEach((desc) => {
+      const key = `${desc.componentName}-${desc.stepNumber}`;
+      descriptionMap[key] = desc.description;
+    });
+
+    // Inject descriptions into templates
+    templates.forEach((template) => {
+      const key = `${template.componentName}-${template.checklistStep}`;
+      template.description = descriptionMap[key] || "";
+    });
+
+    // Sort templates by componentName and checklistStep
     const sortedTemplates = templates.sort((a, b) => {
       if (a.componentName !== b.componentName) {
         return a.componentName.localeCompare(b.componentName);
@@ -19,17 +35,13 @@ exports.exportToDocx = async (req, res) => {
     // Group templates by componentName
     const groupedByComponent = {};
     sortedTemplates.forEach((template) => {
-      const { componentName, checklistStep, content } = template;
-      if (!groupedByComponent[componentName]) {
-        groupedByComponent[componentName] = [];
+      if (!groupedByComponent[template.componentName]) {
+        groupedByComponent[template.componentName] = [];
       }
-      groupedByComponent[componentName].push({
-        step: checklistStep,
-        content,
-      });
+      groupedByComponent[template.componentName].push(template);
     });
 
-    // Start building DOCX content
+    // Initialize DOCX sections with title
     const sectionChildren = [
       new Paragraph({
         children: [
@@ -40,13 +52,15 @@ exports.exportToDocx = async (req, res) => {
           }),
         ],
         alignment: AlignmentType.CENTER,
-        spacing: { after: 300 },
       }),
+      new Paragraph({ children: [new TextRun({ text: " " })] }),
     ];
 
-    // Loop through grouped components
-    for (const [componentName, steps] of Object.entries(groupedByComponent)) {
-      // Main heading
+    // For each component, add main heading and all its steps
+    for (const [componentName, templates] of Object.entries(
+      groupedByComponent
+    )) {
+      // Add main heading for component
       sectionChildren.push(
         new Paragraph({
           children: [
@@ -56,93 +70,58 @@ exports.exportToDocx = async (req, res) => {
               size: 28,
             }),
           ],
-          spacing: { after: 200 },
+          spacing: { before: 300, after: 200 },
         })
       );
 
-      // Sort steps within the component
-      steps.sort((a, b) => Number(a.step) - Number(b.step));
+      // For each step under the component
+      templates.forEach((template) => {
+        // Step heading with step number
+        // Combined Step heading and description
+        const stepHeadingText = template.description
+          ? `Step ${template.checklistStep}: ${template.description}`
+          : `Step ${template.checklistStep}`;
 
-      steps.forEach(({ step, content }) => {
-        // Step heading
         sectionChildren.push(
           new Paragraph({
             children: [
               new TextRun({
-                text: `Step ${step}`,
+                text: stepHeadingText,
                 bold: true,
                 size: 24,
               }),
             ],
-            spacing: { after: 100 },
+            spacing: { before: 200, after: 150 },
           })
         );
 
-        // Parse and group content
-        if (content && typeof content === "object") {
-          const grouped = {};
-
-          Object.entries(content).forEach(([key, value]) => {
-            const cleanedKey = key.replace(/_\d+|\d+$/, ""); // remove trailing indexes
-            const label = cleanedKey
+        // Format and display each key-value pair in template.content
+        if (template.content && typeof template.content === "object") {
+          Object.entries(template.content).forEach(([key, value]) => {
+            const label = key
               .replace(/_/g, " ")
-              .replace(/([a-z])([A-Z])/g, "$1 $2")
-              .replace(/\b\w/g, (char) => char.toUpperCase());
+              .replace(/([a-z])([A-Z])/g, "$1 $2") // camelCase to spaced
+              .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize
 
-            if (!grouped[label]) grouped[label] = [];
-            grouped[label].push(value);
-          });
-
-          // Render grouped content
-          Object.entries(grouped).forEach(([label, values]) => {
-            if (values.length === 1) {
-              sectionChildren.push(
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: `${label}: ${values[0]}`,
-                      size: 20,
-                    }),
-                  ],
-                })
-              );
-            } else {
-              sectionChildren.push(
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: `${label}:`,
-                      bold: true,
-                      size: 20,
-                    }),
-                  ],
-                })
-              );
-              values.forEach((val) => {
-                sectionChildren.push(
-                  new Paragraph({
-                    children: [
-                      new TextRun({
-                        text: `- ${val}`,
-                        size: 20,
-                      }),
-                    ],
-                  })
-                );
-              });
-            }
+            sectionChildren.push(
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `${label}: ${value}`,
+                    size: 20,
+                  }),
+                ],
+              })
+            );
           });
         }
 
-        // Space after step
+        // Add a blank line after each step
         sectionChildren.push(new Paragraph({ children: [new TextRun(" ")] }));
       });
-
-      // Extra space between components
-      sectionChildren.push(new Paragraph({ children: [new TextRun(" ")] }));
     }
 
-    // Finalize the document
+    // Create the DOCX document
     const doc = new Document({
       creator: "Startovate App",
       title: "Lean Canvas Export",
@@ -154,8 +133,8 @@ exports.exportToDocx = async (req, res) => {
       ],
     });
 
+    // Convert document to buffer and send response
     const buffer = await Packer.toBuffer(doc);
-
     res.setHeader(
       "Content-Disposition",
       "attachment; filename=LeanCanvasExport.docx"
