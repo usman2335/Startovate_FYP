@@ -1,58 +1,151 @@
+const docx = require("docx");
+const { Document, Packer, Paragraph, TextRun, AlignmentType } = docx;
 const Template = require("../models/Template");
-const fs = require("fs");
-const path = require("path");
-const { Document, Packer, Paragraph, TextRun } = require("docx");
+const StepDescription = require("../models/StepDescriptions"); // Import your descriptions model
 
-// Load template questions
-const questionsPath = path.join(
-  __dirname,
-  "../data/Problem_Identification/template1_questions.json"
-);
-const questionsData = JSON.parse(fs.readFileSync(questionsPath, "utf-8"));
-
-exports.exportTemplateWord = async (req, res) => {
-  const { canvasId, templateId } = req.params;
-
+exports.exportToDocx = async (req, res) => {
   try {
-    const template = await Template.findOne({ canvasId, templateId });
-    if (!template) {
-      return res.status(404).json({ message: "Template not found" });
-    }
+    const { canvasId } = req.params;
 
-    const answers = template.content;
-    const doc = new Document();
-    const children = [];
+    // Fetch templates and step descriptions
+    const templates = await Template.find({ canvasId }).lean();
+    const descriptions = await StepDescription.find({}).lean();
 
-    questionsData.questions.forEach((q, index) => {
-      children.push(
-        new Paragraph({
-          children: [
-            new TextRun({ text: `Q${index + 1}: ${q.question}`, bold: true }),
-          ],
-        }),
-        new Paragraph({
-          text: `Answer: ${answers[`why_${index}`] || "Not answered"}`,
-        }),
-        new Paragraph({
-          text: `${q.reference}: ${
-            answers[`references_${index}`] || "Not provided"
-          }`,
-        }),
-        new Paragraph({ text: "" }) // line break
-      );
+    // Create a map for quick lookup of descriptions by componentName-stepNumber
+    const descriptionMap = {};
+    descriptions.forEach((desc) => {
+      const key = `${desc.componentName}-${desc.stepNumber}`;
+      descriptionMap[key] = desc.description;
     });
 
-    doc.addSection({ children });
+    // Inject descriptions into templates
+    templates.forEach((template) => {
+      const key = `${template.componentName}-${template.checklistStep}`;
+      template.description = descriptionMap[key] || "";
+    });
 
+    // Sort templates by componentName and checklistStep
+    const sortedTemplates = templates.sort((a, b) => {
+      if (a.componentName !== b.componentName) {
+        return a.componentName.localeCompare(b.componentName);
+      }
+      return Number(a.checklistStep) - Number(b.checklistStep);
+    });
+
+    // Group templates by componentName
+    const groupedByComponent = {};
+    sortedTemplates.forEach((template) => {
+      if (!groupedByComponent[template.componentName]) {
+        groupedByComponent[template.componentName] = [];
+      }
+      groupedByComponent[template.componentName].push(template);
+    });
+
+    // Initialize DOCX sections with title
+    const sectionChildren = [
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: "Lean Canvas Export",
+            size: 32,
+            bold: true,
+          }),
+        ],
+        alignment: AlignmentType.CENTER,
+      }),
+      new Paragraph({ children: [new TextRun({ text: " " })] }),
+    ];
+
+    // For each component, add main heading and all its steps
+    for (const [componentName, templates] of Object.entries(
+      groupedByComponent
+    )) {
+      // Add main heading for component
+      sectionChildren.push(
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: componentName,
+              bold: true,
+              size: 28,
+            }),
+          ],
+          spacing: { before: 300, after: 200 },
+        })
+      );
+
+      // For each step under the component
+      templates.forEach((template) => {
+        // Step heading with step number
+        // Combined Step heading and description
+        const stepHeadingText = template.description
+          ? `Step ${template.checklistStep}: ${template.description}`
+          : `Step ${template.checklistStep}`;
+
+        sectionChildren.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: stepHeadingText,
+                bold: true,
+                size: 24,
+              }),
+            ],
+            spacing: { before: 200, after: 150 },
+          })
+        );
+
+        // Format and display each key-value pair in template.content
+        if (template.content && typeof template.content === "object") {
+          Object.entries(template.content).forEach(([key, value]) => {
+            const label = key
+              .replace(/_/g, " ")
+              .replace(/([a-z])([A-Z])/g, "$1 $2") // camelCase to spaced
+              .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize
+
+            sectionChildren.push(
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `${label}: ${value}`,
+                    size: 20,
+                  }),
+                ],
+              })
+            );
+          });
+        }
+
+        // Add a blank line after each step
+        sectionChildren.push(new Paragraph({ children: [new TextRun(" ")] }));
+      });
+    }
+
+    // Create the DOCX document
+    const doc = new Document({
+      creator: "Startovate App",
+      title: "Lean Canvas Export",
+      sections: [
+        {
+          properties: {},
+          children: sectionChildren,
+        },
+      ],
+    });
+
+    // Convert document to buffer and send response
     const buffer = await Packer.toBuffer(doc);
-    res.setHeader("Content-Disposition", "attachment; filename=template.docx");
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=LeanCanvasExport.docx"
+    );
     res.setHeader(
       "Content-Type",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     );
     res.send(buffer);
-  } catch (err) {
-    console.error("Export Error:", err);
-    res.status(500).json({ message: "Failed to export document" });
+  } catch (error) {
+    console.error("Error exporting DOCX:", error);
+    res.status(500).json({ error: "Error exporting DOCX." });
   }
 };
