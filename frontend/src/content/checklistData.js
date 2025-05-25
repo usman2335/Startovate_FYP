@@ -253,6 +253,219 @@ const checklistData = {
       completed: false,
     },
   ],
+   "Research Outcomes": [
+    {
+      id: 1,
+      title: "Step 1",
+      description:
+        "RO Step 1",
+      completed: false,
+    },
+    {
+      id: 2,
+      title: "Step 2",
+      description:
+        "RO Step 2",
+      completed: false,
+    },
+    {
+      id: 3,
+      title: "Step 3",
+      description:
+        "RO Step3",
+      completed: false,
+    },
+    {
+      id: 4,
+      title: "Step 4",
+      description:
+        "RO Step4",
+      completed: false,
+    },
+    {
+      id: 5,
+      title: "Step 5",
+      description:
+        "RO Step5",
+      completed: false,
+    },
+    {
+      id: 6,
+      title: "Step 6",
+      description:
+        "RO Step6",
+      completed: false,
+    },
+    {
+      id: 7,
+      title: "Step 7",
+      description:
+        "RO Step7",
+      completed: false,
+    },
+  ],
+  "Research Methadology": [
+    {
+      id: 1,
+      title: "Step 1",
+      description:
+        "RM Step 1",
+      completed: false,
+    },
+    {
+      id: 2,
+      title: "Step 2",
+      description:
+        "RM Step 2",
+      completed: false,
+    },
+    {
+      id: 3,
+      title: "Step 3",
+      description:
+        "RM Step3",
+      completed: false,
+    },
+    {
+      id: 4,
+      title: "Step 4",
+      description:
+        "RM Step4",
+      completed: false,
+    },
+    {
+      id: 5,
+      title: "Step 5",
+      description:
+        "RM Step5",
+      completed: false,
+    },
+    {
+      id: 6,
+      title: "Step 6",
+      description:
+        "RM Step6",
+      completed: false,
+    },
+  ],
+    "Key Resources": [
+    {
+      id: 1,
+      title: "Step 1",
+      description:
+        "KM Step 1",
+      completed: false,
+    },
+    {
+      id: 2,
+      title: "Step 2",
+      description:
+        "KM Step 2",
+      completed: false,
+    },
+    {
+      id: 3,
+      title: "Step 3",
+      description:
+        "KM Step3",
+      completed: false,
+    },
+    {
+      id: 4,
+      title: "Step 4",
+      description:
+        "KM Step4",
+      completed: false,
+    },
+    {
+      id: 5,
+      title: "Step 5",
+      description:
+        "KM Step5",
+      completed: false,
+    },
+  ],
+  "Funding": [
+    {
+      id: 1,
+      title: "Step 1",
+      description:
+        "F Step 1",
+      completed: false,
+    },
+    {
+      id: 2,
+      title: "Step 2",
+      description:
+        "F Step 2",
+      completed: false,
+    },
+    {
+      id: 3,
+      title: "Step 3",
+      description:
+        "F Step3",
+      completed: false,
+    },
+    {
+      id: 4,
+      title: "Step 4",
+      description:
+        "F Step4",
+      completed: false,
+    },
+    {
+      id: 5,
+      title: "Step 5",
+      description:
+        "F Step5",
+      completed: false,
+    },
+  ],
+  "Team Capacities": [
+    {
+      id: 1,
+      title: "Step 1",
+      description:
+        "TC Step 1",
+      completed: false,
+    },
+    {
+      id: 2,
+      title: "Step 2",
+      description:
+        "TC Step 2",
+      completed: false,
+    },
+    {
+      id: 3,
+      title: "Step 3",
+      description:
+        "TC Step3",
+      completed: false,
+    },
+    {
+      id: 4,
+      title: "Step 4",
+      description:
+        "TC Step4",
+      completed: false,
+    },
+    {
+      id: 5,
+      title: "Step 5",
+      description:
+        "TC Step5",
+      completed: false,
+    },
+      {
+      id: 6,
+      title: "Step 6",
+      description:
+        "TC Step6",
+      completed: false,
+    },
+  ],
 };
 
 export default checklistData;
