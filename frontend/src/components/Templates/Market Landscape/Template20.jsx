@@ -2,7 +2,7 @@ import React from "react";
 import TextField from "@mui/material/TextField";
 import "../../../CSS/Template20.css";
 
-const Template20 = () => {
+const Template20 = ({ answers, onInputChange }) => {
   return (
     <div className="container">
       {/* Header Section */}
@@ -15,7 +15,14 @@ const Template20 = () => {
         <span className="cagr-label">
           <strong>Compound Annual Growth Rate (CAGR):</strong>
         </span>
-        <TextField id="cagr-input" variant="outlined" fullWidth />
+        <TextField
+          id="cagr-input"
+          variant="outlined"
+          fullWidth
+          className="bg-white"
+          value={answers?.[`CAGR_`] || ""}
+          onChange={(e) => onInputChange(e, `CAGR_`)}
+        />
       </div>
 
       {/* Table Section */}
@@ -39,6 +46,8 @@ const Template20 = () => {
                   id="unique-textfield"
                   multiline
                   className="unique-textfield"
+                  value={answers?.[`value_${index}`] || ""}
+                  onChange={(e) => onInputChange(e, `value_${index}`)}
                 />
               </td>
               <td>
@@ -46,6 +55,8 @@ const Template20 = () => {
                   id="unique-textfield"
                   multiline
                   className="unique-textfield"
+                  value={answers?.[`value_${index}`] || ""}
+                  onChange={(e) => onInputChange(e, `value_${index}`)}
                 />
               </td>
               <td>
@@ -53,6 +64,8 @@ const Template20 = () => {
                   id="unique-textfield"
                   multiline
                   className="unique-textfield"
+                  value={answers?.[`value_${index}`] || ""}
+                  onChange={(e) => onInputChange(e, `value_${index}`)}
                 />
               </td>
               <td>
@@ -60,6 +73,8 @@ const Template20 = () => {
                   id="unique-textfield"
                   multiline
                   className="unique-textfield"
+                  value={answers?.[`value_${index}`] || ""}
+                  onChange={(e) => onInputChange(e, `value_${index}`)}
                 />
               </td>
               <td>
@@ -67,6 +82,8 @@ const Template20 = () => {
                   id="unique-textfield"
                   multiline
                   className="unique-textfield"
+                  value={answers?.[`value_${index}`] || ""}
+                  onChange={(e) => onInputChange(e, `value_${index}`)}
                 />
               </td>
             </tr>

@@ -28,10 +28,10 @@
 .cagr-container {
   display: flex;
   align-items: center;
-  background-color: #dc4c64;
+  background-color: rgb(233, 85, 90);
   padding: 10px;
   margin-top: 10px;
-  width: 90%;
+  width: 100%;
   border-radius: 10px;
 }
 
@@ -39,8 +39,12 @@
   font-size: 16px;
   font-weight: bold;
   margin-right: 10px;
+  color: #fefefe;
 }
 
+.bg-white {
+  background-color: #fefefe;
+}
 /* Table Styling */
 /* .table {
   width: 100%;

@@ -3,7 +3,7 @@ import "../../../CSS/Template3.css";
 import Button from "../../Button";
 import { TextField } from "@mui/material";
 
-const Template5 = ({ answers, onInputChange }) => {
+const Template6 = ({ answers, onInputChange }) => {
   const [inputValue, setInputValue] = useState("");
 
   const handleChange = (event) => {
@@ -13,7 +13,7 @@ const Template5 = ({ answers, onInputChange }) => {
   return (
     <div className="container" style={{ maxWidth: "90%", margin: "0 auto" }}>
       <p className="description" style={{ textAlign: "center" }}>
-        <strong>LCI Template XXIV</strong>
+        <strong>LCI Template-XXXXI</strong>
       </p>
 
       <div
@@ -22,7 +22,7 @@ const Template5 = ({ answers, onInputChange }) => {
       >
         <div className="column" style={{ width: "100%" }}>
           <label>
-            <strong>Supportive Objectives and Tentative Hypothesis.</strong>
+            <strong>Tentative details of Travel Outside lab if desired</strong>
           </label>
           <TextField
             placeholder="Enter Text here..."
@@ -38,4 +38,4 @@ const Template5 = ({ answers, onInputChange }) => {
   );
 };
 
-export default Template5;
+export default Template6;

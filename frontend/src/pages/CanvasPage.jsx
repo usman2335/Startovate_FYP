@@ -103,21 +103,21 @@ const CanvasPage = () => {
           ""
         )}-Step${selectedPoint.id}`;
         setTemplateKey(templateKeyString);
-        // try {
-        //   const response = await axios.post(
-        //     "http://localhost:5000/api/template/start",
-        //     {
-        //       canvasId,
-        //       templateId: templateKeyString,
-        //       componentName: selectedComponent,
-        //       checklistStep: selectedPoint.id,
-        //     },
-        //     { withCredentials: true }
-        //   );
-        //   console.log("Template fetched/created:", response.data.template);
-        // } catch (error) {
-        //   console.error("Error fetching/creating template:", error);
-        // }
+        try {
+          // const response = await axios.post(
+          //   "http://localhost:5000/api/template/start",
+          //   {
+          //     canvasId,
+          //     templateId: templateKeyString,
+          //     componentName: selectedComponent,
+          //     checklistStep: selectedPoint.id,
+          //   },
+          //   { withCredentials: true }
+          // );
+          console.log("Template fetched/created:", response.data.template);
+        } catch (error) {
+          console.error("Error fetching/creating template:", error);
+        }
 
         setView("template");
       } else {

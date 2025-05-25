@@ -2,7 +2,7 @@ import React from "react";
 import TextField from "@mui/material/TextField";
 import "../../../CSS/Template12.css";
 
-const Template12 = () => {
+const Template12 = ({ answers, onInputChange }) => {
   return (
     <div className="container">
       <h4>
@@ -15,6 +15,8 @@ const Template12 = () => {
           multiline
           className="unique-textfield"
           placeholder="Enter text here..."
+          value={answers?.[`comparison_`] || ""}
+          onChange={(e) => onInputChange(e, `comparison_`)}
         />
       </div>
     </div>

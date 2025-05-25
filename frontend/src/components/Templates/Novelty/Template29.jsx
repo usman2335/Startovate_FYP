@@ -2,7 +2,7 @@ import React from "react";
 import TextField from "@mui/material/TextField";
 import "../../../CSS/Template29.css";
 
-const Template29 = () => {
+const Template29 = ({ answers, onInputChange }) => {
   return (
     <div className="container">
       <div className="header">
@@ -18,6 +18,8 @@ const Template29 = () => {
           placeholder="Enter Here ..."
           multiline
           className="unique-textfield"
+          value={answers?.[`discussions_`] || ""}
+          onChange={(e) => onInputChange(e, `discussions_`)}
         />
       </div>
     </div>

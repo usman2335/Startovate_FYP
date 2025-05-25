@@ -1,13 +1,7 @@
 import React, { useState } from "react";
 import { TextField } from "@mui/material";
 
-const Template8 = () => {
-  const [inputValue, setInputValue] = useState("");
-
-  const handleChange = (event) => {
-    setInputValue(event.target.value);
-  };
-
+const Template8 = ({ answers, onInputChange }) => {
   return (
     <div className="container">
       <p className="description">
@@ -25,8 +19,8 @@ const Template8 = () => {
             multiline
             fullWidth
             variant="outlined"
-            value={inputValue}
-            onChange={handleChange}
+            value={answers?.[`code_`] || ""}
+            onChange={(e) => onInputChange(e, `code_`)}
           />
         </div>
       </div>

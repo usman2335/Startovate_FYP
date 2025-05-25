@@ -12,7 +12,7 @@ import {
   Paper,
 } from "@mui/material";
 
-const Template3 = () => {
+const Template3 = ({ answers, onInputChange }) => {
   const rows = [
     {
       id: 1,
@@ -46,7 +46,14 @@ const Template3 = () => {
         >
           Keywords:
         </label>
-        <TextField id="keywords" variant="outlined" size="small" fullWidth />
+        <TextField
+          id="keywords"
+          variant="outlined"
+          size="small"
+          fullWidth
+          value={answers?.[`keywords_`] || ""}
+          onChange={(e) => onInputChange(e, `keywords_`)}
+        />
       </div>
 
       <TableContainer
@@ -94,7 +101,13 @@ const Template3 = () => {
                 <TableCell sx={{ fontWeight: "bold" }}>{row.id}.</TableCell>
                 <TableCell sx={{ fontWeight: "bold" }}>{row.outcome}</TableCell>
                 <TableCell>
-                  <TextField multiline fullWidth variant="outlined" />
+                  <TextField
+                    multiline
+                    fullWidth
+                    variant="outlined"
+                    value={answers?.[`statement_${row.id}`] || ""}
+                    onChange={(e) => onInputChange(e, `statement_${row.id}`)}
+                  />
                 </TableCell>
               </TableRow>
             ))}

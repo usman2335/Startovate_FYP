@@ -1,9 +1,8 @@
 import React from "react";
 import "../../../CSS/Template2.css";
-import Button from "../../Button";
 import { TextField } from "@mui/material";
 
-const Template2 = () => {
+const Template2 = ({ answers, onInputChange }) => {
   return (
     <div
       className="template-container"
@@ -29,6 +28,8 @@ const Template2 = () => {
             variant="outlined"
             fullWidth
             sx={{ backgroundColor: "#fff" }}
+            value={answers?.[`incident_`] || ""}
+            onChange={(e) => onInputChange(e, `incident_`)}
           />
         </div>
 
@@ -43,6 +44,8 @@ const Template2 = () => {
             variant="outlined"
             fullWidth
             sx={{ backgroundColor: "#fff" }}
+            value={answers?.[`feedback_`] || ""}
+            onChange={(e) => onInputChange(e, `feedback_`)}
           />
         </div>
       </div>
