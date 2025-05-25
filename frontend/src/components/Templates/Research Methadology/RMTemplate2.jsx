@@ -3,7 +3,7 @@ import "../../../CSS/Template3.css";
 import Button from "../../Button";
 import { TextField } from "@mui/material";
 
-const Template2 = ({ answers, onInputChange }) => {
+const RMTemplate2 = ({ answers, onInputChange }) => {
   const [inputValue, setInputValue] = useState("");
 
   const handleChange = (event) => {
@@ -22,7 +22,10 @@ const Template2 = ({ answers, onInputChange }) => {
       >
         <div className="column" style={{ width: "100%" }}>
           <label>
-            <strong>Seprate research method for accomplishing each stage of research process</strong>
+            <strong>
+              Seprate research method for accomplishing each stage of research
+              process
+            </strong>
           </label>
           <TextField
             placeholder="Enter Text here..."
@@ -38,4 +41,4 @@ const Template2 = ({ answers, onInputChange }) => {
   );
 };
 
-export default Template2;
+export default RMTemplate2;

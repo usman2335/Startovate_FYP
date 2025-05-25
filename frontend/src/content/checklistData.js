@@ -253,172 +253,170 @@ const checklistData = {
       completed: false,
     },
   ],
-   "Research Outcomes": [
+  "Research Outcomes": [
     {
       id: 1,
       title: "Step 1",
       description:
-        "RO Step 1",
+        "Expected outcome e.g., product, process, service, training for process accomplishment or composition of matter etc. ",
       completed: false,
     },
     {
       id: 2,
       title: "Step 2",
       description:
-        "RO Step 2",
+        "Expected outcome with respect to technology readiness level e.g., concept, basic principle, proof of concept model, simulation, functional prototype, product etc",
       completed: false,
     },
     {
       id: 3,
       title: "Step 3",
       description:
-        "RO Step3",
+        "Expected outcome e.g., full design or 3D drawing, functional prototype and on-demand production etc. ",
       completed: false,
     },
     {
       id: 4,
       title: "Step 4",
       description:
-        "RO Step4",
+        "Expected outcome e.g., publication in conference proceedings and research journals or applying for patent. ",
       completed: false,
     },
     {
       id: 5,
       title: "Step 5",
       description:
-        "RO Step5",
+        "Expected outcome in any form proving the validity of science behind it and a convincing proof that it is good enough to be implemented.",
       completed: false,
     },
     {
       id: 6,
       title: "Step 6",
-      description:
-        "RO Step6",
+      description: "Invention disclosure to the Technology Transfer Office.",
       completed: false,
     },
     {
       id: 7,
       title: "Step 7",
       description:
-        "RO Step7",
+        "Interest towards founding a company developing a business model canvas in future and describing proposed mechanisms for it. ",
       completed: false,
     },
   ],
-  "Research Methadology": [
+  "Research Methodology": [
     {
       id: 1,
       title: "Step 1",
       description:
-        "RM Step 1",
+        "Flowchart showing all stages of the research process e.g literature review, survey, data collection, comparisons, production, modelling, simulations, experimentation, analysis, testing, designing, drawings, reporting, presenting work in conference, writing paper or patent or disclosing invention to the Technology Transfer Office (TTO) etc. ",
       completed: false,
     },
     {
       id: 2,
       title: "Step 2",
       description:
-        "RM Step 2",
+        "Separate research methods for accomplishing each stage of the research process.",
       completed: false,
     },
     {
       id: 3,
       title: "Step 3",
       description:
-        "RM Step3",
+        "Expected key deliverable for each stage e.g. experimental results, presentation, research paper, functional prototype, proof of concept, beta software etc.",
       completed: false,
     },
     {
       id: 4,
       title: "Step 4",
       description:
-        "RM Step4",
+        "Barriers or pitfalls (if any) in order to accomplish each stage and ways of handling these barriers.",
       completed: false,
     },
     {
       id: 5,
       title: "Step 5",
       description:
-        "RM Step5",
+        "Timeline for each stage to be accomplished and collective time of completing the proposed invention",
       completed: false,
     },
     {
       id: 6,
       title: "Step 6",
-      description:
-        "RM Step6",
+      description: "Tentative details of travel outside lab (if desired). ",
       completed: false,
     },
   ],
-    "Key Resources": [
+  "Key Resources": [
     {
       id: 1,
       title: "Step 1",
       description:
-        "KM Step 1",
+        "List of resources required to meet the key deliverables:  \n-Tangible \n-Intangible ",
       completed: false,
     },
     {
       id: 2,
       title: "Step 2",
       description:
-        "KM Step 2",
+        "List of equipment e.g. 3D printers, 3D Scanners, mechanical and electrical labs, laser cutting, water jet cutter, engraving, simulators and software CAD/CAM, Solidworks, Sprutcam, GWizard, Meshmixer, materials (PVC, Vinyle, Styrene) and material testing devices, chemicals and other supplies for liquid prototyping etc.",
       completed: false,
     },
     {
       id: 3,
       title: "Step 3",
       description:
-        "KM Step3",
+        "Two separate lists of equipment: \n- Available in academic and innovation labs and accessible  \n-Not available and required to be purchased ",
       completed: false,
     },
     {
       id: 4,
       title: "Step 4",
       description:
-        "KM Step4",
+        "Justifications behind advancing research within university premises and/or access to resources outside world.",
       completed: false,
     },
     {
       id: 5,
       title: "Step 5",
       description:
-        "KM Step5",
+        "Identification of potential collaborators and researchers at other institutes and industries.",
       completed: false,
     },
   ],
-  "Funding": [
+  Funding: [
     {
       id: 1,
       title: "Step 1",
       description:
-        "F Step 1",
+        "Total grant desired for the research process supporting invention. ",
       completed: false,
     },
     {
       id: 2,
       title: "Step 2",
       description:
-        "F Step 2",
+        "Budget desired for tangible resources and equipment required for different key deliverables.",
       completed: false,
     },
     {
       id: 3,
       title: "Step 3",
       description:
-        "F Step3",
+        "Budget desired for intangible resources including skills and capacities of team members.",
       completed: false,
     },
     {
       id: 4,
       title: "Step 4",
       description:
-        "F Step4",
+        "Budget desired for visits and organizing meetings with stakeholders for discovering end user needs and industrial interest.",
       completed: false,
     },
     {
       id: 5,
       title: "Step 5",
       description:
-        "F Step5",
+        "Funding desired w.r.t Technology Readiness Level (TRL) e.g., basic principles, technology concept, proof of concept, validation in laboratory, model demonstration, functional prototype, test qualified demonstration and/or evaluation of commercial potential.",
       completed: false,
     },
   ],
@@ -427,42 +425,42 @@ const checklistData = {
       id: 1,
       title: "Step 1",
       description:
-        "TC Step 1",
+        "Configuration of team members e.g. Principal Investigator, Co-Investigator, students, collaborator, Industrial expert, end users etc.",
       completed: false,
     },
     {
       id: 2,
       title: "Step 2",
       description:
-        "TC Step 2",
+        "Names and association of each team member with its department, university or industry etc.",
       completed: false,
     },
     {
       id: 3,
       title: "Step 3",
       description:
-        "TC Step3",
+        "Skills and capacities of each team member in order to achieve the key deliverables.",
       completed: false,
     },
     {
       id: 4,
       title: "Step 4",
       description:
-        "TC Step4",
+        "Presence or absence (if any) of skills and capacities of team members in order to achieve the key deliverables.",
       completed: false,
     },
     {
       id: 5,
       title: "Step 5",
       description:
-        "TC Step5",
+        "Background of PI in terms of research expertise and experiences in the commercialization process",
       completed: false,
     },
-      {
+    {
       id: 6,
       title: "Step 6",
       description:
-        "TC Step6",
+        "Motivation of each team member including PI towards proposed invention and commercialization process e.g., owns and operates a company or license technology to other companies etc.",
       completed: false,
     },
   ],

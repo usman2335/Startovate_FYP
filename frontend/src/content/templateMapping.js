@@ -35,6 +35,7 @@ import ROTemplate1 from "../components/Templates/Research Outcomes/ROTemplate1";
 import ROTemplate3 from "../components/Templates/Research Outcomes/ROTemplate3";
 import ROTemplate4 from "../components/Templates/Research Outcomes/ROTemplate4";
 import ROTemplate5 from "../components/Templates/Research Outcomes/ROTemplate5";
+// import RMTemplate2 from "../components/Templates/Research Methadology/RMTemplate2";
 import RMTemplate2 from "../components/Templates/Research Methadology/RMTemplate2";
 import RMTemplate4 from "../components/Templates/Research Methadology/RMTemplate4";
 import RMTemplate6 from "../components/Templates/Research Methadology/RMTemplate6";
@@ -83,9 +84,9 @@ const templateMapping = {
   "ResearchOutcome-Step3": ROTemplate3,
   "ResearchOutcome-Step4": ROTemplate4,
   "ResearchOutcome-Step5": ROTemplate5,
-  "ResearchMethadology-Step2": RMTemplate2,
-  "ResearchMethadology-Step4": RMTemplate4,
-  "ResearchMethadology-Step6": RMTemplate6,
+  "ResearchMethodology-Step2": RMTemplate2,
+  "ResearchMethodology-Step4": RMTemplate4,
+  "ResearchMethodology-Step6": RMTemplate6,
   "KeyResources-Step2": KMTemplate2,
   "KeyResources-Step4": KMTemplate4,
   "TeamCapacities-Step1": TCTemplate1,
