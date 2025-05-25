@@ -13,7 +13,7 @@ const Template5 = ({ answers, onInputChange }) => {
   return (
     <div className="container" style={{ maxWidth: "90%", margin: "0 auto" }}>
       <p className="description" style={{ textAlign: "center" }}>
-        <strong>LCI Template XXIV</strong>
+        <strong>LCI-Template XXXXXXII</strong>
       </p>
 
       <div
@@ -22,7 +22,7 @@ const Template5 = ({ answers, onInputChange }) => {
       >
         <div className="column" style={{ width: "100%" }}>
           <label>
-            <strong>Supportive Objectives and Tentative Hypothesis.</strong>
+            <strong>Expected outcome in any form proving the validity of science behind it and a convincing proof that it is good enough to be implemented.</strong>
           </label>
           <TextField
             placeholder="Enter Text here..."

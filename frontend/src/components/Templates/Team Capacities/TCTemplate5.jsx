@@ -13,7 +13,7 @@ const Template5 = ({ answers, onInputChange }) => {
   return (
     <div className="container" style={{ maxWidth: "90%", margin: "0 auto" }}>
       <p className="description" style={{ textAlign: "center" }}>
-        <strong>LCI Template XXIV</strong>
+        <strong>Team Configuration Template</strong>
       </p>
 
       <div
@@ -22,7 +22,7 @@ const Template5 = ({ answers, onInputChange }) => {
       >
         <div className="column" style={{ width: "100%" }}>
           <label>
-            <strong>Supportive Objectives and Tentative Hypothesis.</strong>
+            <strong>Background of PI interms of research expertise and experiences in the commercialization process</strong>
           </label>
           <TextField
             placeholder="Enter Text here..."
