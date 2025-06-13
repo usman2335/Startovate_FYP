@@ -55,7 +55,7 @@ const Template9 = () => {
         </div>
         <div className="template9-section">
           <h4>Synonym II</h4>
-          <TextField fullWidth multiline maxRows={4} variant="outlined" />
+          <TextField fullWidth multiline maxRows={4} variant="outlinedasd" />
         </div>
         <div className="template9-section">
           <h4>Synonym III</h4>
