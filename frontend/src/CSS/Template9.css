@@ -1,69 +1,57 @@
-.container {
-  /* margin: 6% auto; */
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 80%;
-  padding: 20px;
+.template9-container {
+  background: #f9f9fc;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 85%;
+  padding: 30px;
   display: flex;
-  gap: 20px;
-  justify-content: space-around;
+  gap: 30px;
+  justify-content: space-between;
   align-items: flex-start;
+  margin: auto;
+  flex-wrap: wrap;
+  font-family: "Segoe UI", sans-serif;
 }
-.heading {
-  margin: 6% auto;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 80%;
-  padding: 20px;
 
-  /* Flex column layout to stack heading and TextField */
+.template9-column {
+  flex: 1;
+  min-width: 280px;
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 20px;
   display: flex;
-  flex-direction: column; /* Stack items vertically */
-  gap: 10px;
-  justify-content: center;
-  align-items: center; /* Center align */
-  text-align: center; /* Center text */
+  flex-direction: column;
+  gap: 20px;
 }
 
-/* Individual Column Styling */
-/* .column {
-  background: rgb(250, 240, 240);
+.template9-section {
+  background: #f0f4ff;
   border-radius: 10px;
-  padding: 20px;
-  width: 30%;
-  min-height: 200px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
   text-align: center;
-} */
-
-/* Override Global Input/Textarea Styling for MUI TextField */
-/* .MuiTextField-root {
-  width: 100% !important;
 }
 
-.MuiInputBase-root {
-  width: 100% !important;
+.template9-section h3 {
+  color: #333;
+  font-size: 22px;
+  margin-bottom: 5px;
+  align-items: center;
+  text-align: center;
+  text-decoration: none;
 }
 
-/* Ensure specific widths */
-/* .problem-box .MuiTextField-root {
-  width: 50% !important;
+.template9-section h4 {
+  color: #555;
+  font-weight: 500;
+  margin: 0;
 }
 
-.solution-box .MuiTextField-root,
-.context-box .MuiTextField-root {
-  width: 80% !important;
-} */
-
-/* Responsive Design */
-/* @media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .column {
-    width: 90%;
-  }
-} */
+.MuiTextField-root {
+  background: white;
+}

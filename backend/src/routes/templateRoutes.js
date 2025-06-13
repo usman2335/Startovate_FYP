@@ -9,6 +9,7 @@ const { exportToDocx } = require("../controllers/exportController");
 const protect = require("../middleware/authMiddleWare");
 
 const router = express.Router();
+
 router.post("/start", protect, startTemplate);
 router.post("/save", protect, saveTemplate);
 router.get("/get-template/:canvasId/:templateId", getTemplate);

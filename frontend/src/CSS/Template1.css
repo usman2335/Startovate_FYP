@@ -1,6 +1,15 @@
 .tem1-hero-section {
-  margin-top: 80px; /* Adjust based on your Navbar height */
-  padding: 20px; /* Adds some spacing */
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 60%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .tem1-container {
