@@ -253,7 +253,7 @@ const checklistData = {
       completed: false,
     },
   ],
-  "Research Outcomes": [
+  "Research Outcome": [
     {
       id: 1,
       title: "Step 1",

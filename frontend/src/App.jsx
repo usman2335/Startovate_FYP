@@ -17,10 +17,10 @@ function App() {
             <Route path="/homepage" element={<LandingPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/Login" element={<LoginPage />} />
-            {/* <Route path="/" element={<LoginPage />} /> */}
             <Route path="/test" element={<Testpage1 />} />
             <Route path="/canvas" element={<CanvasPage />} />
             <Route path="/test1" element={<TestPage />} />
+            {/* <Route path="/student" element={<StudentPage />} /> */}
           </Routes>
         </Router>
       </AuthProvider>
