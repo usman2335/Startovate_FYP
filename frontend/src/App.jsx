@@ -6,6 +6,7 @@ import TestPage from "./pages/TestPage";
 import Testpage1 from "./pages/Testpage1";
 import LoginPage from "./pages/LoginPage";
 import { AuthProvider } from "./context/authContext.jsx";
+import AdminDashboard from "./pages/AdminDashboard.jsx";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="/test" element={<Testpage1 />} />
             <Route path="/canvas" element={<CanvasPage />} />
             <Route path="/test1" element={<TestPage />} />
+            <Route path="/Dashboard" element={<AdminDashboard />} />
           </Routes>
         </Router>
       </AuthProvider>
