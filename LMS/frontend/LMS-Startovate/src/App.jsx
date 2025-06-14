@@ -1,12 +1,22 @@
+<<<<<<< HEAD
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import DashboardLayout from "./layout/DashboardLayout";
 import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
 import { AuthProvider } from "./context/authContext.jsx";
 import ManageUsers from "./pages/AdminDashboard/manageUsers.jsx";
+=======
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import ContentDisplay from "./components/ContentDisplay";
+import CoursePlayer from "./pages/CoursePlayer";
+import NavBar from "./components/NavBar";
+import LMSLanding from "./pages/LMS_Landing"; // adjust the path as needed
+>>>>>>> 462ca3488684b8422882eda3378060e5c0912403
 
-function App() {
+const App = () => {
   return (
+<<<<<<< HEAD
     <AuthProvider>
       <Router>
         <Routes>
@@ -22,7 +32,17 @@ function App() {
         </Routes>
       </Router>
     </AuthProvider>
+=======
+    <>
+      <NavBar />
+      <Routes>
+        <Route path="/" element={<LMSLanding />} />
+        <Route path="/courses" element={<ContentDisplay />} />
+        <Route path="/courses/:courseId" element={<CoursePlayer />} />
+      </Routes>
+    </>
+>>>>>>> 462ca3488684b8422882eda3378060e5c0912403
   );
-}
+};
 
 export default App;

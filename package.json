@@ -5,5 +5,10 @@
     "@mui/material": "^6.4.7",
     "antd": "^5.24.3",
     "hamburger-react": "^2.5.2"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.5",
+    "tailwindcss": "^4.1.10"
   }
 }
