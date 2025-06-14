@@ -1,4 +1,4 @@
-const stripe = require("stripe")(process.env.STRIPE_SECRET);
+const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 
 exports.createSession = async (req, res) => {
   try {
