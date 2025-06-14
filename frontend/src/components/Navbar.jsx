@@ -47,9 +47,19 @@ const Navbar = () => {
           <NavLink to="/" className="nav-link">
             Home
           </NavLink>
-          <NavLink to="/Canvas" className="nav-link">
-            Canvas
-          </NavLink>
+          {user?.isSubscribed ? (
+            <NavLink to="/Canvas" className="nav-link">
+              Canvas
+            </NavLink>
+          ) : (
+            <span
+              className="nav-link disabled"
+              onClick={() => alert("Please subscribe to access Canvas.")}
+              style={{ cursor: "not-allowed", opacity: 0.5 }}
+            >
+              Canvas
+            </span>
+          )}
           <NavLink to="/Dashboard" className="nav-link">
             Dashboard
           </NavLink>

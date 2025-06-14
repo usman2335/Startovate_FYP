@@ -1,28 +1,25 @@
-const docx = require("docx");
-const { Document, Packer, Paragraph, TextRun, AlignmentType } = docx;
+const {
+  Document,
+  Packer,
+  Paragraph,
+  TextRun,
+  AlignmentType,
+  Table,
+  TableRow,
+  TableCell,
+  WidthType,
+  BorderStyle,
+} = require("docx");
 const Template = require("../models/Template");
-const StepDescription = require("../models/StepDescriptions"); // Import your descriptions model
+const Description = require("../models/StepDescriptions");
 
 exports.exportToDocx = async (req, res) => {
+  console.log("Exporting DOCX with styled tables...");
+
   try {
     const { canvasId } = req.params;
-
-    // Fetch templates and step descriptions
     const templates = await Template.find({ canvasId }).lean();
-    const descriptions = await StepDescription.find({}).lean();
-
-    // Create a map for quick lookup of descriptions by componentName-stepNumber
-    const descriptionMap = {};
-    descriptions.forEach((desc) => {
-      const key = `${desc.componentName}-${desc.stepNumber}`;
-      descriptionMap[key] = desc.description;
-    });
-
-    // Inject descriptions into templates
-    templates.forEach((template) => {
-      const key = `${template.componentName}-${template.checklistStep}`;
-      template.description = descriptionMap[key] || "";
-    });
+    const descriptions = await Description.find().lean();
 
     // Sort templates by componentName and checklistStep
     const sortedTemplates = templates.sort((a, b) => {
@@ -32,96 +29,88 @@ exports.exportToDocx = async (req, res) => {
       return Number(a.checklistStep) - Number(b.checklistStep);
     });
 
-    // Group templates by componentName
-    const groupedByComponent = {};
+    // Define fixed component order
+    const componentOrder = [
+      "Problem Identification",
+      "Literature Search",
+      "Existing Solutions",
+      "Unique Value Proposition",
+      "Customer Segments",
+      "Channels",
+      "Revenue Streams",
+      "Cost Structure",
+      "Key Metrics",
+      "Unfair Advantage",
+    ];
+
+    const groupedTemplates = {};
     sortedTemplates.forEach((template) => {
-      if (!groupedByComponent[template.componentName]) {
-        groupedByComponent[template.componentName] = [];
+      if (!groupedTemplates[template.componentName]) {
+        groupedTemplates[template.componentName] = [];
       }
-      groupedByComponent[template.componentName].push(template);
+      groupedTemplates[template.componentName].push(template);
     });
 
-    // Initialize DOCX sections with title
     const sectionChildren = [
       new Paragraph({
         children: [
-          new TextRun({
-            text: "Lean Canvas Export",
-            size: 32,
-            bold: true,
-          }),
+          new TextRun({ text: "Lean Canvas Export", size: 32, bold: true }),
         ],
         alignment: AlignmentType.CENTER,
       }),
-      new Paragraph({ children: [new TextRun({ text: " " })] }),
+      new Paragraph({ children: [new TextRun(" ")] }),
     ];
 
-    // For each component, add main heading and all its steps
-    for (const [componentName, templates] of Object.entries(
-      groupedByComponent
-    )) {
-      // Add main heading for component
+    for (const componentName of componentOrder) {
+      const templatesForComponent = groupedTemplates[componentName];
+      if (!templatesForComponent) continue;
+
       sectionChildren.push(
         new Paragraph({
           children: [
-            new TextRun({
-              text: componentName,
-              bold: true,
-              size: 28,
-            }),
+            new TextRun({ text: componentName, bold: true, size: 26 }),
           ],
-          spacing: { before: 300, after: 200 },
         })
       );
 
-      // For each step under the component
-      templates.forEach((template) => {
-        // Step heading with step number
-        // Combined Step heading and description
-        const stepHeadingText = template.description
-          ? `Step ${template.checklistStep}: ${template.description}`
-          : `Step ${template.checklistStep}`;
+      for (const template of templatesForComponent) {
+        const stepDescription = descriptions.find(
+          (desc) =>
+            desc.componentName === template.componentName &&
+            desc.stepNumber === Number(template.checklistStep)
+        );
 
         sectionChildren.push(
           new Paragraph({
             children: [
               new TextRun({
-                text: stepHeadingText,
-                bold: true,
-                size: 24,
+                text: `Step ${template.checklistStep}: ${
+                  stepDescription ? stepDescription.description : ""
+                }`,
+                italics: true,
+                size: 22,
               }),
             ],
-            spacing: { before: 200, after: 150 },
           })
         );
 
-        // Format and display each key-value pair in template.content
+        // Prepare table rows
+        const tableRows = [["Label", "Answer"]];
         if (template.content && typeof template.content === "object") {
           Object.entries(template.content).forEach(([key, value]) => {
             const label = key
               .replace(/_/g, " ")
-              .replace(/([a-z])([A-Z])/g, "$1 $2") // camelCase to spaced
-              .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize
-
-            sectionChildren.push(
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: `${label}: ${value}`,
-                    size: 20,
-                  }),
-                ],
-              })
-            );
+              .replace(/([a-z])([A-Z])/g, "$1 $2")
+              .replace(/\b\w/g, (char) => char.toUpperCase());
+            tableRows.push([label, value]);
           });
         }
 
-        // Add a blank line after each step
+        sectionChildren.push(createStyledTable(tableRows));
         sectionChildren.push(new Paragraph({ children: [new TextRun(" ")] }));
-      });
+      }
     }
 
-    // Create the DOCX document
     const doc = new Document({
       creator: "Startovate App",
       title: "Lean Canvas Export",
@@ -133,8 +122,8 @@ exports.exportToDocx = async (req, res) => {
       ],
     });
 
-    // Convert document to buffer and send response
     const buffer = await Packer.toBuffer(doc);
+
     res.setHeader(
       "Content-Disposition",
       "attachment; filename=LeanCanvasExport.docx"
@@ -149,3 +138,40 @@ exports.exportToDocx = async (req, res) => {
     res.status(500).json({ error: "Error exporting DOCX." });
   }
 };
+
+function createStyledTable(rows) {
+  return new Table({
+    width: {
+      size: 100,
+      type: WidthType.PERCENTAGE,
+    },
+    borders: {
+      top: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
+      bottom: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
+      left: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
+      right: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
+      insideHorizontal: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
+      insideVertical: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
+    },
+    rows: rows.map((row, index) => {
+      return new TableRow({
+        children: row.map((cellText) => {
+          return new TableCell({
+            children: [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: cellText,
+                    bold: index === 0,
+                    size: 20,
+                  }),
+                ],
+              }),
+            ],
+            margins: { top: 200, bottom: 200, left: 200, right: 200 },
+          });
+        }),
+      });
+    }),
+  });
+}

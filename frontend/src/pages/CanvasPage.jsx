@@ -21,6 +21,7 @@ const CanvasPage = () => {
   const [templateKey, setTemplateKey] = useState(null);
   const [canvasId, setCanvasId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubscribed, setIsSubscribed] = useState(false);
   if (selectedChecklistPoint) {
     console.log(selectedChecklistPoint.id);
   }
@@ -33,10 +34,17 @@ const CanvasPage = () => {
           { withCredentials: true }
         );
         console.log("user is found in canvas");
+        // if (!response.data.isSubscribed) {
+        //   alert(
+        //     "You need to subscribe to access this feature. Please go to the payment page."
+        //   );
+        //   return;
+        // }
         setResearchTitle(response.data.researchTitle);
         setAuthorName(response.data.authorName);
         setCanvasId(response.data._id);
         setView("canvas");
+        setIsSubscribed(response.data.isSubscribed);
         console.log("response is:", response);
       } catch (error) {
         console.log("No existing canvas found");
@@ -118,21 +126,21 @@ const CanvasPage = () => {
         } catch (error) {
           console.error("Error fetching/creating template:", error);
         }
-        try {
-          const response = await axios.post(
-            "http://localhost:5000/api/template/start",
-            {
-              canvasId,
-              templateId: templateKeyString,
-              componentName: selectedComponent,
-              checklistStep: selectedPoint.id,
-            },
-            { withCredentials: true }
-          );
-          console.log("Template fetched/created:", response.data.template);
-        } catch (error) {
-          console.error("Error fetching/creating template:", error);
-        }
+        // try {
+        //   const response = await axios.post(
+        //     "http://localhost:5000/api/template/start",
+        //     {
+        //       canvasId,
+        //       templateId: templateKeyString,
+        //       componentName: selectedComponent,
+        //       checklistStep: selectedPoint.id,
+        //     },
+        //     { withCredentials: true }
+        //   );
+        //   console.log("Template fetched/created:", response.data.template);
+        // } catch (error) {
+        //   console.error("Error fetching/creating template:", error);
+        // }
 
         setView("template");
       } else {
@@ -146,23 +154,23 @@ const CanvasPage = () => {
     if (selectedChecklistPoint && templateKey) {
       console.log("Selected Checklist Point Updated:", selectedChecklistPoint);
 
-      axios
-        .post(
-          "http://localhost:5000/api/template/start",
-          {
-            canvasId,
-            templateId: templateKey,
-            componentName: selectedComponent,
-            checklistStep: selectedChecklistPoint.id,
-          },
-          { withCredentials: true }
-        )
-        .then((response) => {
-          console.log("Template fetched/created:", response.data.template);
-        })
-        .catch((error) => {
-          console.error("Error fetching/creating template:", error);
-        });
+      // axios
+      //   .post(
+      //     "http://localhost:5000/api/template/start",
+      //     {
+      //       canvasId,
+      //       templateId: templateKey,
+      //       componentName: selectedComponent,
+      //       checklistStep: selectedChecklistPoint.id,
+      //     },
+      //     { withCredentials: true }
+      //   )
+      //   .then((response) => {
+      //     console.log("Template fetched/created:", response.data.template);
+      //   })
+      //   .catch((error) => {
+      //     console.error("Error fetching/creating template:", error);
+      //   });
     }
   }, [selectedChecklistPoint, templateKey, canvasId]);
   return (

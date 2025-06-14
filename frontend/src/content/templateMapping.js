@@ -31,6 +31,20 @@ import RQTemplate3 from "../components/Templates/Research Questions/RQTemplate3"
 import RQTemplate4 from "../components/Templates/Research Questions/RQTemplate4";
 import RQTemplate5 from "../components/Templates/Research Questions/RQTemplate5";
 import RQTemplate6 from "../components/Templates/Research Questions/RQTemplate6";
+import ROTemplate1 from "../components/Templates/Research Outcomes/ROTemplate1";
+import ROTemplate3 from "../components/Templates/Research Outcomes/ROTemplate3";
+import ROTemplate4 from "../components/Templates/Research Outcomes/ROTemplate4";
+import ROTemplate5 from "../components/Templates/Research Outcomes/ROTemplate5";
+// import RMTemplate2 from "../components/Templates/Research Methadology/RMTemplate2";
+import RMTemplate2 from "../components/Templates/Research Methadology/RMTemplate2";
+import RMTemplate4 from "../components/Templates/Research Methadology/RMTemplate4";
+import RMTemplate6 from "../components/Templates/Research Methadology/RMTemplate6";
+import KMTemplate2 from "../components/Templates/Key Resources/KMTemplate2";
+import KMTemplate4 from "../components/Templates/Key Resources/KMTemplate4";
+import TCTemplate1 from "../components/Templates/Team Capacities/TCTemplate1";
+import TCTemplate2 from "../components/Templates/Team Capacities/TCTemplate2";
+import TCTemplate5 from "../components/Templates/Team Capacities/TCTemplate5";
+import TCTemplate6 from "../components/Templates/Team Capacities/TCTemplate6";
 
 const templateMapping = {
   "ProblemIdentification-Step1": Template1,
@@ -66,6 +80,19 @@ const templateMapping = {
   "ResearchQuestion-Step4": RQTemplate4,
   "ResearchQuestion-Step5": RQTemplate5,
   "ResearchQuestion-Step6": RQTemplate6,
+  "ResearchOutcome-Step1": ROTemplate1,
+  "ResearchOutcome-Step3": ROTemplate3,
+  "ResearchOutcome-Step4": ROTemplate4,
+  "ResearchOutcome-Step5": ROTemplate5,
+  "ResearchMethodology-Step2": RMTemplate2,
+  "ResearchMethodology-Step4": RMTemplate4,
+  "ResearchMethodology-Step6": RMTemplate6,
+  "KeyResources-Step2": KMTemplate2,
+  "KeyResources-Step4": KMTemplate4,
+  "TeamCapacities-Step1": TCTemplate1,
+  "TeamCapacities-Step2": TCTemplate2,
+  "TeamCapacities-Step5": TCTemplate5,
+  "TeamCapacities-Step6": TCTemplate6,
 };
 
 export default templateMapping;

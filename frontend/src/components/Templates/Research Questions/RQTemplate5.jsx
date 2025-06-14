@@ -17,7 +17,7 @@ const Template5 = ({ answers, onInputChange }) => {
       </p>
 
       <div
-        className="form-container"
+        className="template-form"
         style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
       >
         <div className="column" style={{ width: "100%" }}>

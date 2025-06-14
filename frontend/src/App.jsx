@@ -7,6 +7,9 @@ import Testpage1 from "./pages/Testpage1";
 import LoginPage from "./pages/LoginPage";
 import { AuthProvider } from "./context/authContext.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
+import PaymentPage from "./pages/PaymentPage.jsx";
+import ReturnPage from "./pages/ReturnPage.jsx";
+import EasypaisaPayment from "./pages/EasypaisaPayment.jsx";
 
 function App() {
   return (
@@ -18,11 +21,9 @@ function App() {
             <Route path="/homepage" element={<LandingPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/Login" element={<LoginPage />} />
-            {/* <Route path="/" element={<LoginPage />} /> */}
             <Route path="/test" element={<Testpage1 />} />
             <Route path="/canvas" element={<CanvasPage />} />
             <Route path="/test1" element={<TestPage />} />
-            <Route path="/Dashboard" element={<AdminDashboard />} />
           </Routes>
         </Router>
       </AuthProvider>

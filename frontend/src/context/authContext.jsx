@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
         { withCredentials: true }
       );
       setUser(response.data.user);
-      console.log("user is" + user);
+      console.log("user subscription is" + response.data.user.isSubscribed);
     } catch (error) {
       console.log("User not authenticated");
       setUser(null);
@@ -38,6 +38,7 @@ export const AuthProvider = ({ children }) => {
     console.log("AuthContext mounted, calling checkAuthStatus");
     checkAuthStatus();
   }, []);
+
   return (
     <AuthContext.Provider value={{ user, setUser, checkAuthStatus, logout }}>
       {children}

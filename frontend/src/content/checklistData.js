@@ -253,6 +253,217 @@ const checklistData = {
       completed: false,
     },
   ],
+  "Research Outcome": [
+    {
+      id: 1,
+      title: "Step 1",
+      description:
+        "Expected outcome e.g., product, process, service, training for process accomplishment or composition of matter etc. ",
+      completed: false,
+    },
+    {
+      id: 2,
+      title: "Step 2",
+      description:
+        "Expected outcome with respect to technology readiness level e.g., concept, basic principle, proof of concept model, simulation, functional prototype, product etc",
+      completed: false,
+    },
+    {
+      id: 3,
+      title: "Step 3",
+      description:
+        "Expected outcome e.g., full design or 3D drawing, functional prototype and on-demand production etc. ",
+      completed: false,
+    },
+    {
+      id: 4,
+      title: "Step 4",
+      description:
+        "Expected outcome e.g., publication in conference proceedings and research journals or applying for patent. ",
+      completed: false,
+    },
+    {
+      id: 5,
+      title: "Step 5",
+      description:
+        "Expected outcome in any form proving the validity of science behind it and a convincing proof that it is good enough to be implemented.",
+      completed: false,
+    },
+    {
+      id: 6,
+      title: "Step 6",
+      description: "Invention disclosure to the Technology Transfer Office.",
+      completed: false,
+    },
+    {
+      id: 7,
+      title: "Step 7",
+      description:
+        "Interest towards founding a company developing a business model canvas in future and describing proposed mechanisms for it. ",
+      completed: false,
+    },
+  ],
+  "Research Methodology": [
+    {
+      id: 1,
+      title: "Step 1",
+      description:
+        "Flowchart showing all stages of the research process e.g literature review, survey, data collection, comparisons, production, modelling, simulations, experimentation, analysis, testing, designing, drawings, reporting, presenting work in conference, writing paper or patent or disclosing invention to the Technology Transfer Office (TTO) etc. ",
+      completed: false,
+    },
+    {
+      id: 2,
+      title: "Step 2",
+      description:
+        "Separate research methods for accomplishing each stage of the research process.",
+      completed: false,
+    },
+    {
+      id: 3,
+      title: "Step 3",
+      description:
+        "Expected key deliverable for each stage e.g. experimental results, presentation, research paper, functional prototype, proof of concept, beta software etc.",
+      completed: false,
+    },
+    {
+      id: 4,
+      title: "Step 4",
+      description:
+        "Barriers or pitfalls (if any) in order to accomplish each stage and ways of handling these barriers.",
+      completed: false,
+    },
+    {
+      id: 5,
+      title: "Step 5",
+      description:
+        "Timeline for each stage to be accomplished and collective time of completing the proposed invention",
+      completed: false,
+    },
+    {
+      id: 6,
+      title: "Step 6",
+      description: "Tentative details of travel outside lab (if desired). ",
+      completed: false,
+    },
+  ],
+  "Key Resources": [
+    {
+      id: 1,
+      title: "Step 1",
+      description:
+        "List of resources required to meet the key deliverables:  \n-Tangible \n-Intangible ",
+      completed: false,
+    },
+    {
+      id: 2,
+      title: "Step 2",
+      description:
+        "List of equipment e.g. 3D printers, 3D Scanners, mechanical and electrical labs, laser cutting, water jet cutter, engraving, simulators and software CAD/CAM, Solidworks, Sprutcam, GWizard, Meshmixer, materials (PVC, Vinyle, Styrene) and material testing devices, chemicals and other supplies for liquid prototyping etc.",
+      completed: false,
+    },
+    {
+      id: 3,
+      title: "Step 3",
+      description:
+        "Two separate lists of equipment: \n- Available in academic and innovation labs and accessible  \n-Not available and required to be purchased ",
+      completed: false,
+    },
+    {
+      id: 4,
+      title: "Step 4",
+      description:
+        "Justifications behind advancing research within university premises and/or access to resources outside world.",
+      completed: false,
+    },
+    {
+      id: 5,
+      title: "Step 5",
+      description:
+        "Identification of potential collaborators and researchers at other institutes and industries.",
+      completed: false,
+    },
+  ],
+  Funding: [
+    {
+      id: 1,
+      title: "Step 1",
+      description:
+        "Total grant desired for the research process supporting invention. ",
+      completed: false,
+    },
+    {
+      id: 2,
+      title: "Step 2",
+      description:
+        "Budget desired for tangible resources and equipment required for different key deliverables.",
+      completed: false,
+    },
+    {
+      id: 3,
+      title: "Step 3",
+      description:
+        "Budget desired for intangible resources including skills and capacities of team members.",
+      completed: false,
+    },
+    {
+      id: 4,
+      title: "Step 4",
+      description:
+        "Budget desired for visits and organizing meetings with stakeholders for discovering end user needs and industrial interest.",
+      completed: false,
+    },
+    {
+      id: 5,
+      title: "Step 5",
+      description:
+        "Funding desired w.r.t Technology Readiness Level (TRL) e.g., basic principles, technology concept, proof of concept, validation in laboratory, model demonstration, functional prototype, test qualified demonstration and/or evaluation of commercial potential.",
+      completed: false,
+    },
+  ],
+  "Team Capacities": [
+    {
+      id: 1,
+      title: "Step 1",
+      description:
+        "Configuration of team members e.g. Principal Investigator, Co-Investigator, students, collaborator, Industrial expert, end users etc.",
+      completed: false,
+    },
+    {
+      id: 2,
+      title: "Step 2",
+      description:
+        "Names and association of each team member with its department, university or industry etc.",
+      completed: false,
+    },
+    {
+      id: 3,
+      title: "Step 3",
+      description:
+        "Skills and capacities of each team member in order to achieve the key deliverables.",
+      completed: false,
+    },
+    {
+      id: 4,
+      title: "Step 4",
+      description:
+        "Presence or absence (if any) of skills and capacities of team members in order to achieve the key deliverables.",
+      completed: false,
+    },
+    {
+      id: 5,
+      title: "Step 5",
+      description:
+        "Background of PI in terms of research expertise and experiences in the commercialization process",
+      completed: false,
+    },
+    {
+      id: 6,
+      title: "Step 6",
+      description:
+        "Motivation of each team member including PI towards proposed invention and commercialization process e.g., owns and operates a company or license technology to other companies etc.",
+      completed: false,
+    },
+  ],
 };
 
 export default checklistData;
