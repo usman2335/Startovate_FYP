@@ -1,6 +1,4 @@
-// This is your test secret API key.
-const STRIPE_SECRET = process.env.STRIPE_SECRET;
-const stripe = require("stripe")(STRIPE_SECRET);
+const stripe = require("stripe")(process.env.STRIPE_SECRET);
 
 exports.createSession = async (req, res) => {
   try {
