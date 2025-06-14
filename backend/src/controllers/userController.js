@@ -104,7 +104,9 @@ exports.getUser = async (req, res) => {
   try {
     // const user = req.user;
     const userId = req.user.id;
-    const user = await User.findById(userId).select("fullName email role");
+    const user = await User.findById(userId).select(
+      "fullName email role isSubscribed"
+    );
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -116,6 +118,7 @@ exports.getUser = async (req, res) => {
         fullName: user.fullName,
         email: user.email,
         role: user.role,
+        isSubscribed: user.isSubscribed,
       },
     });
   } catch (error) {
@@ -128,4 +131,19 @@ exports.updateHasCanvas = async (req, res) => {
     const userId = req.user.id;
     await User.findByIdAndUpdate(userId, { hasCanvas: true });
   } catch (error) {}
+};
+
+exports.markUserAsSubscribed = async (req, res) => {
+  try {
+    console.log("Marking user as subscribed called");
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { isSubscribed: true },
+      { new: true }
+    );
+
+    res.status(200).json({ message: "User marked as subscribed", user });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update subscription status" });
+  }
 };

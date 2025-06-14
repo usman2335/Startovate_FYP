@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import { AuthContext } from "../context/authContext";
 import "../CSS/HeroSection.css";
 import "../CSS/Utilities.css";
 import Button from "./Button";
@@ -6,9 +7,8 @@ import LeanCanvas from "./LeanCanvas";
 import { NavLink } from "react-router-dom";
 
 const HeroSection = () => {
-  const handleClick = () => {
-    alert("button was clicked again");
-  };
+  const { user } = useContext(AuthContext);
+
   return (
     <>
       <div className="content-wrapper flex">
@@ -23,14 +23,25 @@ const HeroSection = () => {
             platform.
           </p>
           <div className="btn">
-            <NavLink to="/Canvas" className="nav-link">
-              <Button
-                label="GET STARTED ->"
-                padding="3% 13%"
-                color="#f1f1f1"
-                fontSize={"1.5em"}
-              ></Button>
-            </NavLink>
+            {user?.isSubscribed ? (
+              <NavLink to="/Canvas" className="nav-link">
+                <Button
+                  label="START NOW ->"
+                  padding="3% 13%"
+                  color="#f1f1f1"
+                  fontSize={"1.5em"}
+                ></Button>
+              </NavLink>
+            ) : (
+              <NavLink to="/Payment" className="nav-link">
+                <Button
+                  label="SUBSCRIBE NOW ->"
+                  padding="3% 13%"
+                  color="#f1f1f1"
+                  fontSize={"1.5em"}
+                ></Button>
+              </NavLink>
+            )}
           </div>
         </div>
         <div className="hero-right">

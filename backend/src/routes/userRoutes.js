@@ -4,6 +4,7 @@ const {
   getUser,
   login,
   logout,
+  markUserAsSubscribed,
 } = require("../controllers/userController");
 const protect = require("../middleware/authMiddleWare");
 
@@ -13,5 +14,6 @@ router.post("/signup", signup);
 router.post("/login", login);
 router.post("/logout", logout);
 router.get("/getUser", protect, getUser);
+router.patch("/mark-subscribed", protect, markUserAsSubscribed);
 
 module.exports = router;

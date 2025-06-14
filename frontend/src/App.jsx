@@ -6,6 +6,9 @@ import TestPage from "./pages/TestPage";
 import Testpage1 from "./pages/Testpage1";
 import LoginPage from "./pages/LoginPage";
 import { AuthProvider } from "./context/authContext.jsx";
+import PaymentPage from "./pages/PaymentPage.jsx";
+import ReturnPage from "./pages/ReturnPage.jsx";
+import EasypaisaPayment from "./pages/EasypaisaPayment.jsx";
 
 function App() {
   return (
@@ -20,7 +23,9 @@ function App() {
             <Route path="/test" element={<Testpage1 />} />
             <Route path="/canvas" element={<CanvasPage />} />
             <Route path="/test1" element={<TestPage />} />
-            {/* <Route path="/student" element={<StudentPage />} /> */}
+            <Route path="/payment" element={<PaymentPage />} />
+            <Route path="/return" element={<ReturnPage />} />
+            <Route path="/easypaisa" element={<EasypaisaPayment />} />
           </Routes>
         </Router>
       </AuthProvider>
