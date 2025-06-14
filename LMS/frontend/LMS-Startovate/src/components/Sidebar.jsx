@@ -21,49 +21,29 @@ const Sidebar = () => {
       end: true,
     },
     {
-      name: "Manage Finances",
-      path: "/dashboard/finances/add-expense",
+      name: "Manage Users",
+      path: "/ManageUsers",
       icon: <WalletOutlined />,
-      subItems: [
-        {
-          name: "Add Expense",
-          path: "/dashboard/finances/add-expense",
-        },
-        {
-          name: "Add Budget",
-          path: "/dashboard/finances/add-budget",
-        },
-      ],
     },
     {
-      name: "Transactions",
+      name: "Manage Courses",
       path: "/dashboard/transactions",
       icon: <TransactionOutlined />,
     },
     {
-      name: "Analytics",
+      name: "Course Approvals",
       path: "/dashboard/analytics",
       icon: <LineChartOutlined />,
     },
     {
-      name: "Financial Records",
+      name: "Payment info ",
       path: "/dashboard/records",
       icon: <ReadOutlined />,
-    },
-    {
-      name: "Tips & Articles",
-      path: "/dashboard/tips",
-      icon: <BulbOutlined />,
-    },
-    {
-      name: "Settings",
-      path: "/dashboard/settings",
-      icon: <SettingOutlined />,
     },
   ];
 
   return (
-    <div className="hidden md:block md:w-64 bg-tertiary-blue text-white h-screen p-6 space-y-4">
+    <div className="hidden md:block md:w-64 bg-#F7E1E1 text-white h-screen p-6 space-y-4">
       <img
         src={logo} // ✅ Use src, not path
         alt="Logo"

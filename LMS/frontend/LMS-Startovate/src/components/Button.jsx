@@ -12,8 +12,8 @@ const Button = ({
 }) => {
   const styleProps = {
     padding,
-    color: undefined, // Tailwind handles text/background classes
-    fontSize: undefined,
+    color: "blue", // Tailwind handles text/background classes
+    fontSize: 5,
     width,
     marginTop,
   };
