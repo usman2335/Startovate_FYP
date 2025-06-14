@@ -98,6 +98,7 @@ const getUser = async (req, res) => {
 const createUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
+    console.log(req.body);
 
     if (!name || !email || !password || !role) {
       return res.status(400).json({ error: "All fields are required" });
@@ -108,7 +109,7 @@ const createUser = async (req, res) => {
       return res.status(400).json({ error: "Email already exists" });
     }
 
-    if (role === "admin" && req.user.role !== "superadmin") {
+    if (role === "teacher" && req.user.role !== "superadmin") {
       return res
         .status(403)
         .json({ error: "Only superadmin can create an admin" });

@@ -5,6 +5,7 @@
 body {
   font-family: "Poppins", sans-serif;
 }
+
 @theme {
   --color-mint-500: oklch(0.72 0.11 178);
   --color-primary-blue: #183e6a;

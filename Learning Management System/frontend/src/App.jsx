@@ -10,11 +10,8 @@ const App = () => {
     <AuthProvider>
       <Router>
         <Routes>
-          {/* Public Routes */}
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
-
-          {/* Dashboard Layout with Nested Routes */}
           <Route path="/" element={<DashboardLayout />}>
             <Route index element={<h1>Welcome to Dashboard</h1>} />
             <Route path="manageusers" element={<ManageUsers />} />
