@@ -22,7 +22,12 @@ router.post("/login", login);
 router.post("/logout", logout);
 
 //delete
-router.delete("/:id", protect, deleteUser);
+router.delete("/:id", deleteUser);
+// updating user
+router.put("/:id", updateUser);
+
+//adding the superadmin
+router.post("/createAdmin", createUser); // Create user (admin or student)
 
 // // ✅ Protected Route: Get currently logged-in user
 //router.get("/me", protect, getUser);

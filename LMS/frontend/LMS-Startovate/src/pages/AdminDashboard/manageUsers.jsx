@@ -71,8 +71,54 @@ const ManageUsers = () => {
   ];
 
   const handleEdit = (user) => {
-    Swal.fire("Edit User", `Edit functionality for ${user.name}`, "info");
-    // You can show a modal here for editing
+    Swal.fire({
+      title: "Edit User",
+      html: `
+        <input id="swal-name" class="swal2-input" placeholder="Name" value="${
+          user.name
+        }" />
+        <input id="swal-email" class="swal2-input" placeholder="Email" value="${
+          user.email
+        }" />
+        <select id="swal-role" class="swal2-select">
+          <option value="student" ${
+            user.role === "student" ? "selected" : ""
+          }>Student</option>
+          <option value="teacher" ${
+            user.role === "teacher" ? "selected" : ""
+          }>Teacher</option>
+        </select>
+      `,
+      confirmButtonText: "Update",
+      showCancelButton: true,
+      preConfirm: () => {
+        const name = document.getElementById("swal-name").value;
+        const email = document.getElementById("swal-email").value;
+        const role = document.getElementById("swal-role").value;
+
+        if (!name || !email) {
+          Swal.showValidationMessage("Please fill in all fields");
+          return false;
+        }
+
+        return { name, email, role };
+      },
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const updatedUser = result.value;
+          await axios.put(
+            `http://localhost:5000/api/users/${user._id}`,
+            updatedUser
+          );
+
+          Swal.fire("Updated!", "User updated successfully", "success");
+          fetchUsers(); // Refresh list
+        } catch (error) {
+          Swal.fire("Error", "Failed to update user", "error");
+        }
+      }
+    });
   };
 
   const handleDelete = async (id) => {
@@ -85,9 +131,50 @@ const ManageUsers = () => {
     }
   };
 
-  const handleAddAdmin = () => {
-    Swal.fire("Add Admin", "Open modal for creating a new admin", "info");
-    // Open your modal or redirect to form page
+  const handleAddAdmin = async () => {
+    const { value: formValues } = await Swal.fire({
+      title: "Add Admin",
+      html:
+        `<input id="swal-input1" class="swal2-input" placeholder="Name">` +
+        `<input id="swal-input2" class="swal2-input" placeholder="Email">` +
+        `<input id="swal-input3" class="swal2-input" placeholder="Password" type="password">`,
+      focusConfirm: false,
+      showCancelButton: true,
+      preConfirm: () => {
+        const name = document.getElementById("swal-input1").value;
+        const email = document.getElementById("swal-input2").value;
+        const password = document.getElementById("swal-input3").value;
+
+        if (!name || !email || !password) {
+          Swal.showValidationMessage("All fields are required");
+          return false;
+        }
+
+        return { name, email, password };
+      },
+    });
+
+    if (formValues) {
+      try {
+        const response = await axios.post(
+          "http://localhost:5000/api/users/createAdmin",
+          {
+            ...formValues,
+            role: "superadmin", // ensure the role is explicitly admin
+          }
+        );
+
+        Swal.fire("Success", "Admin user added", "success");
+        fetchUsers(); // Refresh the user list after addition
+      } catch (error) {
+        console.error("Add Admin Error:", error);
+        Swal.fire(
+          "Error",
+          error.response?.data?.message || "Failed to add admin",
+          "error"
+        );
+      }
+    }
   };
 
   return (

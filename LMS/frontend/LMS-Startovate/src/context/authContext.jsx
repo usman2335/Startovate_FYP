@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuthStatus = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/users/me", {
+      const response = await axios.get("http://localhost:5000/api/users", {
         withCredentials: true,
       });
       setUser(response.data.user);
