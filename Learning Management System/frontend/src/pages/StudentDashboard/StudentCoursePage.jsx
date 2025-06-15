@@ -40,55 +40,81 @@ const StudentCoursePage = () => {
   const renderVideo = () => {
     if (!currentVideo) return null;
 
-    const videoId = getYouTubeVideoId(currentVideo.url);
+    // Handle YouTube video
+    if (currentVideo.type === "youtube") {
+      const videoId = getYouTubeVideoId(currentVideo.url);
 
-    const onPlayerReady = (event) => {
-      const duration = event.target.getDuration();
-      const player = event.target;
+      const onPlayerReady = (event) => {
+        const duration = event.target.getDuration();
+        const player = event.target;
 
-      let lastPercent = watchProgress[videoId] || 0;
+        let lastPercent = watchProgress[videoId] || 0;
 
-      const interval = setInterval(() => {
-        if (player.getPlayerState() !== 1) return; // Only track if playing
+        const interval = setInterval(() => {
+          if (player.getPlayerState() !== 1) return;
 
-        const currentTime = player.getCurrentTime();
-        const percent = Math.min((currentTime / duration) * 100, 100).toFixed(
-          0
+          const currentTime = player.getCurrentTime();
+          const percent = Math.min((currentTime / duration) * 100, 100).toFixed(
+            0
+          );
+
+          if (percent > lastPercent) {
+            lastPercent = percent;
+            setWatchProgress((prev) => ({
+              ...prev,
+              [videoId]: parseInt(percent),
+            }));
+          }
+
+          if (percent >= 100) {
+            clearInterval(interval);
+          }
+        }, 1000);
+
+        return () => clearInterval(interval);
+      };
+
+      return (
+        <YouTube
+          videoId={videoId}
+          opts={{
+            height: "400",
+            width: "100%",
+            playerVars: {
+              autoplay: 1,
+            },
+          }}
+          onReady={onPlayerReady}
+        />
+      );
+    }
+
+    // Handle Google Drive video
+    if (currentVideo.type === "drive") {
+      const match = currentVideo.url.match(/\/file\/d\/(.*?)\//);
+      const fileId = match ? match[1] : null;
+
+      if (fileId) {
+        return (
+          <iframe
+            src={`https://drive.google.com/file/d/${fileId}/preview`}
+            width="100%"
+            height="400"
+            allow="autoplay"
+            frameBorder="0"
+            allowFullScreen
+          ></iframe>
         );
+      } else {
+        return (
+          <p className="text-red-500 text-center">
+            Invalid Google Drive link format.
+          </p>
+        );
+      }
+    }
 
-        // Only update if progress increases
-        if (percent > lastPercent) {
-          lastPercent = percent;
-
-          setWatchProgress((prev) => ({
-            ...prev,
-            [videoId]: parseInt(percent),
-          }));
-        }
-
-        // Stop interval if video completed
-        if (percent >= 100) {
-          clearInterval(interval);
-        }
-      }, 1000);
-
-      // Clear interval on component unmount or video change
-      return () => clearInterval(interval);
-    };
-
-    return (
-      <YouTube
-        videoId={videoId}
-        opts={{
-          height: "400",
-          width: "100%",
-          playerVars: {
-            autoplay: 1,
-          },
-        }}
-        onReady={onPlayerReady}
-      />
-    );
+    return <p className="text-red-500 text-center">Unsupported video type.</p>;
   };
 
   if (loading) return <Spin className="mt-10 block mx-auto" size="large" />;
