@@ -23,6 +23,9 @@ app.use("/api/users", userRoutes);
 const courseRoutes = require("./src/routes/courseRoutes");
 app.use("/api/courses", courseRoutes);
 
+const paymentRoutes = require("./src/routes/paymentRoutes");
+app.use("/api/payment", paymentRoutes);
+
 // Root endpoint
 app.get("/", (req, res) => {
   res.send("User Management API is running");
