@@ -28,12 +28,18 @@ const EnrollCourses = () => {
     const fetchCourses = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/courses/student/approved"
+          "http://localhost:5000/api/enroll/available-courses",
+          { withCredentials: true }
         );
-        const formatted = res.data.courses.map((course) => ({
+        console.log(res.data); // Good for debugging
+
+        const formatted = res.data.availableCourses.map((course) => ({
           ...course,
           id: course._id,
-          instructor: course.instructor?.name || "Unknown",
+          instructor:
+            typeof course.instructor === "string"
+              ? "Unknown"
+              : course.instructor?.name || "Unknown",
           duration: course.duration || "3h",
           durationMinutes: course.durationMinutes || 180,
           image:
@@ -47,10 +53,11 @@ const EnrollCourses = () => {
         setFilteredCourses(formatted);
         setLoading(false);
       } catch (error) {
-        message.error("Failed to load courses");
+        message.error("Failed to load available courses");
         setLoading(false);
       }
     };
+
     fetchCourses();
   }, []);
 
