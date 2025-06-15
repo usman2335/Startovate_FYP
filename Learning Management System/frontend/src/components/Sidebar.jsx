@@ -1,5 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
-import logo from "../assets/Logo.png";
+import logo from "../../public/assets/Logo.png";
 import {
   AppstoreOutlined,
   WalletOutlined,

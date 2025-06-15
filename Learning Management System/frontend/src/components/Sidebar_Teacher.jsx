@@ -1,5 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
-import logo from "../assets/Logo.png";
+import logo from "../../public/assets/Logo.png";
 import {
   AppstoreOutlined,
   WalletOutlined,
@@ -21,13 +21,18 @@ const Sidebar = () => {
       end: true,
     },
     {
-      name: "Manage Students",
-      path: "/teacher/managestudents",
+      name: "View Students",
+      path: "/teacher/viewstudents",
       icon: <WalletOutlined />,
     },
     {
       name: "Manage Courses",
       path: "/teacher/managecourses",
+      icon: <TransactionOutlined />,
+    },
+    {
+      name: "Add Course",
+      path: "/teacher/addcourses",
       icon: <TransactionOutlined />,
     },
   ];

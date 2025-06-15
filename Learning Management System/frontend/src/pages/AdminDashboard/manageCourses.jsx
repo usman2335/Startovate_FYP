@@ -12,10 +12,12 @@ const ManageCourses = () => {
   const [form] = Form.useForm();
 
   const fetchCourses = async () => {
-    const res = await axios.get("http://localhost:5000/api/courses");
-    //console.log(res.data);
+    const res = await axios.get("http://localhost:5000/api/courses/all", {
+      withCredentials: true,
+    });
+    console.log(res.data);
     //console.log("Courses fetched successfully");
-    setCourses(res.data);
+    setCourses(res.data.courses);
   };
 
   const fetchTeachers = async () => {
