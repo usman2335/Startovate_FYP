@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button, Modal, Form, Input, Select } from "antd";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const { Option } = Select;
 
@@ -15,7 +16,7 @@ const ManageCourses = () => {
     const res = await axios.get("http://localhost:5000/api/courses/all", {
       withCredentials: true,
     });
-    console.log(res.data);
+    console.log("course", res.data);
     //console.log("Courses fetched successfully");
     setCourses(res.data.courses);
   };
@@ -28,6 +29,7 @@ const ManageCourses = () => {
       if (Array.isArray(allUsers)) {
         const teacherUsers = allUsers.filter((user) => user.role === "teacher");
         setTeachers(teacherUsers);
+        console.log("Teachers fetched successfully:", teacherUsers);
       } else {
         console.error("Expected an array of users, got:", allUsers);
       }
@@ -42,17 +44,30 @@ const ManageCourses = () => {
   }, []);
 
   const handleSubmit = async (values) => {
-    if (editingCourse) {
-      await axios.put(
-        `http://localhost:5000/api/courses/${editingCourse._id}`,
-        values
-      );
-    } else {
-      await axios.post("http://localhost:5000/api/courses", values);
+    const payload = {
+      ...values, // ✅ rename before sending
+    };
+
+    try {
+      if (editingCourse) {
+        await axios.put(
+          `http://localhost:5000/api/courses/${editingCourse._id}`,
+          payload,
+          { withCredentials: true }
+        );
+      } else {
+        await axios.post("http://localhost:5000/api/courses", payload, {
+          withCredentials: true,
+        });
+      }
+
+      setModalVisible(false);
+      form.resetFields();
+      fetchCourses();
+    } catch (err) {
+      console.error("Course submission failed:", err);
+      Swal.fire("Error", "Failed to submit course. Try again.", "error");
     }
-    setModalVisible(false);
-    form.resetFields();
-    fetchCourses();
   };
 
   const openEditModal = (course) => {
@@ -62,8 +77,29 @@ const ManageCourses = () => {
   };
 
   const handleDelete = async (id) => {
-    await axios.delete(`/api/courses/${id}`);
-    fetchCourses();
+    try {
+      const confirm = await Swal.fire({
+        title: "Are you sure?",
+        text: "This action will delete the course permanently.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!",
+      });
+
+      if (confirm.isConfirmed) {
+        await axios.delete(`http://localhost:5000/api/courses/admin/${id}`, {
+          withCredentials: true,
+        });
+
+        Swal.fire("Deleted!", "The course has been deleted.", "success");
+        fetchCourses();
+      }
+    } catch (err) {
+      console.error("Delete failed:", err);
+      Swal.fire("Error", "Failed to delete course. Try again.", "error");
+    }
   };
 
   const columns = [
@@ -77,7 +113,7 @@ const ManageCourses = () => {
     },
     {
       title: "Teacher",
-      dataIndex: ["teacherId", "name"],
+      dataIndex: "instructorName",
     },
     {
       title: "Actions",
@@ -96,16 +132,6 @@ const ManageCourses = () => {
     <div style={{ padding: 24 }}>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <h2>Manage Courses</h2>
-        <Button
-          type="primary"
-          onClick={() => {
-            setEditingCourse(null);
-            form.resetFields();
-            setModalVisible(true);
-          }}
-        >
-          Add Course
-        </Button>
       </div>
 
       <Table columns={columns} dataSource={courses} rowKey="_id" />

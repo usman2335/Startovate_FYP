@@ -75,10 +75,10 @@ const ManageUsers = () => {
       title: "Edit User",
       html: `
         <input id="swal-name" class="swal2-input" placeholder="Name" value="${
-          user.name
+          user.name || ""
         }" />
         <input id="swal-email" class="swal2-input" placeholder="Email" value="${
-          user.email
+          user.email || ""
         }" />
         <select id="swal-role" class="swal2-select">
           <option value="student" ${
@@ -87,17 +87,21 @@ const ManageUsers = () => {
           <option value="teacher" ${
             user.role === "teacher" ? "selected" : ""
           }>Teacher</option>
+          <option value="admin" ${
+            user.role === "admin" ? "selected" : ""
+          }>Admin</option>
         </select>
       `,
       confirmButtonText: "Update",
       showCancelButton: true,
+      focusConfirm: false,
       preConfirm: () => {
-        const name = document.getElementById("swal-name").value;
-        const email = document.getElementById("swal-email").value;
+        const name = document.getElementById("swal-name").value.trim();
+        const email = document.getElementById("swal-email").value.trim();
         const role = document.getElementById("swal-role").value;
 
-        if (!name || !email) {
-          Swal.showValidationMessage("Please fill in all fields");
+        if (!name || !email || !role) {
+          Swal.showValidationMessage("All fields are required");
           return false;
         }
 
@@ -107,16 +111,22 @@ const ManageUsers = () => {
       if (result.isConfirmed) {
         try {
           const updatedUser = result.value;
-          console.log("Updating user:", updatedUser);
-          await axios.put(
+
+          const response = await axios.put(
             `http://localhost:5000/api/users/${user._id}`,
-            updatedUser
+            updatedUser,
+            { withCredentials: true } // ✅ ensure this if using cookies
           );
 
           Swal.fire("Updated!", "User updated successfully", "success");
-          fetchUsers(); // Refresh list
+          fetchUsers(); // Refresh user list
         } catch (error) {
-          Swal.fire("Error", "Failed to update user", "error");
+          console.error("Error updating user:", error);
+          Swal.fire(
+            "Error",
+            error.response?.data?.error || "Failed to update user",
+            "error"
+          );
         }
       }
     });

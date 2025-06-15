@@ -16,6 +16,7 @@ import StripePaymentPage from "./pages/StripePaymentPage";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage.jsx";
 import ViewEnrolledStudents from "./pages/TeacherDashboard/ViewStudents.jsx";
 import StudentCoursePage from "./pages/StudentDashboard/StudentCoursePage.jsx";
+import ApproveCourses from "./pages/AdminDashboard/ApproveCourses.jsx";
 
 const App = () => {
   return (
@@ -28,6 +29,7 @@ const App = () => {
             <Route index element={<h1>Welcome to Dashboard</h1>} />
             <Route path="manageusers" element={<ManageUsers />} />
             <Route path="managecourses" element={<ManageCourses />} />
+            <Route path="courseapprovals" element={<ApproveCourses />} />
           </Route>
           <Route path="/teacher" element={<TeacherDashboardLayout />}>
             <Route index element={<h1>Welcome to Teacehrs Dashboard</h1>} />

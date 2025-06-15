@@ -32,7 +32,7 @@ const Sidebar = () => {
     },
     {
       name: "Course Approvals",
-      path: "/dashboard/analytics",
+      path: "/admin/courseapprovals",
       icon: <LineChartOutlined />,
     },
     {
