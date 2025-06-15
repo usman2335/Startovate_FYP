@@ -61,6 +61,7 @@ exports.getAvailableCourses = async (req, res) => {
 
     const availableCourses = await Course.find({
       _id: { $nin: enrolledCourseIds },
+      isApproved: true,
     });
 
     res.status(200).json({ success: true, availableCourses });

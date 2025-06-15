@@ -31,7 +31,7 @@ router.get("/all", protect, getAllCourses);
 router.delete("/admin/:id", protect, deleteCourseAdmin);
 
 // Student
-router.get("/student/approved", getApprovedCourses);
+router.get("/approved", getApprovedCourses);
 router.get("/:id", protect, getCourseById);
 
 // Teacher (needs auth middleware to identify the teacher)

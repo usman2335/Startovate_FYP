@@ -31,15 +31,11 @@ const EnrollCourses = () => {
           "http://localhost:5000/api/enroll/available-courses",
           { withCredentials: true }
         );
-        console.log(res.data); // Good for debugging
 
         const formatted = res.data.availableCourses.map((course) => ({
           ...course,
           id: course._id,
-          instructor:
-            typeof course.instructor === "string"
-              ? "Unknown"
-              : course.instructor?.name || "Unknown",
+          instructor: course.instructorName || "Unknown",
           duration: course.duration || "3h",
           durationMinutes: course.durationMinutes || 180,
           image:
