@@ -1,4 +1,5 @@
 import React from "react";
+import "../CSS/Button.css";
 
 const Button = ({
   label,
@@ -8,27 +9,13 @@ const Button = ({
   fontSize,
   width,
   marginTop,
-  className = "",
+  className,
 }) => {
-  const styleProps = {
-    padding,
-    color: "blue", // Tailwind handles text/background classes
-    fontSize: 5,
-    width,
-    marginTop,
-  };
-
   return (
     <button
+      className={`button ${className}`} // Include custom class
       onClick={onClick}
-      style={styleProps}
-      className={`
-        ${width ?? "w-full"} py-2 px-4 
-        ${fontSize ?? "text-base md:text-lg"} 
-        rounded flex items-center justify-center cursor-pointer 
-        hover:bg-blue-900 transition duration-300 ease-in-out
-        ${color ?? "bg-primary-blue text-white"} ${className}
-      `}
+      style={{ padding, color, fontSize, width, marginTop }}
     >
       <span>{label}</span>
     </button>

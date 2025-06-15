@@ -23,6 +23,7 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!formData.email || !formData.password) {
       setErrors({
         email: !formData.email ? "Email is required" : "",
@@ -31,18 +32,21 @@ const LoginPage = () => {
       Swal.fire({
         icon: "error",
         title: "Login Failed",
-        text: "Something went wrong",
+        text: "Email and password are required",
       });
       return;
     }
+
     try {
       const response = await axios.post(
         "http://localhost:5000/api/users/login",
         formData,
         { withCredentials: true }
       );
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-      setTimeout(() => checkAuthStatus(), 100);
+
+      const user = response.data.user;
+      localStorage.setItem("user", JSON.stringify(user)); // Save logged-in user
+
       Swal.fire({
         icon: "success",
         title: "Login Successful",
@@ -50,9 +54,13 @@ const LoginPage = () => {
         timer: 1500,
         showConfirmButton: false,
       });
-      // checkAuthStatus();
 
-      setTimeout(() => navigate("/  "), 1500);
+      setTimeout(() => {
+        if (user.role === "superadmin") navigate("/admin");
+        else if (user.role === "teacher") navigate("/teacher");
+        else if (user.role === "student") navigate("/student");
+        else navigate("/"); // fallback
+      }, 1500);
     } catch (error) {
       Swal.fire({
         icon: "error",

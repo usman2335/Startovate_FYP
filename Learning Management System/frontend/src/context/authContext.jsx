@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
         }
       );
       const helo = response.data;
-      console.log(helo);
+      console.log("hello", helo);
       setUser(helo);
 
       console.log("user is", response.data.role);

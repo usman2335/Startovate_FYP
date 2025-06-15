@@ -5,25 +5,29 @@ const {
   getTeacherCourses,
   updateCourse,
   deleteCourse,
+  getAllCourses,
+  getApprovedCourses,
+  getEnrolledStudentsByTeacher,
 } = require("../controllers/courseController");
 
-const protect = require("../middleware/authMiddleware");
 const protect = require("../middleware/authMiddleware");
 
 // POST /api/courses
 router.post("/", createCourse);
 
 router.get("/", protect, getTeacherCourses);
+
 router.put("/:id", protect, updateCourse);
 router.delete("/:id", protect, deleteCourse);
 
 // Admin
-router.get("/admin/all", protect, courseController.getAllCourses);
+router.get("/all", protect, getAllCourses);
 
 // Student
-router.get("/student/approved", courseController.getApprovedCourses);
+router.get("/student/approved", getApprovedCourses);
 
 // Teacher (needs auth middleware to identify the teacher)
-router.get("/teacher/my-courses", protect, courseController.getTeacherCourses);
+router.get("/teacher/my-courses", protect, getTeacherCourses);
+router.get("/teacher/enrollments", protect, getEnrolledStudentsByTeacher);
 
 module.exports = router;

@@ -1,4 +1,5 @@
 const Course = require("../models/Course");
+const StudentCourse = require("../models/StudentCourse");
 
 const createCourse = async (req, res) => {
   try {
@@ -26,7 +27,7 @@ const createCourse = async (req, res) => {
 const deleteCourse = async (req, res) => {
   try {
     const courseId = req.params.id;
-    const teacherId = req.user.id._id; // Extracted from JWT via protect middleware
+    const teacherId = req.user._id; // Extracted from JWT via protect middleware
     console.log("courseid", courseId);
     console.log("teacherID", teacherId);
 
@@ -54,7 +55,7 @@ const deleteCourse = async (req, res) => {
 
 const getTeacherCourses = async (req, res) => {
   try {
-    const teacherId = req.user.id; // comes from JWT via `protect` middleware
+    const teacherId = req.user._id; // comes from JWT via `protect` middleware
     console.log("teacher if:", teacherId);
 
     const courses = await Course.find({ instructor: teacherId }).populate(
@@ -73,7 +74,7 @@ const updateCourse = async (req, res) => {
   try {
     const courseId = req.params.id;
     console.log("id", req.params.id);
-    const teacherId = req.user.id._id; // Extracted from JWT in `protect` middleware
+    const teacherId = req.user._id; // Extracted from JWT in `protect` middleware
     console.log("teacher id", req.user.id);
 
     // Find course first to verify ownership
@@ -104,17 +105,10 @@ const updateCourse = async (req, res) => {
   }
 };
 
-module.exports = {
-  createCourse,
-  getTeacherCourses,
-  updateCourse,
-  deleteCourse,
-};
-
 // 1. Admin – Get all courses
-exports.getAllCourses = async (req, res) => {
+const getAllCourses = async (req, res) => {
   try {
-    if (req.user.role !== "admin") {
+    if (req.user.role !== "superadmin") {
       return res
         .status(403)
         .json({ success: false, message: "Access denied. Admins only." });
@@ -128,7 +122,7 @@ exports.getAllCourses = async (req, res) => {
 };
 
 // 2. Student – Get only approved courses
-exports.getApprovedCourses = async (req, res) => {
+const getApprovedCourses = async (req, res) => {
   try {
     const courses = await Course.find({ isApproved: true });
     res.status(200).json({ success: true, courses });
@@ -137,13 +131,47 @@ exports.getApprovedCourses = async (req, res) => {
   }
 };
 
-// 3. Teacher – Get own courses (assuming teacher ID comes from auth)
-exports.getTeacherCourses = async (req, res) => {
+const getEnrolledStudentsByTeacher = async (req, res) => {
   try {
-    const teacherId = req.user.id; // Assuming middleware sets req.user
-    const courses = await Course.find({ instructor: teacherId });
-    res.status(200).json({ success: true, courses });
-  } catch (error) {
-    res.status(500).json({ success: false, message: "Server error" });
+    const teacherId = req.user._id;
+
+    console.log("teacher id", teacherId);
+    // Step 1: Find all courses by this teacher
+    const teacherCourses = await Course.find({ instructor: teacherId }).select(
+      "_id"
+    );
+
+    const courseIds = teacherCourses.map((course) => course._id);
+
+    // Step 2: Find all enrollments for these courses
+    const enrollments = await StudentCourse.find({ course: { $in: courseIds } })
+      .populate("student", "name email")
+      .populate("course", "title");
+
+    res.status(200).json(enrollments);
+  } catch (err) {
+    console.error("Error fetching enrolled students:", err.message);
+    res.status(500).json({ error: "Server error" });
   }
+};
+
+// // 3. Teacher – Get own courses (assuming teacher ID comes from auth)
+// const getTeacherCourses = async (req, res) => {
+//   try {
+//     const teacherId = req.user.id; // Assuming middleware sets req.user
+//     const courses = await Course.find({ instructor: teacherId });
+//     res.status(200).json({ success: true, courses });
+//   } catch (error) {
+//     res.status(500).json({ success: false, message: "Server error" });
+//   }
+// };
+
+module.exports = {
+  createCourse,
+  getTeacherCourses,
+  updateCourse,
+  deleteCourse,
+  getAllCourses,
+  getApprovedCourses,
+  getEnrolledStudentsByTeacher,
 };
