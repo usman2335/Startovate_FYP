@@ -1,28 +1,27 @@
 const jwt = require("jsonwebtoken");
 
-const protect = async (req, res, next) => {
-  let token = req.header("Cookie");
+const protect = (req, res, next) => {
+  const cookieHeader = req.header("Cookie");
+  if (!cookieHeader)
+    return res.status(401).json({ message: "Missing cookie header" });
 
-  if (!token) {
-    return res.status(404).json({ error: "Access denied. No token provided" });
-  }
+  const cookies = cookieHeader.split(";").reduce((acc, cookie) => {
+    const [key, value] = cookie.trim().split("=");
+    acc[key] = value;
+    return acc;
+  }, {});
 
-  const match = token.match(/token=([^;]*)/);
-  if (!match) {
-    return res.status(404).json({ error: "Access denied. Token not found" });
-  }
-
-  token = match[1]; // This is the correct token
-  console.log(`Extracted token: ${token}`);
+  const token = cookies.token;
+  if (!token)
+    return res.status(401).json({ message: "Token not found in cookies" });
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // ✅ Fix here
-    req.user = decoded;
-    console.log("Decoded user:", decoded);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = typeof decoded.id === "object" ? decoded.id : decoded;
+    console.log("User authenticated:", req.user);
     next();
-  } catch (error) {
-    res.status(400).json({ error: "Invalid token." });
+  } catch (err) {
+    return res.status(401).json({ message: "Invalid token" });
   }
 };
-
 module.exports = protect;

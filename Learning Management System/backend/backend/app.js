@@ -10,7 +10,7 @@ connectDB();
 // Middlewares
 app.use(
   cors({
-    origin: "http://localhost:5173", // frontend port (change if needed)
+    origin: "http://localhost:5174", // frontend port (change if needed)
     credentials: true,
   })
 );
@@ -22,6 +22,12 @@ app.use("/api/users", userRoutes);
 
 const courseRoutes = require("./src/routes/courseRoutes");
 app.use("/api/courses", courseRoutes);
+
+const paymentRoutes = require("./src/routes/paymentRoutes");
+app.use("/api/payment", paymentRoutes);
+
+const enrollRoutes = require("./src/routes/enrollRoutes");
+app.use("/api/enroll", enrollRoutes);
 
 // Root endpoint
 app.get("/", (req, res) => {
