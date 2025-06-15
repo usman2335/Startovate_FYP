@@ -13,10 +13,13 @@ const {
   deleteUser,
 } = require("../controllers/userController");
 
-const { protect } = require("../middleware/authMiddleware");
+const protect = require("../middleware/authMiddleware");
 
 // ✅ Public Authentication Routes
 router.get("/", getAllUsers); // Get currently logged-in user
+router.post("/", createUser);
+
+router.get("/getUser", protect, getUser);
 router.post("/signup", signup);
 router.post("/login", login);
 router.post("/logout", logout);

@@ -52,33 +52,37 @@ const signup = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(req.body);
-
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ error: "Invalid credentials" });
+      return res.status(400).json({ error: "Invalid email or password" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log(password);
     if (!isMatch) {
-      return res.status(400).json({ error: "Invalid credentials" });
+      return res.status(400).json({ error: "Invalid email or password" });
     }
-
+    const token = generateToken(user);
+    console.log("hellow token:", token);
+    res.cookie("token", token, {
+      httpOnly: true, // Prevents client-side access (XSS protection)
+      secure: true, // HTTPS in production
+      sameSite: "Strict", // CSRF protection
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
     res.status(200).json({
       message: "Login successful",
       user: {
         id: user._id,
-        name: user.name,
+        fullName: user.fullName,
         email: user.email,
         role: user.role,
       },
-      token: generateToken(user._id),
     });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
-
 // ✅ Public: Logout
 const logout = (req, res) => {
   res.status(200).json({ message: "Logout successful" });
@@ -88,9 +92,13 @@ const logout = (req, res) => {
 const getUser = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
     res.status(200).json(user);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Error in getUser:", err.message);
+    res.status(500).json({ error: "Server error" });
   }
 };
 
@@ -109,11 +117,11 @@ const createUser = async (req, res) => {
       return res.status(400).json({ error: "Email already exists" });
     }
 
-    if (role === "teacher" && req.user.role !== "superadmin") {
-      return res
-        .status(403)
-        .json({ error: "Only superadmin can create an admin" });
-    }
+    // if (role === "teacher" && req.user.role !== "superadmin") {
+    //   return res
+    //     .status(403)
+    //     .json({ error: "Only superadmin can create an admin" });
+    // }
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);

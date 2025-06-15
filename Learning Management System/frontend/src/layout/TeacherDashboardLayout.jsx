@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/Sidebar_Teacher";
 
-const DashboardLayout = () => {
+const TeacherDashboardLayout = () => {
   return (
     <div className="flex min-h-screen">
       <Sidebar />
@@ -12,4 +12,4 @@ const DashboardLayout = () => {
   );
 };
 
-export default DashboardLayout;
+export default TeacherDashboardLayout;

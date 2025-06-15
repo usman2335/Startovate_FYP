@@ -69,6 +69,7 @@ exports.login = async (req, res) => {
       return res.status(400).json({ error: "Invalid email or password" });
     }
     const token = generateToken(user);
+    console.log("hellow token:", token);
     res.cookie("token", token, {
       httpOnly: true, // Prevents client-side access (XSS protection)
       secure: true, // HTTPS in production

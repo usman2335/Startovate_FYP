@@ -4,15 +4,21 @@ import { createContext, useEffect, useState } from "react";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState([]);
 
   const checkAuthStatus = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/users/me", {
-        withCredentials: true,
-      });
-      setUser(response.data.user);
-      console.log("user is", response.data.user);
+      const response = await axios.get(
+        "http://localhost:5000/api/users/getUser",
+        {
+          withCredentials: true,
+        }
+      );
+      const helo = response.data;
+      console.log(helo);
+      setUser(helo);
+
+      console.log("user is", response.data.role);
     } catch (error) {
       console.log("User not authenticated");
       setUser(null);
@@ -37,6 +43,9 @@ export const AuthProvider = ({ children }) => {
     console.log("AuthContext mounted, calling checkAuthStatus");
     checkAuthStatus();
   }, []);
+  useEffect(() => {
+    console.log("✅ User value changed:", user);
+  }, [user]);
 
   return (
     <AuthContext.Provider value={{ user, setUser, checkAuthStatus, logout }}>

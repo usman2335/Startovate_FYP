@@ -11,7 +11,6 @@ connectDB();
 app.use(
   cors({
     origin: "http://localhost:5173", // frontend port (change if needed)
-    origin: "http://localhost:5174", // frontend port (change if needed)
     credentials: true,
   })
 );
@@ -20,6 +19,9 @@ app.use(express.json());
 // Routes
 const userRoutes = require("./src/routes/userRoutes");
 app.use("/api/users", userRoutes);
+
+const courseRoutes = require("./src/routes/courseRoutes");
+app.use("/api/courses", courseRoutes);
 
 // Root endpoint
 app.get("/", (req, res) => {

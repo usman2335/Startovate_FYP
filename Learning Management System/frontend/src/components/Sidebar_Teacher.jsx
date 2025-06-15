@@ -16,29 +16,19 @@ const Sidebar = () => {
   const menuItems = [
     {
       name: "Dashboard",
-      path: "/admin/",
+      path: "/teacher",
       icon: <AppstoreOutlined />,
       end: true,
     },
     {
-      name: "Manage Users",
-      path: "/admin/manageusers",
+      name: "Manage Students",
+      path: "/teacher/managestudents",
       icon: <WalletOutlined />,
     },
     {
       name: "Manage Courses",
-      path: "/admin/managecourses",
+      path: "/teacher/managecourses",
       icon: <TransactionOutlined />,
-    },
-    {
-      name: "Course Approvals",
-      path: "/dashboard/analytics",
-      icon: <LineChartOutlined />,
-    },
-    {
-      name: "Payment info ",
-      path: "/dashboard/records",
-      icon: <ReadOutlined />,
     },
   ];
 

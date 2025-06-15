@@ -30,7 +30,7 @@ const ManageUsers = () => {
 
   const columns = [
     {
-      title: "name",
+      title: "Name",
       dataIndex: "name",
       key: "name",
       render: (text) => <strong>{text}</strong>,
@@ -107,8 +107,9 @@ const ManageUsers = () => {
       if (result.isConfirmed) {
         try {
           const updatedUser = result.value;
+          console.log("Updating user:", updatedUser);
           await axios.put(
-            "http://localhost:5000/api/users/${user._id}",
+            `http://localhost:5000/api/users/${user._id}`,
             updatedUser
           );
 
