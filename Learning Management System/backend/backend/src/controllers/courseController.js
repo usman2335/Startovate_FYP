@@ -1,18 +1,21 @@
 const Course = require("../models/Course");
+const User = require("../models/User");
 const StudentCourse = require("../models/StudentCourse");
 
 const createCourse = async (req, res) => {
   try {
-    const { title, description, category, instructor, price, videos } =
-      req.body;
+    const { title, description, category, price, videos } = req.body;
+    const instructorId = req.user._id;
+    const instructorName = req.user.name;
 
     const course = new Course({
       title,
       description,
       category,
-      instructor, // optional
+      instructor: instructorId,
+      instructorName,
       price,
-      videos, // should be an array of { title, type, url }
+      videos,
     });
 
     await course.save();
@@ -195,6 +198,34 @@ const getEnrolledStudentsByTeacher = async (req, res) => {
 //   }
 // };
 
+const getCourseById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const course = await Course.findById(id)
+      .populate("instructor", "name email") // populate instructor name & email
+      .lean();
+
+    if (!course) {
+      return res.status(404).json({
+        success: false,
+        error: "Course not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      course,
+    });
+  } catch (err) {
+    console.error("Error fetching course:", err);
+    return res.status(500).json({
+      success: false,
+      error: "Server error while fetching the course",
+    });
+  }
+};
+
 module.exports = {
   createCourse,
   getTeacherCourses,
@@ -204,4 +235,5 @@ module.exports = {
   getAllCourses,
   getApprovedCourses,
   getEnrolledStudentsByTeacher,
+  getCourseById,
 };
