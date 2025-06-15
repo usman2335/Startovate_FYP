@@ -1,55 +1,24 @@
-// controllers/courseController.js
-const Course = require("../models/Courses.js");
+const Course = require("../models/Course");
 
-// POST /api/courses - Add course
-const createCourse = async (req, res) => {
-  const { title, description, teacherId } = req.body;
-  if (!title || !teacherId)
-    return res.status(400).json({ error: "Title and teacher are required" });
-
+exports.createCourse = async (req, res) => {
   try {
-    const newCourse = await Course.create({ title, description, teacherId });
-    res.status(201).json(newCourse);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+    const { title, description, category, instructor, price, videos } =
+      req.body;
 
-// GET /api/courses - List all courses
-const getCourses = async (req, res) => {
-  try {
-    const courses = await Course.find().populate("teacherId", "name", "email");
-    res.json(courses);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-// PUT /api/courses/:id - Edit a course
-const updateCourse = async (req, res) => {
-  try {
-    const updated = await Course.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
+    const course = new Course({
+      title,
+      description,
+      category,
+      instructor, // optional
+      price,
+      videos, // should be an array of { title, type, url }
     });
-    res.json(updated);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
 
-// DELETE /api/courses/:id - Delete a course
-const deleteCourse = async (req, res) => {
-  try {
-    await Course.findByIdAndDelete(req.params.id);
-    res.json({ message: "Course deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+    await course.save();
 
-module.exports = {
-  createCourse,
-  getCourses,
-  updateCourse,
-  deleteCourse,
+    res.status(201).json({ success: true, message: "Course created", course });
+  } catch (error) {
+    console.error("Error creating course:", error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
 };
