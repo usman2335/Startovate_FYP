@@ -30,6 +30,11 @@ const Sidebar = () => {
       path: "/teacher/managecourses",
       icon: <TransactionOutlined />,
     },
+    {
+      name: "Add Course",
+      path: "/teacher/addcourses",
+      icon: <TransactionOutlined />,
+    },
   ];
 
   return (

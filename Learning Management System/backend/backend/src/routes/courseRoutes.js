@@ -1,10 +1,21 @@
 const express = require("express");
 const router = express.Router();
-const courseController = require("../controllers/courseController");
+const {
+  createCourse,
+  getTeacherCourses,
+  updateCourse,
+  deleteCourse,
+} = require("../controllers/courseController");
+
+const protect = require("../middleware/authMiddleware");
 const protect = require("../middleware/authMiddleware");
 
 // POST /api/courses
-router.post("/", courseController.createCourse);
+router.post("/", createCourse);
+
+router.get("/", protect, getTeacherCourses);
+router.put("/:id", protect, updateCourse);
+router.delete("/:id", protect, deleteCourse);
 
 // Admin
 router.get("/admin/all", protect, courseController.getAllCourses);
