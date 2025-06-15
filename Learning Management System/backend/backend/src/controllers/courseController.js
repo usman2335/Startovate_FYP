@@ -43,7 +43,6 @@ exports.getAllCourses = async (req, res) => {
 exports.getApprovedCourses = async (req, res) => {
   try {
     const courses = await Course.find({ isApproved: true });
-    console.log("student courses:", courses);
     res.status(200).json({ success: true, courses });
   } catch (error) {
     res.status(500).json({ success: false, message: "Server error" });

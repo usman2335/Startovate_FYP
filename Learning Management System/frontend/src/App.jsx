@@ -11,6 +11,7 @@ import EnrollCourses from "./pages/StudentDashboard/EnrollCourses.jsx";
 import ManageCourses from "./pages/AdminDashboard/manageCourses.jsx";
 import TeacherDashboardLayout from "./layout/TeacherDashboardLayout.jsx";
 import StripePaymentPage from "./pages/StripePaymentPage";
+import PaymentSuccessPage from "./pages/PaymentSuccessPage.jsx";
 
 const App = () => {
   return (
@@ -41,6 +42,7 @@ const App = () => {
           </Route>
 
           <Route path="/stripe-payment" element={<StripePaymentPage />} />
+          <Route path="/payment-success" element={<PaymentSuccessPage />} />
         </Routes>
       </Router>
     </AuthProvider>
