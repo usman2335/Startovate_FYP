@@ -10,6 +10,7 @@ import {
   SettingOutlined,
 } from "@ant-design/icons";
 import Button from "../components/Button";
+import Logout from "./LogoutButton";
 
 const Sidebar = () => {
   const className = "h-10 pl-2";
@@ -110,9 +111,7 @@ const Sidebar = () => {
           </li>
         ))}
         <li className="mt-6">
-          <Link to="/">
-            <Button text="Logout" color="bg-red-500 text-white" height="h-10" />
-          </Link>
+          <Logout />
         </li>
       </ul>
     </div>
