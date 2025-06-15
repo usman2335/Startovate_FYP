@@ -12,12 +12,12 @@ const {
 } = require("docx");
 const Template = require("../models/Template");
 const Description = require("../models/StepDescriptions");
+const axios = require("axios");
 
 exports.exportToDocx = async (req, res) => {
-  console.log("Exporting DOCX with styled tables...");
-
   try {
     const { canvasId } = req.params;
+
     const templates = await Template.find({ canvasId }).lean();
     const descriptions = await Description.find().lean();
 
@@ -29,7 +29,7 @@ exports.exportToDocx = async (req, res) => {
       return Number(a.checklistStep) - Number(b.checklistStep);
     });
 
-    // Define fixed component order
+    // Fixed component order
     const componentOrder = [
       "Problem Identification",
       "Literature Search",
@@ -51,27 +51,14 @@ exports.exportToDocx = async (req, res) => {
       groupedTemplates[template.componentName].push(template);
     });
 
-    const sectionChildren = [
-      new Paragraph({
-        children: [
-          new TextRun({ text: "Lean Canvas Export", size: 32, bold: true }),
-        ],
-        alignment: AlignmentType.CENTER,
-      }),
-      new Paragraph({ children: [new TextRun(" ")] }),
-    ];
+    // Start HTML string
+    let htmlContent = `<h1 style="text-align:center;">Lean Canvas Export</h1>`;
 
     for (const componentName of componentOrder) {
       const templatesForComponent = groupedTemplates[componentName];
       if (!templatesForComponent) continue;
 
-      sectionChildren.push(
-        new Paragraph({
-          children: [
-            new TextRun({ text: componentName, bold: true, size: 26 }),
-          ],
-        })
-      );
+      htmlContent += `<h2 style="margin-top:30px;">${componentName}</h2>`;
 
       for (const template of templatesForComponent) {
         const stepDescription = descriptions.find(
@@ -80,65 +67,60 @@ exports.exportToDocx = async (req, res) => {
             desc.stepNumber === Number(template.checklistStep)
         );
 
-        sectionChildren.push(
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: `Step ${template.checklistStep}: ${
-                  stepDescription ? stepDescription.description : ""
-                }`,
-                italics: true,
-                size: 22,
-              }),
-            ],
-          })
-        );
+        htmlContent += `
+          <p><strong>Step ${template.checklistStep}:</strong> ${
+          stepDescription ? stepDescription.description : "No description"
+        }</p>
+        `;
 
-        // Prepare table rows
-        const tableRows = [["Label", "Answer"]];
+        // Build HTML table
         if (template.content && typeof template.content === "object") {
-          Object.entries(template.content).forEach(([key, value]) => {
+          htmlContent += `
+            <table border="1" cellpadding="6" cellspacing="0" style="width:100%; border-collapse: collapse; margin-bottom:20px;">
+              <tr style="background:#f2f2f2;"><th>Label</th><th>Answer</th></tr>
+          `;
+
+          for (const [key, value] of Object.entries(template.content)) {
             const label = key
               .replace(/_/g, " ")
               .replace(/([a-z])([A-Z])/g, "$1 $2")
               .replace(/\b\w/g, (char) => char.toUpperCase());
-            tableRows.push([label, value]);
-          });
-        }
 
-        sectionChildren.push(createStyledTable(tableRows));
-        sectionChildren.push(new Paragraph({ children: [new TextRun(" ")] }));
+            htmlContent += `<tr><td>${label}</td><td>${value}</td></tr>`;
+          }
+
+          htmlContent += `</table>`;
+        }
       }
     }
 
-    const doc = new Document({
-      creator: "Startovate App",
-      title: "Lean Canvas Export",
-      sections: [
-        {
-          properties: {},
-          children: sectionChildren,
+    // Send to Cloudmersive
+    const response = await axios.post(
+      "https://api.cloudmersive.com/convert/html/to/docx",
+      htmlContent,
+      {
+        headers: {
+          "Content-Type": "text/html",
+          Apikey: "5a2c3ddc-d9fd-4eb4-b73c-05a9b8529d12", // your actual API key
         },
-      ],
-    });
-
-    const buffer = await Packer.toBuffer(doc);
-
-    res.setHeader(
-      "Content-Disposition",
-      "attachment; filename=LeanCanvasExport.docx"
+        responseType: "arraybuffer",
+      }
     );
+
     res.setHeader(
       "Content-Type",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     );
-    res.send(buffer);
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=LeanCanvas.docx"
+    );
+    res.send(response.data);
   } catch (error) {
-    console.error("Error exporting DOCX:", error);
-    res.status(500).json({ error: "Error exporting DOCX." });
+    console.error("DOCX Export Error:", error.message);
+    res.status(500).json({ error: "Failed to export DOCX document." });
   }
 };
-
 function createStyledTable(rows) {
   return new Table({
     width: {
