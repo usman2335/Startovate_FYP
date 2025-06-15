@@ -23,6 +23,9 @@ function App() {
             <Route path="/test" element={<Testpage1 />} />
             <Route path="/canvas" element={<CanvasPage />} />
             <Route path="/test1" element={<TestPage />} />
+            <Route path="/payment" element={<PaymentPage />} />
+            <Route path="/return" element={<ReturnPage />} />
+            <Route path="/easypaisa" element={<EasypaisaPayment />} />
           </Routes>
         </Router>
       </AuthProvider>

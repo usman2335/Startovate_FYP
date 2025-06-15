@@ -11,7 +11,7 @@ const PaymentModal = ({ open, onClose, course }) => {
   };
 
   const handleEasypaisa = () => {
-    navigate("/easypaisa", { state: { courseId: course._id } });
+    navigate("/easypaisa-payment", { state: { courseId: course._id } });
   };
 
   return (
