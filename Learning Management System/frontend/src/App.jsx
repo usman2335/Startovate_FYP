@@ -17,6 +17,7 @@ import PaymentSuccessPage from "./pages/PaymentSuccessPage.jsx";
 import ViewEnrolledStudents from "./pages/TeacherDashboard/ViewStudents.jsx";
 import StudentCoursePage from "./pages/StudentDashboard/StudentCoursePage.jsx";
 import ApproveCourses from "./pages/AdminDashboard/ApproveCourses.jsx";
+import EasyPaisaPaymentPage from "./pages/EasyPaisaPaymentPage.jsx";
 
 const App = () => {
   return (
@@ -45,6 +46,7 @@ const App = () => {
           </Route>
 
           <Route path="/stripe-payment" element={<StripePaymentPage />} />
+          <Route path="/easypaisa-payment" element={<EasyPaisaPaymentPage />} />
           <Route path="/payment-success" element={<PaymentSuccessPage />} />
         </Routes>
       </Router>

@@ -32,7 +32,7 @@ router.delete("/admin/:id", protect, deleteCourseAdmin);
 
 // Student
 router.get("/approved", getApprovedCourses);
-router.get("/:id", protect, getCourseById);
+router.get("/:id", getCourseById);
 
 // Teacher (needs auth middleware to identify the teacher)
 router.get("/teacher/my-courses", protect, getTeacherCourses);
