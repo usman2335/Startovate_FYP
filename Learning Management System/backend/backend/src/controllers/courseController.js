@@ -53,6 +53,35 @@ const deleteCourse = async (req, res) => {
   }
 };
 
+const deleteCourseAdmin = async (req, res) => {
+  try {
+    const courseId = req.params.id;
+    //const teacherId = req.user._id; // Extracted from JWT via protect middleware
+    console.log("courseid", courseId);
+    //console.log("teacherID", teacherId);
+
+    const course = await Course.findById(courseId);
+
+    if (!course) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    // Only the instructor who created it can delete it
+    // if (course.instructor.toString() !== teacherId) {
+    //   return res
+    //     .status(403)
+    //     .json({ error: "Unauthorized to delete this course" });
+    // }
+
+    await Course.findByIdAndDelete(courseId);
+
+    res.status(200).json({ message: "Course deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting course:", error.message);
+    res.status(500).json({ error: "Server error while deleting course" });
+  }
+};
+
 const getTeacherCourses = async (req, res) => {
   try {
     const teacherId = req.user._id; // comes from JWT via `protect` middleware
@@ -171,6 +200,7 @@ module.exports = {
   getTeacherCourses,
   updateCourse,
   deleteCourse,
+  deleteCourseAdmin,
   getAllCourses,
   getApprovedCourses,
   getEnrolledStudentsByTeacher,

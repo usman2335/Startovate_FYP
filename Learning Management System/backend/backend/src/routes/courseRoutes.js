@@ -5,6 +5,7 @@ const {
   getTeacherCourses,
   updateCourse,
   deleteCourse,
+  deleteCourseAdmin,
   getAllCourses,
   getApprovedCourses,
   getEnrolledStudentsByTeacher,
@@ -22,6 +23,7 @@ router.delete("/:id", protect, deleteCourse);
 
 // Admin
 router.get("/all", protect, getAllCourses);
+router.delete("/admin/:id", protect, deleteCourseAdmin);
 
 // Student
 router.get("/student/approved", getApprovedCourses);
