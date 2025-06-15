@@ -16,7 +16,7 @@ const ManageCourses = () => {
     const res = await axios.get("http://localhost:5000/api/courses/all", {
       withCredentials: true,
     });
-    console.log(res.data);
+    console.log("course", res.data);
     //console.log("Courses fetched successfully");
     setCourses(res.data.courses);
   };
@@ -45,10 +45,8 @@ const ManageCourses = () => {
 
   const handleSubmit = async (values) => {
     const payload = {
-      ...values,
-      instructor: values.teacherId, // ✅ rename before sending
+      ...values, // ✅ rename before sending
     };
-    delete payload.teacherId; // optional cleanup
 
     try {
       if (editingCourse) {
@@ -115,7 +113,7 @@ const ManageCourses = () => {
     },
     {
       title: "Teacher",
-      dataIndex: ["instructor", "name email"],
+      dataIndex: "instructorName",
     },
     {
       title: "Actions",
@@ -134,16 +132,6 @@ const ManageCourses = () => {
     <div style={{ padding: 24 }}>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <h2>Manage Courses</h2>
-        <Button
-          type="primary"
-          onClick={() => {
-            setEditingCourse(null);
-            form.resetFields();
-            setModalVisible(true);
-          }}
-        >
-          Add Course
-        </Button>
       </div>
 
       <Table columns={columns} dataSource={courses} rowKey="_id" />

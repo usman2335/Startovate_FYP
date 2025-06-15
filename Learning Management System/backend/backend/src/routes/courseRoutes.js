@@ -10,6 +10,8 @@ const {
   getApprovedCourses,
   getEnrolledStudentsByTeacher,
   getCourseById,
+  getUnapprovedCourses,
+  approveCourse,
 } = require("../controllers/courseController");
 
 const protect = require("../middleware/authMiddleware");
@@ -21,6 +23,8 @@ router.get("/", protect, getTeacherCourses);
 
 router.put("/:id", protect, updateCourse);
 router.delete("/:id", protect, deleteCourse);
+router.get("/unapproved", protect, getUnapprovedCourses);
+router.put("/approve/:id", protect, approveCourse);
 
 // Admin
 router.get("/all", protect, getAllCourses);

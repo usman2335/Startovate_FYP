@@ -226,6 +226,40 @@ const getCourseById = async (req, res) => {
   }
 };
 
+const getUnapprovedCourses = async (req, res) => {
+  try {
+    const courses = await Course.find({ isApproved: false }).populate(
+      "instructor",
+      "name email"
+    );
+    res.status(200).json({ courses });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch unapproved courses" });
+  }
+};
+
+const approveCourse = async (req, res) => {
+  try {
+    const courseId = req.params.id;
+    const updated = await Course.findByIdAndUpdate(
+      courseId,
+      { isApproved: true },
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Course approved successfully", course: updated });
+  } catch (error) {
+    console.error("Error approving course:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
 module.exports = {
   createCourse,
   getTeacherCourses,
@@ -236,4 +270,6 @@ module.exports = {
   getApprovedCourses,
   getEnrolledStudentsByTeacher,
   getCourseById,
+  getUnapprovedCourses,
+  approveCourse,
 };
