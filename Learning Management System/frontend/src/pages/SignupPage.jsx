@@ -15,7 +15,7 @@ const SignupPage = () => {
     email: "",
     password: "",
     rePassword: "",
-    role: "user", // Default role: user (i.e., student)
+    role: "student", // Default role: user (i.e., student)
   });
 
   const [errors, setErrors] = useState({
@@ -35,6 +35,7 @@ const SignupPage = () => {
       ...prevErrors,
       [name]: validateField(name, value),
     }));
+    console.log(formData);
   };
 
   const validateField = (name, value) => {
@@ -182,7 +183,7 @@ const SignupPage = () => {
               onChange={handleChange}
               className="signup-role-select"
             >
-              <option value="user">Student</option>
+              <option value="student">Student</option>
               <option value="teacher">Teacher</option>
             </select>
           </div>

@@ -14,6 +14,7 @@ const courseSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  instructorName: { type: String, required: true },
   price: { type: Number, required: true },
   category: { type: String },
   videos: [videoSchema],

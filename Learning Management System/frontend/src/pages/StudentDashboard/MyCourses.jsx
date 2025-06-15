@@ -24,6 +24,7 @@ const MyCourses = () => {
 
         if (res.data.success) {
           setCourses(res.data.enrolledCourses);
+          console.log("courses:", res);
         } else {
           setError("Failed to fetch courses");
         }
@@ -38,7 +39,8 @@ const MyCourses = () => {
     fetchEnrolledCourses();
   }, []);
 
-  const filteredCourses = courses.filter((course) =>
+  const validCourses = courses.filter((course) => course); // removes null/undefined
+  const filteredCourses = validCourses.filter((course) =>
     course.title?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -93,7 +95,7 @@ const MyCourses = () => {
                   <span className="text-gray-500">{course.duration}</span>
                 </div>
                 <p className="text-sm text-gray-500 mb-1">
-                  {course.instructor}
+                  {course.instructorName}
                 </p>
 
                 <div className="flex items-center justify-between mt-2">
@@ -123,7 +125,7 @@ const MyCourses = () => {
                 type="primary"
                 size="large"
                 className="ml-4 bg-[#183e6a] hover:bg-[#122e50] px-6"
-                onClick={() => navigate(`/student/course/${course._id}`)}
+                onClick={() => navigate(`/student/mycourses/${course._id}`)}
               >
                 Go to Course
               </Button>
