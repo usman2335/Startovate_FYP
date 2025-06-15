@@ -21,6 +21,9 @@ app.use(express.json());
 const userRoutes = require("./src/routes/userRoutes");
 app.use("/api/users", userRoutes);
 
+const courseRoutes = require("./src/routes/courseRoutes");
+app.use("/api/courses", courseRoutes);
+
 // Root endpoint
 app.get("/", (req, res) => {
   res.send("User Management API is running");
