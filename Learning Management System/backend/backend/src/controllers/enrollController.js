@@ -31,3 +31,41 @@ exports.enroll = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+exports.getEnrolledCourses = async (req, res) => {
+  try {
+    const studentId = req.user._id;
+
+    const enrolled = await StudentCourse.find({ student: studentId }).populate(
+      "course"
+    );
+
+    const enrolledCourses = enrolled.map((item) => item.course);
+
+    res.status(200).json({ success: true, enrolledCourses });
+  } catch (err) {
+    console.error("Error fetching enrolled courses:", err);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+exports.getAvailableCourses = async (req, res) => {
+  try {
+    const studentId = req.user._id;
+
+    const enrolled = await StudentCourse.find({ student: studentId }).select(
+      "course"
+    );
+
+    const enrolledCourseIds = enrolled.map((e) => e.course.toString());
+
+    const availableCourses = await Course.find({
+      _id: { $nin: enrolledCourseIds },
+    });
+
+    res.status(200).json({ success: true, availableCourses });
+  } catch (err) {
+    console.error("Error fetching available courses:", err);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
