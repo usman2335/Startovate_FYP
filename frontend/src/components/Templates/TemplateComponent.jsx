@@ -6,7 +6,7 @@ import axios from "axios";
 import "../../CSS/TemplateComponent.css";
 import { Snackbar } from "@mui/material";
 
-const TemplateComponent = ({ templateKey, canvasId }) => {
+const TemplateComponent = ({ templateKey, canvasId, hideButtons = false }) => {
   const DynamicComponent =
     templateMapping[templateKey] ||
     templateMapping["ProblemIdentification-Step1"];
@@ -57,26 +57,29 @@ const TemplateComponent = ({ templateKey, canvasId }) => {
   return (
     <>
       <DynamicComponent answers={answers} onInputChange={handleInputChange} />
-      <div className="tem-button-group">
-        <Button
-          label="Reset"
-          onClick={() => {}}
-          padding="10px 10px"
-          color="white"
-          fontSize="16px"
-          width="50%"
-          marginTop="10px"
-        />
-        <Button
-          label="Save"
-          padding="10px 10px"
-          color="white"
-          fontSize="16px"
-          width="50%"
-          marginTop="10px"
-          onClick={handleSave}
-        />
-      </div>
+
+      {!hideButtons && (
+        <div className="tem-button-group">
+          <Button
+            label="Reset"
+            onClick={() => {}}
+            padding="10px 10px"
+            color="white"
+            fontSize="16px"
+            width="50%"
+            marginTop="10px"
+          />
+          <Button
+            label="Save"
+            padding="10px 10px"
+            color="white"
+            fontSize="16px"
+            width="50%"
+            marginTop="10px"
+            onClick={handleSave}
+          />
+        </div>
+      )}
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={snackBarOpen}

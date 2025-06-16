@@ -38,7 +38,7 @@ const Sidebar = () => {
     },
     {
       name: "Payment info ",
-      path: "/dashboard/records",
+      path: "/admin/paymentapprovals",
       icon: <ReadOutlined />,
     },
   ];

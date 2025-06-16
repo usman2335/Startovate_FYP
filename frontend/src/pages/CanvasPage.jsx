@@ -5,12 +5,22 @@ import Button from "../components/Button";
 import CreateNewCanvasModal from "../components/CreateNewCanvasModal";
 import LeanCanvas from "../components/LeanCanvas";
 import { Breadcrumbs, Link, Typography } from "@mui/material";
+import { Backdrop, CircularProgress } from "@mui/material";
 import Checklist from "../components/Checklist1";
 import TemplateComponent from "../components/Templates/TemplateComponent";
 import checklistData from "../content/checklistData";
 import axios from "axios";
+import html2canvas from "html2canvas";
+import templateMapping from "../content/templateMapping"; // make sure it includes all keys
+import { useRef } from "react";
+import { Document, Packer, Paragraph, ImageRun, AlignmentType } from "docx";
+import { saveAs } from "file-saver";
 
 const CanvasPage = () => {
+  const [currentTemplateIndex, setCurrentTemplateIndex] = useState(0);
+  const [isCapturing, setIsCapturing] = useState(false);
+  const captureRef = useRef(null);
+
   const [view, setView] = useState("initial");
   const [clicked, setClicked] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -22,9 +32,77 @@ const CanvasPage = () => {
   const [canvasId, setCanvasId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   if (selectedChecklistPoint) {
     console.log(selectedChecklistPoint.id);
   }
+
+  const handleCaptureAllTemplates = async () => {
+    setIsExporting(true);
+    const keys = Object.keys(templateMapping); // e.g. ['Problem-Step1', 'Solution-Step2', ...]
+    setIsCapturing(true);
+
+    const imageParagraphs = [];
+
+    const MAX_WIDTH = 600; // max width in points (approx 8 inches)
+    const MAX_HEIGHT = 800; // max height in points (approx 11 inches, minus margins)
+
+    for (let i = 0; i < keys.length; i++) {
+      setCurrentTemplateIndex(i);
+      await new Promise((res) => setTimeout(res, 1500));
+
+      const captureElement = captureRef.current;
+      if (!captureElement) continue;
+
+      const canvas = await html2canvas(captureElement);
+      const imageDataUrl = canvas.toDataURL("image/png");
+      const blob = await (await fetch(imageDataUrl)).blob();
+      const buffer = await blob.arrayBuffer();
+
+      let imageWidth = canvas.width * 0.75; // convert px to pt
+      let imageHeight = canvas.height * 0.75;
+
+      // Scale down if too wide or too tall
+      const widthRatio = MAX_WIDTH / imageWidth;
+      const heightRatio = MAX_HEIGHT / imageHeight;
+      const scaleRatio = Math.min(widthRatio, heightRatio, 1); // never upscale
+
+      imageWidth = imageWidth * scaleRatio;
+      imageHeight = imageHeight * scaleRatio;
+
+      imageParagraphs.push(
+        new Paragraph({
+          alignment: AlignmentType.CENTER,
+          pageBreakBefore: i !== 0,
+          children: [
+            new ImageRun({
+              data: buffer,
+              transformation: {
+                width: imageWidth,
+                height: imageHeight,
+              },
+            }),
+          ],
+        })
+      );
+    }
+
+    const doc = new Document({
+      sections: [
+        {
+          properties: {},
+          children: imageParagraphs,
+        },
+      ],
+    });
+
+    const blob = await Packer.toBlob(doc);
+    saveAs(blob, `LeanCanvas_Templates_${Date.now()}.docx`);
+
+    setIsCapturing(false);
+    setIsExporting(false);
+    alert("All templates captured and exported to Word!");
+  };
 
   useEffect(() => {
     const fetchCanvas = async () => {
@@ -175,6 +253,17 @@ const CanvasPage = () => {
   }, [selectedChecklistPoint, templateKey, canvasId]);
   return (
     <>
+      <div style={{ position: "absolute", top: "-9999px", left: "-9999px" }}>
+        {isCapturing && (
+          <div id="capture-area" ref={captureRef}>
+            <TemplateComponent
+              templateKey={Object.keys(templateMapping)[currentTemplateIndex]}
+              canvasId={canvasId}
+              hideButtons={true}
+            />
+          </div>
+        )}
+      </div>
       <Navbar></Navbar>
       <div className="canvas-page-wrapper">
         {/* If modal is open, show modal & blurred Lean Canvas */}
@@ -274,6 +363,14 @@ const CanvasPage = () => {
                 onComponentClick={handleComponentClick}
               />
             </div>
+            <Button
+              padding="1% 0%"
+              color="#f1f1f1"
+              fontSize={"1.1em"}
+              label="📸 Capture All Templates"
+              onClick={handleCaptureAllTemplates}
+              className="capture-all-btn"
+            />
           </>
         )}
         {/* {!showModal && view === "checklist" && (
@@ -419,6 +516,12 @@ const CanvasPage = () => {
           </div>
         )}
       </div>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isExporting}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 };

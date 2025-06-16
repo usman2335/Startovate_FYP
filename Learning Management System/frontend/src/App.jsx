@@ -18,6 +18,7 @@ import ViewEnrolledStudents from "./pages/TeacherDashboard/ViewStudents.jsx";
 import StudentCoursePage from "./pages/StudentDashboard/StudentCoursePage.jsx";
 import ApproveCourses from "./pages/AdminDashboard/ApproveCourses.jsx";
 import EasyPaisaPaymentPage from "./pages/EasyPaisaPaymentPage.jsx";
+import PaymentApproval from "./pages/AdminDashboard/PaymentApproval.jsx";
 
 const App = () => {
   return (
@@ -26,11 +27,13 @@ const App = () => {
         <Routes>
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/" element={<LoginPage />} />
           <Route path="/admin" element={<DashboardLayout />}>
             <Route index element={<h1>Welcome to Dashboard</h1>} />
             <Route path="manageusers" element={<ManageUsers />} />
             <Route path="managecourses" element={<ManageCourses />} />
             <Route path="courseapprovals" element={<ApproveCourses />} />
+            <Route path="paymentapprovals" element={<PaymentApproval />} />
           </Route>
           <Route path="/teacher" element={<TeacherDashboardLayout />}>
             <Route index element={<h1>Welcome to Teacehrs Dashboard</h1>} />

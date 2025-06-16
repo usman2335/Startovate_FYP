@@ -9,6 +9,7 @@ import { AuthProvider } from "./context/authContext.jsx";
 import PaymentPage from "./pages/PaymentPage.jsx";
 import ReturnPage from "./pages/ReturnPage.jsx";
 import EasypaisaPayment from "./pages/EasypaisaPayment.jsx";
+import ThankYouPage from "./pages/EasypaisaThankyou.jsx";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="/payment" element={<PaymentPage />} />
             <Route path="/return" element={<ReturnPage />} />
             <Route path="/easypaisa" element={<EasypaisaPayment />} />
+            <Route path="/thankyou" element={<ThankYouPage />} />
           </Routes>
         </Router>
       </AuthProvider>
