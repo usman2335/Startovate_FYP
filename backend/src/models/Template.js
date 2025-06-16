@@ -13,4 +13,5 @@ const TemplateSchema = new mongoose.Schema({
   completed: { type: Boolean, default: false },
 });
 
-module.exports = mongoose.model("Template", TemplateSchema);
+module.exports =
+  mongoose.models.Template || mongoose.model("Template", TemplateSchema);

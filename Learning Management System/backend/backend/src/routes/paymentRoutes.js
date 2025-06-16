@@ -6,13 +6,10 @@ const {
 const {
   upload,
   handleEasypaisaPayment,
+  getEasypaisaPayments,
+  approveEasypaisaPayment,
 } = require("../controllers/easyPaisaController");
 const protect = require("../middleware/authMiddleware");
-
-// const {
-//   upload,
-//   handleEasypaisaPayment,
-// } = require("../controllers/easyPaisaController");
 
 const router = express.Router();
 
@@ -25,5 +22,8 @@ router.post(
   upload.single("screenshot"),
   handleEasypaisaPayment
 );
+
+router.get("/easypaisa-pending", getEasypaisaPayments);
+router.put("/easypaisa-approve/:paymentId", approveEasypaisaPayment);
 
 module.exports = router;

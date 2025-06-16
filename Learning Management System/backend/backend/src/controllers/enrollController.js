@@ -39,9 +39,21 @@ exports.getEnrolledCourses = async (req, res) => {
     const enrolled = await StudentCourse.find({ student: studentId }).populate(
       "course"
     );
+    if (!enrolled) {
+      return res.status(404).json({ message: "No courses found" });
+    }
 
-    const enrolledCourses = enrolled.map((item) => item.course);
-
+    // Enrich each course with progress and completed status
+    const enrolledCourses = enrolled
+      .filter((item) => item.course) // skip null course references
+      .map((item) => {
+        const courseData = item.course.toObject();
+        return {
+          ...courseData,
+          progress: item.progress || 0,
+          completed: item.completed || false,
+        };
+      });
     res.status(200).json({ success: true, enrolledCourses });
   } catch (err) {
     console.error("Error fetching enrolled courses:", err);

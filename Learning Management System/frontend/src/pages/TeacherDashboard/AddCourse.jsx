@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import {
   Form,
   Input,
@@ -9,7 +9,6 @@ import {
   Typography,
   Row,
   Col,
-  message,
 } from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
@@ -34,9 +33,9 @@ const AddCoursePage = ({ onCourseAdded }) => {
         withCredentials: true,
       });
 
-      Swal.fire("Added!", "Course Added successfully", "success");
+      Swal.fire("Added!", "Course added successfully", "success");
       form.resetFields();
-      if (onCourseAdded) onCourseAdded(); // Optional callback
+      if (onCourseAdded) onCourseAdded();
     } catch (err) {
       console.error("Error creating course:", err);
       Swal.fire("Error", "Failed to add course", "error");
@@ -52,7 +51,14 @@ const AddCoursePage = ({ onCourseAdded }) => {
         form={form}
         layout="vertical"
         onFinish={handleFinish}
-        initialValues={{ videos: [{ title: "", type: "youtube", url: "" }] }}
+        initialValues={{
+          videos: [
+            {
+              chapterTitle: "",
+              lessons: [{ title: "", type: "youtube", url: "" }],
+            },
+          ],
+        }}
       >
         <Row gutter={16}>
           <Col span={12}>
@@ -66,7 +72,6 @@ const AddCoursePage = ({ onCourseAdded }) => {
               <Input placeholder="e.g. React Fundamentals" />
             </Form.Item>
           </Col>
-
           <Col span={12}>
             <Form.Item
               name="price"
@@ -86,58 +91,118 @@ const AddCoursePage = ({ onCourseAdded }) => {
           <Input placeholder="e.g. Web Development, Design..." />
         </Form.Item>
 
-        <Divider orientation="left">Course Videos</Divider>
+        <Divider orientation="left">Chapters & Videos</Divider>
 
         <Form.List name="videos">
-          {(fields, { add, remove }) => (
+          {(chapterFields, { add: addChapter, remove: removeChapter }) => (
             <>
-              {fields.map(({ key, name, ...restField }) => (
-                <Space
-                  key={key}
+              {chapterFields.map(({ key: chapterKey, name: chapterName }) => (
+                <div
+                  key={chapterKey}
                   style={{
-                    display: "flex",
-                    marginBottom: 8,
-                    flexWrap: "wrap",
+                    marginBottom: 24,
+                    border: "1px solid #ccc",
+                    padding: 16,
+                    borderRadius: 8,
                   }}
-                  align="baseline"
                 >
                   <Form.Item
-                    {...restField}
-                    name={[name, "title"]}
-                    rules={[{ required: true, message: "Enter video title" }]}
+                    name={[chapterName, "chapterTitle"]}
+                    label="Chapter Title"
+                    rules={[
+                      { required: true, message: "Please enter chapter title" },
+                    ]}
                   >
-                    <Input placeholder="Video Title" />
+                    <Input placeholder="e.g. Introduction to React" />
                   </Form.Item>
-                  <Form.Item
-                    {...restField}
-                    name={[name, "type"]}
-                    rules={[{ required: true, message: "Select type" }]}
+
+                  <Form.List name={[chapterName, "lessons"]}>
+                    {(videoFields, { add: addVideo, remove: removeVideo }) => (
+                      <>
+                        {videoFields.map(
+                          ({ key: videoKey, name: videoName }) => (
+                            <Space
+                              key={videoKey}
+                              align="baseline"
+                              style={{
+                                display: "flex",
+                                marginBottom: 8,
+                                flexWrap: "wrap",
+                              }}
+                            >
+                              <Form.Item
+                                name={[videoName, "title"]}
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Enter video title",
+                                  },
+                                ]}
+                              >
+                                <Input placeholder="Video Title" />
+                              </Form.Item>
+                              <Form.Item
+                                name={[videoName, "type"]}
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Select video type",
+                                  },
+                                ]}
+                              >
+                                <Select style={{ width: 120 }}>
+                                  <Option value="youtube">YouTube</Option>
+                                  <Option value="drive">Drive</Option>
+                                </Select>
+                              </Form.Item>
+                              <Form.Item
+                                name={[videoName, "url"]}
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Enter video URL",
+                                  },
+                                ]}
+                              >
+                                <Input placeholder="https://..." />
+                              </Form.Item>
+                              <MinusCircleOutlined
+                                onClick={() => removeVideo(videoName)}
+                              />
+                            </Space>
+                          )
+                        )}
+                        <Form.Item>
+                          <Button
+                            type="dashed"
+                            onClick={() => addVideo()}
+                            icon={<PlusOutlined />}
+                          >
+                            Add Lesson
+                          </Button>
+                        </Form.Item>
+                      </>
+                    )}
+                  </Form.List>
+
+                  <Button
+                    type="link"
+                    danger
+                    onClick={() => removeChapter(chapterName)}
                   >
-                    <Select style={{ width: 130 }}>
-                      <Option value="youtube">YouTube</Option>
-                      <Option value="drive">Drive</Option>
-                    </Select>
-                  </Form.Item>
-                  <Form.Item
-                    {...restField}
-                    name={[name, "url"]}
-                    rules={[{ required: true, message: "Enter video URL" }]}
-                  >
-                    <Input placeholder="https://..." />
-                  </Form.Item>
-                  {fields.length > 1 && (
-                    <MinusCircleOutlined onClick={() => remove(name)} />
-                  )}
-                </Space>
+                    Remove Chapter
+                  </Button>
+                </div>
               ))}
+
               <Form.Item>
                 <Button
                   type="dashed"
-                  onClick={() => add()}
+                  onClick={() => addChapter()}
                   icon={<PlusOutlined />}
                   block
                 >
-                  Add Video
+                  Add Chapter
                 </Button>
               </Form.Item>
             </>

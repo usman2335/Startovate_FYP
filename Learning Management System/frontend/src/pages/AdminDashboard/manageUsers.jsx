@@ -27,6 +27,7 @@ const ManageUsers = () => {
     filteredRole === "all"
       ? users
       : users.filter((user) => user.role === filteredRole);
+  console.log("Filtered Users:", filteredRole, filteredUsers);
 
   const columns = [
     {
@@ -211,7 +212,7 @@ const ManageUsers = () => {
         >
           <Option value="all">All Roles</Option>
           <Option value="student">Student</Option>
-          <Option value="admin">Teacher</Option>
+          <Option value="teacher">Teacher</Option>
         </Select>
       </div>
 

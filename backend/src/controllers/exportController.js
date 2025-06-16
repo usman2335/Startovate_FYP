@@ -1,159 +1,97 @@
-const {
-  Document,
-  Packer,
-  Paragraph,
-  TextRun,
-  AlignmentType,
-  Table,
-  TableRow,
-  TableCell,
-  WidthType,
-  BorderStyle,
-} = require("docx");
+const fs = require("fs");
+const path = require("path");
+const PizZip = require("pizzip");
+const Docxtemplater = require("docxtemplater");
+const Canvas = require("../models/Canvas");
 const Template = require("../models/Template");
-const Description = require("../models/StepDescriptions");
-const axios = require("axios");
+const StepDescription = require("../models/StepDescriptions");
 
-exports.exportToDocx = async (req, res) => {
+const exportCanvasAsDocx = async (req, res) => {
   try {
-    const { canvasId } = req.params;
+    const canvasId = req.params.canvasId;
 
-    const templates = await Template.find({ canvasId }).lean();
-    const descriptions = await Description.find().lean();
+    // 1. Get Canvas
+    const canvas = await Canvas.findById(canvasId);
+    if (!canvas) return res.status(404).json({ message: "Canvas not found" });
 
-    // Sort templates by componentName and checklistStep
-    const sortedTemplates = templates.sort((a, b) => {
-      if (a.componentName !== b.componentName) {
-        return a.componentName.localeCompare(b.componentName);
-      }
-      return Number(a.checklistStep) - Number(b.checklistStep);
-    });
+    // 2. Get Templates for that canvas
+    const templates = await Template.find({ canvasId });
 
-    // Fixed component order
-    const componentOrder = [
-      "Problem Identification",
-      "Literature Search",
-      "Existing Solutions",
-      "Unique Value Proposition",
-      "Customer Segments",
-      "Channels",
-      "Revenue Streams",
-      "Cost Structure",
-      "Key Metrics",
-      "Unfair Advantage",
-    ];
+    // 3. Group templates by componentName
+    const grouped = {};
+    for (const template of templates) {
+      const component = template.componentName;
+      const step = parseInt(template.checklistStep);
 
-    const groupedTemplates = {};
-    sortedTemplates.forEach((template) => {
-      if (!groupedTemplates[template.componentName]) {
-        groupedTemplates[template.componentName] = [];
-      }
-      groupedTemplates[template.componentName].push(template);
-    });
+      if (!grouped[component]) grouped[component] = {};
+      if (!grouped[component][step]) grouped[component][step] = [];
 
-    // Start HTML string
-    let htmlContent = `<h1 style="text-align:center;">Lean Canvas Export</h1>`;
-
-    for (const componentName of componentOrder) {
-      const templatesForComponent = groupedTemplates[componentName];
-      if (!templatesForComponent) continue;
-
-      htmlContent += `<h2 style="margin-top:30px;">${componentName}</h2>`;
-
-      for (const template of templatesForComponent) {
-        const stepDescription = descriptions.find(
-          (desc) =>
-            desc.componentName === template.componentName &&
-            desc.stepNumber === Number(template.checklistStep)
-        );
-
-        htmlContent += `
-          <p><strong>Step ${template.checklistStep}:</strong> ${
-          stepDescription ? stepDescription.description : "No description"
-        }</p>
-        `;
-
-        // Build HTML table
-        if (template.content && typeof template.content === "object") {
-          htmlContent += `
-            <table border="1" cellpadding="6" cellspacing="0" style="width:100%; border-collapse: collapse; margin-bottom:20px;">
-              <tr style="background:#f2f2f2;"><th>Label</th><th>Answer</th></tr>
-          `;
-
-          for (const [key, value] of Object.entries(template.content)) {
-            const label = key
-              .replace(/_/g, " ")
-              .replace(/([a-z])([A-Z])/g, "$1 $2")
-              .replace(/\b\w/g, (char) => char.toUpperCase());
-
-            htmlContent += `<tr><td>${label}</td><td>${value}</td></tr>`;
-          }
-
-          htmlContent += `</table>`;
-        }
+      for (const [q, a] of Object.entries(template.content)) {
+        grouped[component][step].push({ q, a });
       }
     }
 
-    // Send to Cloudmersive
-    const response = await axios.post(
-      "https://api.cloudmersive.com/convert/html/to/docx",
-      htmlContent,
-      {
-        headers: {
-          "Content-Type": "text/html",
-          Apikey: "5a2c3ddc-d9fd-4eb4-b73c-05a9b8529d12", // your actual API key
-        },
-        responseType: "arraybuffer",
-      }
-    );
+    // 4. For each component, build data with step descriptions
+    const components = [];
 
+    for (const [componentName, stepsMap] of Object.entries(grouped)) {
+      const stepDescriptions = await StepDescription.find({ componentName });
+
+      // Build ordered step list
+      const steps = stepDescriptions
+        .sort((a, b) => a.stepNumber - b.stepNumber)
+        .map((desc) => ({
+          stepNumber: desc.stepNumber,
+          description: desc.description,
+          questions: stepsMap[desc.stepNumber] || [],
+        }));
+
+      components.push({
+        name: componentName,
+        steps,
+      });
+    }
+
+    // 5. Final data for docxtemplater
+    const data = {
+      researchTitle: canvas.researchTitle,
+      authorName: canvas.authorName,
+      components,
+    };
+
+    // 6. Load the Word Template
+    const templatePath = path.join(
+      __dirname,
+      "../templates/canvas_template.docx"
+    );
+    const content = fs.readFileSync(templatePath, "binary");
+    const zip = new PizZip(content);
+    const doc = new Docxtemplater(zip, {
+      paragraphLoop: true,
+      linebreaks: true,
+    });
+
+    doc.setData(data);
+    doc.render();
+
+    const buffer = doc.getZip().generate({ type: "nodebuffer" });
+
+    // 7. Send file
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=canvas_export.docx"
+    );
     res.setHeader(
       "Content-Type",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     );
-    res.setHeader(
-      "Content-Disposition",
-      "attachment; filename=LeanCanvas.docx"
-    );
-    res.send(response.data);
-  } catch (error) {
-    console.error("DOCX Export Error:", error.message);
-    res.status(500).json({ error: "Failed to export DOCX document." });
+    res.send(buffer);
+  } catch (err) {
+    console.error("Export error:", err);
+    res
+      .status(500)
+      .json({ error: "Failed to export canvas as Word document." });
   }
 };
-function createStyledTable(rows) {
-  return new Table({
-    width: {
-      size: 100,
-      type: WidthType.PERCENTAGE,
-    },
-    borders: {
-      top: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
-      bottom: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
-      left: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
-      right: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
-      insideHorizontal: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
-      insideVertical: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
-    },
-    rows: rows.map((row, index) => {
-      return new TableRow({
-        children: row.map((cellText) => {
-          return new TableCell({
-            children: [
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: cellText,
-                    bold: index === 0,
-                    size: 20,
-                  }),
-                ],
-              }),
-            ],
-            margins: { top: 200, bottom: 200, left: 200, right: 200 },
-          });
-        }),
-      });
-    }),
-  });
-}
+
+module.exports = { exportCanvasAsDocx };

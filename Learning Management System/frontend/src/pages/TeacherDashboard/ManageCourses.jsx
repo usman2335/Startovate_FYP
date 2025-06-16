@@ -36,7 +36,7 @@ const TeacherManageCourses = () => {
       if (editingCourse) {
         console.log(editingCourse._id);
         await axios.put(
-          `http://localhost:5000/api/courses/${editingCourse._id}`,
+          `http://localhost:5000/api/courses/update/${editingCourse._id}`,
           values,
           { withCredentials: true }
         );

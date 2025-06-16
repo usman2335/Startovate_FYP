@@ -8,7 +8,9 @@ import { Breadcrumbs, Link, Typography } from "@mui/material";
 import Checklist from "../components/Checklist1";
 import TemplateComponent from "../components/Templates/TemplateComponent";
 import checklistData from "../content/checklistData";
+import ExportButton from "../components/ExportButton";
 import axios from "axios";
+import html2canvas from "html2canvas";
 
 const CanvasPage = () => {
   const [view, setView] = useState("initial");
@@ -25,6 +27,37 @@ const CanvasPage = () => {
   if (selectedChecklistPoint) {
     console.log(selectedChecklistPoint.id);
   }
+
+  const exportCanvasAsImage = async () => {
+    const canvasElement = document.getElementById("lean-canvas-export");
+    if (!canvasElement) return alert("Canvas element not found!");
+
+    const canvas = await html2canvas(canvasElement, {
+      scale: 2,
+      useCORS: true,
+    });
+
+    const dataURL = canvas.toDataURL("image/png");
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/export-canvas",
+        { image: dataURL },
+        { responseType: "blob" }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "LeanCanvas.docx");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Export failed:", error);
+      alert("Export failed.");
+    }
+  };
 
   useEffect(() => {
     const fetchCanvas = async () => {
@@ -273,6 +306,16 @@ const CanvasPage = () => {
                 isBlurred={false}
                 onComponentClick={handleComponentClick}
               />
+
+              {/* <ExportButton canvasId={canvasId} /> */}
+              {/* <Button onClick={exportCanvasAsImage}>Export to Word</Button> */}
+              <a
+                href={`http://localhost:5000/api/template/canvas/${canvasId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Export as Word
+              </a>
             </div>
           </>
         )}

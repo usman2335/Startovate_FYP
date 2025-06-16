@@ -18,6 +18,9 @@ import ViewEnrolledStudents from "./pages/TeacherDashboard/ViewStudents.jsx";
 import StudentCoursePage from "./pages/StudentDashboard/StudentCoursePage.jsx";
 import ApproveCourses from "./pages/AdminDashboard/ApproveCourses.jsx";
 import EasyPaisaPaymentPage from "./pages/EasyPaisaPaymentPage.jsx";
+import PaymentApproval from "./pages/AdminDashboard/PaymentApproval.jsx";
+import AdminHome from "./pages/AdminDashboard/AdminHome.jsx";
+import TeacherHome from "./pages/TeacherDashboard/TeacherHome.jsx";
 
 const App = () => {
   return (
@@ -26,20 +29,24 @@ const App = () => {
         <Routes>
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/" element={<LoginPage />} />
           <Route path="/admin" element={<DashboardLayout />}>
-            <Route index element={<h1>Welcome to Dashboard</h1>} />
+            <Route index element={<AdminHome />} />
             <Route path="manageusers" element={<ManageUsers />} />
             <Route path="managecourses" element={<ManageCourses />} />
             <Route path="courseapprovals" element={<ApproveCourses />} />
+            <Route path="paymentapprovals" element={<PaymentApproval />} />
           </Route>
           <Route path="/teacher" element={<TeacherDashboardLayout />}>
-            <Route index element={<h1>Welcome to Teacehrs Dashboard</h1>} />
+            <Route index element={<TeacherHome />} />
+
             <Route path="viewstudents" element={<ViewEnrolledStudents />} />
             <Route path="managecourses" element={<TeacherManageCourses />} />
             <Route path="addcourses" element={<AddCoursePage />} />
           </Route>
           <Route path="/student" element={<StudentDashboardLayout />}>
             <Route index element={<StudentHome />} />
+
             <Route path="mycourses" element={<MyCourses />} />
             <Route path="enroll" element={<EnrollCourses />} />
             <Route path="mycourses/:id" element={<StudentCoursePage />} />

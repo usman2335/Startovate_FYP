@@ -259,6 +259,43 @@ const approveCourse = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+const updateCourseProgress = async (req, res) => {
+  try {
+    const { courseId, progress } = req.body;
+    console.log("request", req.body);
+    const userId = req.user._id;
+
+    const enrollment = await StudentCourse.findOne({
+      student: userId,
+      course: courseId,
+    });
+
+    if (!enrollment) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Enrollment not found" });
+    }
+    console.log("percent progress of enrollment:", enrollment.progress);
+    console.log("percent progress watched of enrollment:", progress);
+
+    // Only update if new progress is greater
+    if (progress > enrollment.progress) {
+      console.log("percentententent");
+      enrollment.progress = progress;
+
+      if (progress >= 100) {
+        enrollment.completed = true;
+      }
+
+      await enrollment.save();
+    }
+
+    res.status(200).json({ success: true, updated: true });
+  } catch (error) {
+    console.error("Error updating course progress:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
 
 module.exports = {
   createCourse,
@@ -272,4 +309,5 @@ module.exports = {
   getCourseById,
   getUnapprovedCourses,
   approveCourse,
+  updateCourseProgress,
 };
