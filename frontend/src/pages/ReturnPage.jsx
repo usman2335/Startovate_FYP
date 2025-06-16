@@ -26,7 +26,6 @@ const ReturnPage = () => {
         setCustomerEmail(res.data.customer_email);
 
         if (res.data.status === "complete") {
-          // ⏳ Wait 3 seconds, then redirect
           setTimeout(() => {
             setRedirect(true);
           }, 5000);
@@ -41,6 +40,62 @@ const ReturnPage = () => {
     return <Navigate to="/" />;
   }
 
+  const sharedContainerStyle = {
+    minHeight: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f9f9f9",
+    fontFamily: "Poppins, sans-serif",
+    padding: "2rem",
+    textAlign: "center",
+    position: "relative",
+    overflow: "hidden",
+  };
+
+  const boxStyle = {
+    backgroundColor: "#fff",
+    padding: "3rem 2rem",
+    borderRadius: "12px",
+    boxShadow: "0 6px 30px rgba(0, 0, 0, 0.1)",
+    maxWidth: "600px",
+    width: "100%",
+    zIndex: 1,
+  };
+
+  const vectors = (
+    <>
+      <svg
+        style={{
+          position: "absolute",
+          top: "-80px",
+          left: "-80px",
+          zIndex: 0,
+          opacity: 0.1,
+        }}
+        width="300"
+        height="300"
+        viewBox="0 0 200 200"
+      >
+        <circle cx="100" cy="100" r="100" fill="#ed2567" />
+      </svg>
+      <svg
+        style={{
+          position: "absolute",
+          bottom: "-100px",
+          right: "-100px",
+          zIndex: 0,
+          opacity: 0.1,
+        }}
+        width="300"
+        height="300"
+        viewBox="0 0 200 200"
+      >
+        <rect width="200" height="200" rx="40" fill="#ed2567" />
+      </svg>
+    </>
+  );
+
   if (status === "complete") {
     axios.patch(
       "http://localhost:5000/api/users/mark-subscribed",
@@ -51,13 +106,20 @@ const ReturnPage = () => {
     );
 
     return (
-      <div style={{ textAlign: "center", marginTop: "3rem" }}>
-        <h2>✅ Payment Successful</h2>
-        <p>
-          Thank you for subscribing! A confirmation email has been sent to{" "}
-          <strong>{customerEmail}</strong>.
-        </p>
-        <p>Redirecting to homepage...</p>
+      <div style={sharedContainerStyle}>
+        {vectors}
+        <div style={boxStyle}>
+          <h2 style={{ fontSize: "2rem", color: "#333" }}>
+            ✅ Payment Successful
+          </h2>
+          <p style={{ fontSize: "1rem", color: "#555" }}>
+            Thank you for subscribing! A confirmation email has been sent to{" "}
+            <strong>{customerEmail}</strong>.
+          </p>
+          <p style={{ fontSize: "0.9rem", marginTop: "1rem", color: "#999" }}>
+            Redirecting to homepage...
+          </p>
+        </div>
       </div>
     );
   }
@@ -67,8 +129,13 @@ const ReturnPage = () => {
   }
 
   return (
-    <div style={{ textAlign: "center", marginTop: "3rem" }}>
-      <h2>🔄 Verifying your payment...</h2>
+    <div style={sharedContainerStyle}>
+      {vectors}
+      <div style={boxStyle}>
+        <h2 style={{ fontSize: "2rem", color: "#333" }}>
+          🔄 Verifying your payment...
+        </h2>
+      </div>
     </div>
   );
 };

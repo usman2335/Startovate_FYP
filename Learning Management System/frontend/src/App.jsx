@@ -19,6 +19,7 @@ import StudentCoursePage from "./pages/StudentDashboard/StudentCoursePage.jsx";
 import ApproveCourses from "./pages/AdminDashboard/ApproveCourses.jsx";
 import EasyPaisaPaymentPage from "./pages/EasyPaisaPaymentPage.jsx";
 import PaymentApproval from "./pages/AdminDashboard/PaymentApproval.jsx";
+import PaymentApproval from "./pages/AdminDashboard/PaymentApproval.jsx";
 import AdminHome from "./pages/AdminDashboard/AdminHome.jsx";
 import TeacherHome from "./pages/TeacherDashboard/TeacherHome.jsx";
 
