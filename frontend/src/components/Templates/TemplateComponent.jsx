@@ -7,9 +7,10 @@ import "../../CSS/TemplateComponent.css";
 import { Snackbar } from "@mui/material";
 
 const TemplateComponent = ({ templateKey, canvasId, hideButtons = false }) => {
-  const DynamicComponent =
+  const mappingEntry =
     templateMapping[templateKey] ||
     templateMapping["ProblemIdentification-Step1"];
+  const DynamicComponent = mappingEntry?.component;
 
   const [answers, setAnswers] = useState({});
   const [snackBarOpen, setSnackBarOpen] = useState(false);
@@ -26,33 +27,33 @@ const TemplateComponent = ({ templateKey, canvasId, hideButtons = false }) => {
       alert("Failed to save answers.");
     }
   };
+
   const handleClose = () => {
     setSnackBarOpen(false);
   };
-  console.log("Passing Props:", { canvasId, templateKey });
-  useEffect(() => {
-    console.log("useEffect triggered:", { canvasId, templateKey });
 
+  useEffect(() => {
     if (!canvasId || !templateKey) return;
+
     const fetchTemplate = async () => {
-      console.log("canvasId:", canvasId, "templateId:", templateKey);
       try {
-        console.log("correctly fetching id");
         const response = await axios.get(
           `http://localhost:5000/api/template/get-template/${canvasId}/${templateKey}`
         );
         if (response.data.success) {
-          setAnswers(response.data.template.content); // Load saved answers
+          setAnswers(response.data.template.content);
         }
       } catch (error) {
         console.error("Error fetching template:", error);
       }
     };
 
-    if (canvasId && templateKey) {
-      fetchTemplate();
-    }
+    fetchTemplate();
   }, [canvasId, templateKey]);
+
+  if (!DynamicComponent) {
+    return <div>Invalid template key.</div>;
+  }
 
   return (
     <>
@@ -62,7 +63,7 @@ const TemplateComponent = ({ templateKey, canvasId, hideButtons = false }) => {
         <div className="tem-button-group">
           <Button
             label="Reset"
-            onClick={() => {}}
+            onClick={() => setAnswers({})}
             padding="10px 10px"
             color="white"
             fontSize="16px"
@@ -85,7 +86,6 @@ const TemplateComponent = ({ templateKey, canvasId, hideButtons = false }) => {
         open={snackBarOpen}
         onClose={handleClose}
         message="Template saved successfully"
-        // key={vertical + horizontal}
       />
     </>
   );

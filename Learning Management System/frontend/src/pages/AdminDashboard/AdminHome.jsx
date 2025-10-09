@@ -1,93 +1,82 @@
-import React, { useEffect, useState } from 'react';
-import { Card, Row, Col, Table } from 'antd';
-import { Pie, Column } from '@ant-design/charts';
+import React, { useEffect, useState } from "react";
+import { Card, Row, Col, Table, Typography, message } from "antd";
+import { Pie } from "@ant-design/charts";
+import axios from "axios";
+
+const { Title } = Typography;
 
 const AdminHome = () => {
-  const [userRolesData, setUserRolesData] = useState([]);
-  const [courseApprovalStats, setCourseApprovalStats] = useState([]);
-  const [paymentsData, setPaymentsData] = useState([]);
+  const [stats, setStats] = useState(null);
 
-  // Pie Chart – User Roles Distribution
-  const userRolesConfig = {
-    data: userRolesData,
-    angleField: 'count',
-    colorField: 'role',
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/users/dashboard", {
+        withCredentials: true,
+      })
+      .then((res) => {
+        if (res.data.success) setStats(res.data.stats);
+      })
+      .catch((err) => {
+        console.error(err);
+        message.error("Failed to load dashboard stats");
+      });
+  }, []);
+
+  if (!stats) return <div>Loading...</div>;
+  const { totalCourses, totalStudents, totalTeachers, userRoles, recentUsers } =
+    stats;
+
+  const pieConfig = {
+    data: userRoles,
+    angleField: "count",
+    colorField: "role",
     radius: 1,
-    label: {
-      type: 'inner',
-      offset: '-30%',
-      content: ({ role }) => role,
-      style: {
-        textAlign: 'center',
-        fontSize: 14,
-      },
-    },
+    label: { type: "inner", offset: "-30%", content: ({ role }) => role },
     height: 250,
-    legend: { position: 'bottom' },
+    legend: { position: "bottom" },
   };
 
-  // Column Chart – Course Approval Stats
-  const approvalsConfig = {
-    data: courseApprovalStats,
-    xField: 'status',
-    yField: 'count',
-    height: 250,
-    color: '#ff9f7f',
-    label: {
-      position: 'middle',
-      content: (originData) => `${originData.count}`,
-      style: { fill: '#fff' },
-    },
-  };
-
-  // Table – Recent Payments
   const columns = [
+    { title: "Name", dataIndex: "name", key: "name" },
+    { title: "Email", dataIndex: "email", key: "email" },
+    { title: "Role", dataIndex: "role", key: "role" },
     {
-      title: 'User',
-      dataIndex: 'user',
-      key: 'user',
-    },
-    {
-      title: 'Amount',
-      dataIndex: 'amount',
-      key: 'amount',
-    },
-    {
-      title: 'Date',
-      dataIndex: 'date',
-      key: 'date',
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
+      // title: "Joined At",
+      // dataIndex: "createdAt",
+      // key: "createdAt",
+      // render: (dt) => new Date(dt).toLocaleDateString(),
     },
   ];
 
-  useEffect(() => {
-    // ⛔ Replace the following with actual API calls
-    // Example:
-    // fetch('/api/user-roles').then(res => res.json()).then(setUserRolesData);
-    // fetch('/api/course-approvals').then(res => res.json()).then(setCourseApprovalStats);
-    // fetch('/api/recent-payments').then(res => res.json()).then(setPaymentsData);
-  }, []);
-
   return (
     <div style={{ padding: 24 }}>
-      <Row gutter={[16, 16]}>
-        <Col xs={24} md={12}>
-          <Card title="User Distribution by Role">
-            <Pie {...userRolesConfig} />
+      <Title level={3}>Welcome, ${user.name}</Title>
+
+      <Row gutter={[16, 16]} style={{ marginTop: 20 }}>
+        <Col span={8}>
+          <Card>Total Courses: {totalCourses}</Card>
+        </Col>
+        <Col span={8}>
+          <Card>Total Students: {totalStudents}</Card>
+        </Col>
+        <Col span={8}>
+          <Card>Total Teachers: {totalTeachers}</Card>
+        </Col>
+      </Row>
+
+      <Row gutter={[16, 16]} style={{ marginTop: 24 }}>
+        <Col span={16}>
+          <Card title="Recent Users">
+            <Table
+              columns={columns}
+              dataSource={recentUsers.map((u) => ({ ...u, key: u._id }))}
+              pagination={false}
+            />
           </Card>
         </Col>
-        <Col xs={24} md={12}>
-          <Card title="Course Approval Status">
-            <Column {...approvalsConfig} />
-          </Card>
-        </Col>
-        <Col xs={24}>
-          <Card title="Recent Payments">
-            <Table columns={columns} dataSource={paymentsData} pagination={false} />
+        <Col span={8}>
+          <Card title="User Roles Distribution">
+            <Pie {...pieConfig} />
           </Card>
         </Col>
       </Row>

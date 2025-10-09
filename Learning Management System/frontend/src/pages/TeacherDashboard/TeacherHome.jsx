@@ -1,94 +1,85 @@
-import React, { useEffect, useState } from 'react';
-import { Card, Row, Col, Table } from 'antd';
-import { Bar, Pie } from '@ant-design/charts';
+import React, { useEffect, useState } from "react";
+import { Card, Row, Col, Typography, Table, message } from "antd";
+import { Column } from "@ant-design/charts";
+import axios from "axios";
+
+const { Title } = Typography;
 
 const TeacherHome = () => {
-  const [enrollmentData, setEnrollmentData] = useState([]);
-  const [courseRatings, setCourseRatings] = useState([]);
-  const [myCourses, setMyCourses] = useState([]);
+  const [stats, setStats] = useState(null);
 
-  // Donut chart – Enrollment per course
-  const donutConfig = {
-    data: enrollmentData,
-    angleField: 'students',
-    colorField: 'course',
-    radius: 1,
-    innerRadius: 0.6,
-    label: {
-      type: 'spider',
-      content: '{name} ({value})',
-    },
-    height: 250,
-    legend: { position: 'bottom' },
-  };
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/users/teacher/dashboard", {
+        withCredentials: true,
+      })
+      .then((res) => {
+        if (res.data.success) setStats(res.data.stats);
+      })
+      .catch((err) => {
+        console.error(err);
+        message.error("Failed to fetch teacher dashboard stats");
+      });
+  }, []);
 
-  // Bar chart – Average course ratings
-  const ratingConfig = {
-    data: courseRatings,
-    xField: 'rating',
-    yField: 'course',
-    layout: 'horizontal',
-    height: 250,
-    color: '#95de64',
-    label: {
-      position: 'right',
-      content: (originData) => `${originData.rating}/5`,
-      style: { fill: '#000' },
-    },
-  };
+  if (!stats) return <div>Loading...</div>;
 
-  // Table – My Courses
   const columns = [
+    { title: "Student", dataIndex: "student", key: "student" },
+    { title: "Email", dataIndex: "email", key: "email" },
+    { title: "Course", dataIndex: "course", key: "course" },
+    { title: "Progress (%)", dataIndex: "progress", key: "progress" },
     {
-      title: 'Course Title',
-      dataIndex: 'title',
-      key: 'title',
-    },
-    {
-      title: 'Enrolled Students',
-      dataIndex: 'students',
-      key: 'students',
-    },
-    {
-      title: 'Upload Date',
-      dataIndex: 'uploadDate',
-      key: 'uploadDate',
+      title: "Enrolled At",
+      dataIndex: "enrolledAt",
+      key: "enrolledAt",
+      render: (dt) => new Date(dt).toLocaleDateString(),
     },
   ];
 
-  useEffect(() => {
-    // TODO: Fetch from backend and update states
-
-    // Example:
-    // fetch('/api/teacher/enrollments')
-    //   .then(res => res.json())
-    //   .then(setEnrollmentData);
-
-    // fetch('/api/teacher/course-ratings')
-    //   .then(res => res.json())
-    //   .then(setCourseRatings);
-
-    // fetch('/api/teacher/my-courses')
-    //   .then(res => res.json())
-    //   .then(setMyCourses);
-  }, []);
+  const chartConfig = {
+    data: stats.courseProgress,
+    xField: "course",
+    yField: "averageProgress",
+    label: {
+      position: "middle",
+      style: { fill: "#fff" },
+    },
+    xAxis: { label: { autoHide: true, autoRotate: false } },
+    yAxis: { max: 100 },
+    height: 300,
+    color: "#73c0de",
+  };
 
   return (
     <div style={{ padding: 24 }}>
-      <Row gutter={[16, 16]}>
-        <Col xs={24} md={12}>
-          <Card title="Student Enrollment per Course">
-            <Pie {...donutConfig} />
+      <Title level={3}>Welcome, {stats.userName}!</Title>
+
+      <Row gutter={[16, 16]} style={{ marginTop: 20 }}>
+        <Col span={12}>
+          <Card>Total Courses: {stats.totalCourses}</Card>
+        </Col>
+        <Col span={12}>
+          <Card>Total Students Enrolled: {stats.totalStudents}</Card>
+        </Col>
+      </Row>
+
+      <Row gutter={[16, 16]} style={{ marginTop: 24 }}>
+        <Col span={16}>
+          <Card title="Recent Enrolled Students">
+            <Table
+              columns={columns}
+              dataSource={stats.enrolledStudentsTable.map((e, i) => ({
+                ...e,
+                key: i,
+              }))}
+              pagination={false}
+            />
           </Card>
         </Col>
-        <Col xs={24} md={12}>
-          <Card title="Average Course Ratings">
-            <Bar {...ratingConfig} />
-          </Card>
-        </Col>
-        <Col xs={24}>
-          <Card title="My Courses">
-            <Table columns={columns} dataSource={myCourses} pagination={false} />
+        <Col span={8}>
+          <Card title="Average Course Progress">
+            <Column {...chartConfig} />
           </Card>
         </Col>
       </Row>

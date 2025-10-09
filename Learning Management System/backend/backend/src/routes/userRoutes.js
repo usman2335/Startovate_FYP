@@ -14,6 +14,10 @@ const {
 } = require("../controllers/userController");
 
 const protect = require("../middleware/authMiddleware");
+const {
+  getAdminDashboardStats,
+  getTeacherDashboardStats,
+} = require("../controllers/courseController");
 
 // ✅ Public Authentication Routes
 router.get("/", getAllUsers); // Get currently logged-in user
@@ -23,6 +27,8 @@ router.get("/getUser", protect, getUser);
 router.post("/signup", signup);
 router.post("/login", login);
 router.post("/logout", logout);
+router.get("/dashboard", protect, getAdminDashboardStats);
+router.get("/teacher/dashboard", protect, getTeacherDashboardStats);
 
 //delete
 router.delete("/:id", deleteUser);

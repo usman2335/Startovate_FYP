@@ -297,6 +297,112 @@ const updateCourseProgress = async (req, res) => {
   }
 };
 
+const getAdminDashboardStats = async (req, res) => {
+  try {
+    // Total counts
+    const [totalCourses, totalStudents, totalTeachers] = await Promise.all([
+      Course.countDocuments(),
+      User.countDocuments({ role: "student" }),
+      User.countDocuments({ role: "teacher" }),
+    ]);
+
+    // User role distribution
+    const roles = await User.aggregate([
+      { $group: { _id: "$role", count: { $sum: 1 } } },
+      { $project: { _id: 0, role: "$_id", count: 1 } },
+    ]);
+
+    // First 5 users
+    const users = await User.find()
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .select("name email role createdAt")
+      .lean();
+
+    res.json({
+      success: true,
+      stats: {
+        totalCourses,
+        totalStudents,
+        totalTeachers,
+        userRoles: roles,
+        recentUsers: users,
+      },
+    });
+  } catch (err) {
+    console.error("Admin Dashboard error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+const getTeacherDashboardStats = async (req, res) => {
+  try {
+    const teacherId = req.user._id;
+
+    // Get teacher's courses
+    const courses = await Course.find({ instructor: teacherId }).select(
+      "_id title"
+    );
+
+    const courseIds = courses.map((c) => c._id);
+    const courseTitles = {};
+    courses.forEach((c) => (courseTitles[c._id] = c.title));
+
+    // Total courses
+    const totalCourses = courses.length;
+
+    // Enrolled students (in their courses)
+    const enrollments = await StudentCourse.find({ course: { $in: courseIds } })
+      .populate("student", "name email")
+      .sort({ enrolledAt: -1 })
+      .limit(5)
+      .lean();
+
+    const enrolledStudentsTable = enrollments.map((entry) => ({
+      student: entry.student.name,
+      email: entry.student.email,
+      course: courseTitles[entry.course],
+      progress: entry.progress,
+      enrolledAt: entry.enrolledAt,
+    }));
+
+    // Total unique students
+    const totalStudents = await StudentCourse.distinct("student", {
+      course: { $in: courseIds },
+    }).then((students) => students.length);
+
+    // Chart: average progress for each course
+    const courseProgress = await StudentCourse.aggregate([
+      { $match: { course: { $in: courseIds } } },
+      {
+        $group: {
+          _id: "$course",
+          avgProgress: { $avg: "$progress" },
+        },
+      },
+    ]);
+
+    const chartData = courseProgress.map((item) => ({
+      course: courseTitles[item._id] || "Unknown",
+      averageProgress: Math.round(item.avgProgress),
+    }));
+
+    res.status(200).json({
+      success: true,
+      stats: {
+        totalCourses,
+        totalStudents,
+        enrolledStudentsTable,
+        courseProgress: chartData,
+        userName: req.user.name,
+      },
+    });
+  } catch (err) {
+    console.error("Teacher dashboard error:", err);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
 module.exports = {
   createCourse,
   getTeacherCourses,
@@ -310,4 +416,6 @@ module.exports = {
   getUnapprovedCourses,
   approveCourse,
   updateCourseProgress,
+  getAdminDashboardStats,
+  getTeacherDashboardStats,
 };

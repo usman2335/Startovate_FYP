@@ -82,3 +82,43 @@ exports.getAvailableCourses = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
+exports.getStudentDashboardStats = async (req, res) => {
+  try {
+    const studentId = req.user._id;
+    const userName = req.user.name;
+
+    const enrollments = await StudentCourse.find({ student: studentId })
+      .populate({
+        path: "course",
+        populate: { path: "instructor", select: "name" },
+      })
+      .sort({ enrolledAt: -1 });
+
+    const totalEnrolled = enrollments.length;
+
+    const tableData = enrollments.slice(0, 5).map((entry) => ({
+      courseTitle: entry.course?.title || "Unknown",
+      instructorName: entry.course?.instructor?.name || "Unknown",
+      completed: entry.completed,
+    }));
+
+    const chartData = enrollments.map((entry) => ({
+      course: entry.course?.title || "Unknown",
+      progress: entry.progress || 0,
+    }));
+
+    res.status(200).json({
+      success: true,
+      stats: {
+        userName,
+        totalEnrolled,
+        tableData,
+        chartData,
+      },
+    });
+  } catch (err) {
+    console.error("Dashboard error:", err);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};

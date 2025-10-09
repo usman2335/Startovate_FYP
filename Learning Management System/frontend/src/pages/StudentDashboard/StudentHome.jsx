@@ -1,85 +1,87 @@
-import React, { useEffect, useState } from 'react';
-import { Card, Row, Col, Table } from 'antd';
-import { Line, Bar } from '@ant-design/charts';
+import React, { useEffect, useState } from "react";
+import { Card, Row, Col, Typography, Table, Tag, message } from "antd";
+import { Bar } from "@ant-design/plots";
+import axios from "axios";
+
+const { Title } = Typography;
 
 const StudentHome = () => {
-  // States for data to be populated from backend
-  const [activityData, setActivityData] = useState([]);
-  const [courseProgress, setCourseProgress] = useState([]);
-  const [enrolledCourses, setEnrolledCourses] = useState([]);
+  const [stats, setStats] = useState(null);
 
-  // Line chart – Weekly Activity (Videos Watched)
-  const lineConfig = {
-    data: activityData,
-    xField: 'day',
-    yField: 'videos',
-    height: 250,
-    smooth: true,
-    point: { size: 5, shape: 'circle' },
-    tooltip: {
-      formatter: (datum) => ({
-        name: 'Videos Watched',
-        value: datum.videos,
-      }),
-    },
-  };
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/enroll/student/dashboard", {
+        withCredentials: true,
+      })
+      .then((res) => {
+        if (res.data.success) setStats(res.data.stats);
+      })
+      .catch((err) => {
+        console.error(err);
+        message.error("Failed to fetch student dashboard stats");
+      });
+  }, []);
 
-  // Bar chart – Course Completion Progress
-  const barConfig = {
-    data: courseProgress,
-    xField: 'progress',
-    yField: 'course',
-    height: 250,
-    color: '#5B8FF9',
-    label: {
-      position: 'middle',
-      content: (originData) => `${originData.progress}%`,
-      style: { fill: '#fff' },
-    },
-  };
+  if (!stats) return <div>Loading...</div>;
 
-  // Table – Enrolled Courses
   const columns = [
     {
-      title: 'Course Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: "Course",
+      dataIndex: "courseTitle",
+      key: "courseTitle",
     },
     {
-      title: 'Instructor',
-      dataIndex: 'instructor',
-      key: 'instructor',
+      title: "Instructor",
+      dataIndex: "instructorName",
+      key: "instructorName",
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
+      title: "Completed",
+      dataIndex: "completed",
+      key: "completed",
+      render: (completed) =>
+        completed ? <Tag color="green">Yes</Tag> : <Tag color="red">No</Tag>,
     },
   ];
 
-  // Placeholder for real data fetch
-  useEffect(() => {
-    // fetch('/api/activity').then(res => res.json()).then(setActivityData);
-    // fetch('/api/course-progress').then(res => res.json()).then(setCourseProgress);
-    // fetch('/api/enrolled-courses').then(res => res.json()).then(setEnrolledCourses);
-  }, []);
+  const chartConfig = {
+    data: stats.chartData,
+    xField: "progress",
+    yField: "course",
+    seriesField: "course",
+    color: "#1890ff",
+    legend: false,
+    barStyle: {
+      radius: [4, 4, 0, 0],
+    },
+    height: 300,
+    xAxis: { max: 100, title: { text: "Progress (%)" } },
+    yAxis: { label: { autoHide: false } },
+  };
 
   return (
     <div style={{ padding: 24 }}>
-      <Row gutter={[16, 16]}>
-        <Col xs={24} md={12}>
-          <Card title="Weekly Activity (Videos Watched)">
-            <Line {...lineConfig} />
+      <Title level={3}>Welcome, {stats.userName}!</Title>
+
+      <Row gutter={[16, 16]} style={{ marginTop: 20 }}>
+        <Col span={8}>
+          <Card title="Total Enrolled Courses">{stats.totalEnrolled}</Card>
+        </Col>
+      </Row>
+
+      <Row gutter={[16, 16]} style={{ marginTop: 24 }}>
+        <Col span={14}>
+          <Card title="Current Enrollments">
+            <Table
+              columns={columns}
+              dataSource={stats.tableData.map((row, i) => ({ ...row, key: i }))}
+              pagination={false}
+            />
           </Card>
         </Col>
-        <Col xs={24} md={12}>
-          <Card title="Course Completion Progress">
-            <Bar {...barConfig} />
-          </Card>
-        </Col>
-        <Col xs={24}>
-          <Card title="Enrolled Courses">
-            <Table columns={columns} dataSource={enrolledCourses} pagination={false} />
+        <Col span={10}>
+          <Card title="Progress by Course">
+            <Bar {...chartConfig} />
           </Card>
         </Col>
       </Row>
