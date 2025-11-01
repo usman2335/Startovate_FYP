@@ -22,6 +22,8 @@ const templateRoutes = require("./src/routes/templateRoutes");
 app.use("/api/template", templateRoutes);
 const paymentRoutes = require("./src/routes/paymentRoutes");
 app.use("/api/payment", paymentRoutes);
+const chatbotRoutes = require("./src/routes/chatbotRoutes");
+app.use("/api/chatbot", chatbotRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is running");

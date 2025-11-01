@@ -62,12 +62,12 @@ const login = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ error: "Invalid email or password" });
     }
-    const token = generateToken(user);
+    const token = generateToken(user._id);
     console.log("hellow token:", token);
     res.cookie("token", token, {
       httpOnly: true, // Prevents client-side access (XSS protection)
-      secure: true, // HTTPS in production
-      sameSite: "Strict", // CSRF protection
+      secure: false, // Set to false for localhost development
+      sameSite: "Lax", // More permissive for localhost
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
     res.status(200).json({

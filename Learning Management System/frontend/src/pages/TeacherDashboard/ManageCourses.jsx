@@ -8,6 +8,7 @@ import {
   Tag,
   InputNumber,
   Space,
+  Select,
 } from "antd";
 import axios from "axios";
 import { AuthContext } from "../../context/authContext.jsx";
@@ -18,6 +19,7 @@ const TeacherManageCourses = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingCourse, setEditingCourse] = useState();
   const [form] = Form.useForm();
+  const [submitting, setSubmitting] = useState(false);
   const { user } = useContext(AuthContext);
 
   const fetchCourses = async () => {
@@ -31,33 +33,162 @@ const TeacherManageCourses = () => {
     fetchCourses();
   }, []);
 
-  const handleSubmit = async (values) => {
+  const testApiCall = async () => {
+    console.log("=== Testing API Call Directly ===");
     try {
+      const testPayload = {
+        title: "Test Course",
+        description: "Test Description",
+        price: 100,
+        category: "Test",
+        videos: [],
+      };
+
+      const response = await axios.put(
+        `http://localhost:5000/api/courses/update/${editingCourse?._id}`,
+        testPayload,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Direct API call response:", response.data);
+    } catch (error) {
+      console.error("Direct API call error:", error);
+    }
+  };
+
+  const handleSubmit = async (values) => {
+    console.log("=== handleSubmit Function Called ===");
+    console.log("Function called at:", new Date().toISOString());
+    console.log("Values received:", values);
+    console.log("Editing course:", editingCourse);
+    if (submitting) {
+      console.log("Already submitting, ignoring request");
+      return;
+    }
+
+    setSubmitting(true);
+
+    try {
+      console.log("=== Frontend Update Course Debug ===");
+      console.log("Editing course:", editingCourse);
+      console.log("Form values:", values);
+
+      // Transform videos data to match backend structure
+      const transformedVideos =
+        values.videos?.map((chapter) => ({
+          chapterTitle: chapter.chapterTitle,
+          lessons:
+            chapter.lessons?.map((lesson) => ({
+              title: lesson.title,
+              type: lesson.type,
+              url: lesson.url,
+            })) || [],
+        })) || [];
+
+      const payload = {
+        title: values.title,
+        description: values.description,
+        price: values.price,
+        category: values.category,
+        videos: transformedVideos,
+      };
+
+      console.log("Transformed payload:", payload);
+
       if (editingCourse) {
-        console.log(editingCourse._id);
-        await axios.put(
-          `http://localhost:5000/api/courses/update/${editingCourse._id}`,
-          values,
-          { withCredentials: true }
+        console.log("Updating course with ID:", editingCourse._id);
+        console.log(
+          "Request URL:",
+          `http://localhost:5000/api/courses/update/${editingCourse._id}`
         );
+
+        const response = await axios.put(
+          `http://localhost:5000/api/courses/update/${editingCourse._id}`,
+          payload,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        console.log("Update response:", response.data);
+
+        if (response.data.success) {
+          Swal.fire("Updated!", "The course has been edited.", "success");
+          setModalVisible(false);
+          form.resetFields();
+          setEditingCourse(null);
+          fetchCourses();
+        } else {
+          Swal.fire(
+            "Error",
+            response.data.error || "Failed to update course. Try again.",
+            "error"
+          );
+        }
       } else {
-        await axios.post(
+        console.log("Creating new course");
+        const response = await axios.post(
           "http://localhost:5000/api/courses",
           {
-            ...values,
+            ...payload,
             instructor: user._id,
           },
-          { withCredentials: true }
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
         );
-      }
 
-      setModalVisible(false);
-      form.resetFields();
-      setEditingCourse(null);
-      Swal.fire("Updated!", "The course has been edited.", "success");
-      fetchCourses();
+        console.log("Create response:", response.data);
+
+        if (response.data.success) {
+          Swal.fire("Created!", "The course has been created.", "success");
+          setModalVisible(false);
+          form.resetFields();
+          fetchCourses();
+        } else {
+          Swal.fire(
+            "Error",
+            response.data.message || "Failed to create course. Try again.",
+            "error"
+          );
+        }
+      }
     } catch (err) {
       console.error("Error saving course:", err);
+      console.error("Error response:", err.response?.data);
+
+      let errorMessage = "Failed to save course. Try again.";
+
+      if (err.response?.data?.error) {
+        errorMessage = err.response.data.error;
+      } else if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      } else if (err.response?.status === 401) {
+        errorMessage = "Please log in again to save courses.";
+      } else if (err.response?.status === 403) {
+        errorMessage = "You don't have permission to modify this course.";
+      } else if (err.response?.status === 404) {
+        errorMessage = "Course not found.";
+      } else if (err.code === "ERR_NETWORK") {
+        errorMessage =
+          "Unable to connect to the server. Please check your internet connection.";
+      }
+
+      Swal.fire("Error", errorMessage, "error");
+    } finally {
+      setSubmitting(false);
+      console.log("=== handleSubmit Function Completed ===");
     }
   };
 
@@ -74,147 +205,513 @@ const TeacherManageCourses = () => {
       });
 
       if (confirm.isConfirmed) {
-        await axios.delete(`http://localhost:5000/api/courses/${id}`, {
-          withCredentials: true,
-        });
+        console.log("=== Frontend Delete Course Debug ===");
+        console.log("Deleting course with ID:", id);
+        console.log("Request URL:", `http://localhost:5000/api/courses/${id}`);
 
-        Swal.fire("Deleted!", "The course has been deleted.", "success");
-        fetchCourses();
+        const response = await axios.delete(
+          `http://localhost:5000/api/courses/${id}`,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        console.log("Delete response:", response.data);
+
+        if (response.data.success) {
+          Swal.fire("Deleted!", "The course has been deleted.", "success");
+          fetchCourses(); // Refresh the course list
+        } else {
+          Swal.fire(
+            "Error",
+            response.data.error || "Failed to delete course. Try again.",
+            "error"
+          );
+        }
       }
     } catch (err) {
       console.error("Delete failed:", err);
-      Swal.fire("Error", "Failed to delete course. Try again.", "error");
+      console.error("Error response:", err.response?.data);
+
+      let errorMessage = "Failed to delete course. Try again.";
+
+      if (err.response?.data?.error) {
+        errorMessage = err.response.data.error;
+      } else if (err.response?.status === 401) {
+        errorMessage = "Please log in again to delete courses.";
+      } else if (err.response?.status === 403) {
+        errorMessage = "You don't have permission to delete this course.";
+      } else if (err.response?.status === 404) {
+        errorMessage = "Course not found.";
+      } else if (err.code === "ERR_NETWORK") {
+        errorMessage =
+          "Unable to connect to the server. Please check your internet connection.";
+      }
+
+      Swal.fire("Error", errorMessage, "error");
     }
   };
   const openEditModal = (course) => {
+    console.log("=== Open Edit Modal Debug ===");
+    console.log("Course data:", course);
+    console.log("Course videos:", course.videos);
+
     setEditingCourse(course);
-    // Flatten videos for form if needed
+
+    // Transform videos data to match form structure
+    const transformedVideos =
+      course.videos?.map((chapter, chapterIndex) => ({
+        chapterTitle: chapter.chapterTitle,
+        lessons:
+          chapter.lessons?.map((lesson, lessonIndex) => ({
+            title: lesson.title,
+            type: lesson.type,
+            url: lesson.url,
+            chapterIndex,
+            lessonIndex,
+          })) || [],
+      })) || [];
+
+    console.log("Transformed videos for form:", transformedVideos);
+
+    // Set form values with proper data structure
     form.setFieldsValue({
       title: course.title,
       description: course.description,
       price: course.price,
       category: course.category,
-      videos: course.videos || [],
+      videos: transformedVideos,
     });
+
     setModalVisible(true);
   };
 
   const columns = [
-    { title: "Title", dataIndex: "title" },
-    { title: "Description", dataIndex: "description" },
+    {
+      title: "Course Title",
+      dataIndex: "title",
+      ellipsis: true,
+      width: 200,
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      ellipsis: true,
+      width: 250,
+    },
+    {
+      title: "Price",
+      dataIndex: "price",
+      render: (price) => `PKR ${price}`,
+      width: 100,
+    },
+    {
+      title: "Category",
+      dataIndex: "category",
+      width: 120,
+    },
     {
       title: "Status",
       dataIndex: "isApproved",
       render: (isApproved) => (
         <Tag color={isApproved ? "green" : "orange"}>
-          {isApproved ? "Approved" : "Pending"}
+          {isApproved ? "✅ Approved" : "⏳ Pending"}
         </Tag>
       ),
+      width: 120,
     },
     {
-      title: "Enrolled Students",
-      render: (_, record) => record.students?.length || 0,
+      title: "Content",
+      render: (_, record) => {
+        const totalLessons =
+          record.videos?.reduce(
+            (total, chapter) => total + (chapter.lessons?.length || 0),
+            0
+          ) || 0;
+        return `${
+          record.videos?.length || 0
+        } chapters, ${totalLessons} lessons`;
+      },
+      width: 150,
     },
     {
       title: "Actions",
       render: (_, record) => (
         <Space>
-          <Button onClick={() => openEditModal(record)}>Edit</Button>
-          <Button danger onClick={() => handleDelete(record._id)}>
+          <Button
+            type="primary"
+            onClick={() => openEditModal(record)}
+            icon="✏️"
+          >
+            Edit
+          </Button>
+          <Button danger onClick={() => handleDelete(record._id)} icon="🗑️">
             Delete
           </Button>
         </Space>
       ),
+      width: 150,
     },
   ];
 
   return (
     <div style={{ padding: 24 }}>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <h1>Your Courses</h1>
-        {/* <Button
-          type="primary"
-          onClick={() => {
-            setEditingCourse(null);
-            form.resetFields();
-            setModalVisible(true);
-          }}
-        >
-          Add Course
-        </Button> */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "24px",
+        }}
+      >
+        <div>
+          <h1 style={{ margin: 0, fontSize: "28px", fontWeight: "bold" }}>
+            📚 Your Courses
+          </h1>
+          <p style={{ margin: "8px 0 0 0", color: "#666", fontSize: "14px" }}>
+            Manage your course content, pricing, and settings
+          </p>
+        </div>
+        <div style={{ textAlign: "right" }}>
+          <div
+            style={{ fontSize: "16px", fontWeight: "bold", color: "#1890ff" }}
+          >
+            {courses.length} Course{courses.length !== 1 ? "s" : ""}
+          </div>
+          <div style={{ fontSize: "12px", color: "#999" }}>
+            {courses.filter((c) => c.isApproved).length} Approved
+          </div>
+        </div>
       </div>
 
-      <Table columns={columns} dataSource={courses} rowKey="_id" />
+      <Table
+        columns={columns}
+        dataSource={courses}
+        rowKey="_id"
+        pagination={{
+          pageSize: 10,
+          showSizeChanger: true,
+          showQuickJumper: true,
+          showTotal: (total, range) =>
+            `${range[0]}-${range[1]} of ${total} courses`,
+        }}
+        scroll={{ x: 1000 }}
+      />
 
       <Modal
-        title={editingCourse ? "Edit Course" : "Add Course"}
+        title={
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <span style={{ fontSize: "18px", fontWeight: "bold" }}>
+              {editingCourse ? "✏️ Edit Course" : "➕ Add New Course"}
+            </span>
+          </div>
+        }
         open={modalVisible}
         onCancel={() => {
           setModalVisible(false);
           form.resetFields();
           setEditingCourse(null);
         }}
-        onOk={() => form.submit()}
+        onOk={() => {
+          console.log("=== Modal OK Button Clicked ===");
+          console.log("Form instance:", form);
+          console.log("Form fields:", form.getFieldsValue());
+          console.log("Form validation:", form.validateFields());
+
+          // Validate form before submitting
+          form
+            .validateFields()
+            .then((values) => {
+              console.log("Form validation passed, values:", values);
+              form.submit();
+            })
+            .catch((errorInfo) => {
+              console.log("Form validation failed:", errorInfo);
+              console.log("Validation errors:", errorInfo.errorFields);
+            });
+        }}
         destroyOnClose
+        width={800}
+        style={{ top: 20 }}
+        okText={editingCourse ? "Update Course" : "Create Course"}
+        cancelText="Cancel"
+        okButtonProps={{
+          type: "primary",
+          size: "large",
+          loading: submitting,
+          disabled: submitting,
+        }}
+        cancelButtonProps={{
+          size: "large",
+        }}
       >
-        <Form form={form} layout="vertical" onFinish={handleSubmit}>
-          <Form.Item name="title" label="Title" rules={[{ required: true }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item name="description" label="Description">
-            <Input.TextArea />
-          </Form.Item>
-          <Form.Item name="price" label="Price" rules={[{ required: true }]}>
-            <InputNumber style={{ width: "100%" }} />
-          </Form.Item>
-          <Form.Item name="category" label="Category">
-            <Input />
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={(values) => {
+            console.log("=== Form onFinish Called ===");
+            console.log("Form onFinish values:", values);
+            handleSubmit(values);
+          }}
+        >
+          {/* Test Button */}
+          {editingCourse && (
+            <div
+              style={{
+                marginBottom: "16px",
+                padding: "8px",
+                backgroundColor: "#f0f0f0",
+                borderRadius: "4px",
+              }}
+            >
+              <Button
+                type="dashed"
+                onClick={testApiCall}
+                style={{ marginBottom: "8px" }}
+              >
+                🧪 Test API Call Directly
+              </Button>
+              <div style={{ fontSize: "12px", color: "#666" }}>
+                This button tests the API call directly without form validation
+              </div>
+            </div>
+          )}
+          <Form.Item
+            name="title"
+            label="Course Title"
+            rules={[
+              { required: true, message: "Please enter a course title!" },
+            ]}
+          >
+            <Input placeholder="Enter course title" />
           </Form.Item>
 
-          {/* Video Handling - Just text for now */}
+          <Form.Item name="description" label="Course Description">
+            <Input.TextArea
+              rows={4}
+              placeholder="Describe what students will learn in this course..."
+              showCount
+              maxLength={500}
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="price"
+            label="Course Price (PKR)"
+            rules={[{ required: true, message: "Please enter a price!" }]}
+          >
+            <InputNumber
+              style={{ width: "100%" }}
+              placeholder="Enter price in PKR"
+              min={0}
+              precision={2}
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="category"
+            label="Course Category"
+            rules={[{ required: true, message: "Please enter a category!" }]}
+          >
+            <Input placeholder="e.g., Programming, Design, Business" />
+          </Form.Item>
+
+          {/* Enhanced Video Management */}
           <Form.List name="videos">
             {(fields, { add, remove }) => (
               <>
-                <div style={{ fontWeight: "bold", marginBottom: 8 }}>
-                  Videos
+                <div
+                  style={{
+                    fontWeight: "bold",
+                    marginBottom: 16,
+                    fontSize: "16px",
+                    color: "#1890ff",
+                  }}
+                >
+                  Course Content (Chapters & Lessons)
                 </div>
+
                 {fields.map(({ key, name, ...restField }) => (
-                  <Space
+                  <div
                     key={key}
-                    style={{ display: "flex", marginBottom: 8 }}
-                    align="baseline"
+                    style={{
+                      border: "1px solid #d9d9d9",
+                      borderRadius: "6px",
+                      padding: "16px",
+                      marginBottom: "16px",
+                      backgroundColor: "#fafafa",
+                    }}
                   >
+                    <div
+                      style={{
+                        fontWeight: "bold",
+                        marginBottom: "12px",
+                        color: "#262626",
+                      }}
+                    >
+                      Chapter {name + 1}
+                    </div>
+
                     <Form.Item
                       {...restField}
-                      name={[name, "title"]}
-                      rules={[{ required: true }]}
-                      style={{ width: "30%" }}
+                      name={[name, "chapterTitle"]}
+                      label="Chapter Title"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please enter chapter title!",
+                        },
+                      ]}
                     >
-                      <Input placeholder="Title" />
+                      <Input placeholder="e.g., Introduction to React" />
                     </Form.Item>
-                    <Form.Item
-                      {...restField}
-                      name={[name, "type"]}
-                      rules={[{ required: true }]}
-                      style={{ width: "20%" }}
+
+                    <Form.List name={[name, "lessons"]}>
+                      {(
+                        lessonFields,
+                        { add: addLesson, remove: removeLesson }
+                      ) => (
+                        <>
+                          <div
+                            style={{
+                              fontWeight: "500",
+                              marginBottom: "8px",
+                              color: "#595959",
+                            }}
+                          >
+                            Lessons in this chapter:
+                          </div>
+
+                          {lessonFields.map(
+                            ({
+                              key: lessonKey,
+                              name: lessonName,
+                              ...lessonRestField
+                            }) => (
+                              <div
+                                key={lessonKey}
+                                style={{
+                                  border: "1px solid #e8e8e8",
+                                  borderRadius: "4px",
+                                  padding: "12px",
+                                  marginBottom: "8px",
+                                  backgroundColor: "#fff",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    fontWeight: "500",
+                                    marginBottom: "8px",
+                                    color: "#8c8c8c",
+                                  }}
+                                >
+                                  Lesson {lessonName + 1}
+                                </div>
+
+                                <Space
+                                  style={{ display: "flex", marginBottom: 8 }}
+                                  align="baseline"
+                                >
+                                  <Form.Item
+                                    {...lessonRestField}
+                                    name={[lessonName, "title"]}
+                                    label="Lesson Title"
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: "Please enter lesson title!",
+                                      },
+                                    ]}
+                                    style={{ flex: 1 }}
+                                  >
+                                    <Input placeholder="Lesson title" />
+                                  </Form.Item>
+
+                                  <Form.Item
+                                    {...lessonRestField}
+                                    name={[lessonName, "type"]}
+                                    label="Type"
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: "Please select type!",
+                                      },
+                                    ]}
+                                    style={{ width: "120px" }}
+                                  >
+                                    <Select placeholder="Type">
+                                      <Select.Option value="youtube">
+                                        YouTube
+                                      </Select.Option>
+                                      <Select.Option value="drive">
+                                        Google Drive
+                                      </Select.Option>
+                                    </Select>
+                                  </Form.Item>
+
+                                  <Button
+                                    danger
+                                    size="small"
+                                    onClick={() => removeLesson(lessonName)}
+                                    style={{ marginTop: "24px" }}
+                                  >
+                                    Remove Lesson
+                                  </Button>
+                                </Space>
+
+                                <Form.Item
+                                  {...lessonRestField}
+                                  name={[lessonName, "url"]}
+                                  label="Video URL"
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: "Please enter video URL!",
+                                    },
+                                    {
+                                      type: "url",
+                                      message: "Please enter a valid URL!",
+                                    },
+                                  ]}
+                                >
+                                  <Input placeholder="https://youtube.com/watch?v=..." />
+                                </Form.Item>
+                              </div>
+                            )
+                          )}
+
+                          <Button
+                            type="dashed"
+                            onClick={() => addLesson()}
+                            block
+                            style={{ marginTop: "8px" }}
+                          >
+                            + Add Lesson to Chapter {name + 1}
+                          </Button>
+                        </>
+                      )}
+                    </Form.List>
+
+                    <Button
+                      danger
+                      onClick={() => remove(name)}
+                      style={{ marginTop: "12px" }}
                     >
-                      <Input placeholder="Type (youtube/drive)" />
-                    </Form.Item>
-                    <Form.Item
-                      {...restField}
-                      name={[name, "url"]}
-                      rules={[{ required: true }]}
-                      style={{ width: "40%" }}
-                    >
-                      <Input placeholder="URL" />
-                    </Form.Item>
-                    <Button danger onClick={() => remove(name)}>
-                      Remove
+                      Remove Chapter
                     </Button>
-                  </Space>
+                  </div>
                 ))}
-                <Button type="dashed" onClick={() => add()} block>
-                  + Add Video
+
+                <Button
+                  type="dashed"
+                  onClick={() => add()}
+                  block
+                  style={{ marginTop: "16px" }}
+                >
+                  + Add New Chapter
                 </Button>
               </>
             )}

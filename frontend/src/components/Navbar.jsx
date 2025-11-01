@@ -63,6 +63,9 @@ const Navbar = () => {
           <NavLink to="/Dashboard" className="nav-link">
             Dashboard
           </NavLink>
+          <NavLink to="/chat" className="nav-link">
+            LCI Assistant
+          </NavLink>
         </div>
         <div className="login-signup-btns flex">
           {user ? (

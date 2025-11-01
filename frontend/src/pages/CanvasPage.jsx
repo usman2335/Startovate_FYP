@@ -568,8 +568,18 @@ import {
   BorderStyle,
 } from "docx";
 import { saveAs } from "file-saver";
+import {
+  generateWordDocument,
+  exportWordDocument,
+  getTemplateDescription,
+  formatTemplateKey,
+  fetchTemplateData,
+} from "../utils/exportUtils";
+import { useChatbotContext } from "../context/chatbotContext";
 
 const CanvasPage = () => {
+  const { setContext } = useChatbotContext();
+
   const [currentTemplateIndex, setCurrentTemplateIndex] = useState(0);
   const [isCapturing, setIsCapturing] = useState(false);
   const captureRef = useRef(null);
@@ -660,16 +670,16 @@ const CanvasPage = () => {
     new Table({
       width: { size: 100, type: WidthType.PERCENTAGE },
       borders: {
-        top: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
-        bottom: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
-        left: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
-        right: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
+        top: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+        bottom: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+        left: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+        right: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
         insideHorizontal: {
           style: BorderStyle.SINGLE,
           size: 1,
-          color: "cccccc",
+          color: "000000",
         },
-        insideVertical: { style: BorderStyle.SINGLE, size: 1, color: "cccccc" },
+        insideVertical: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
       },
       rows: rows.map(
         (row, i) =>
@@ -684,12 +694,34 @@ const CanvasPage = () => {
                           text: cellText,
                           bold: i === 0,
                           size: 22,
-                          font: "Segoe UI",
+                          font: "Calibri",
                         }),
                       ],
                     }),
                   ],
                   margins: { top: 200, bottom: 200, left: 200, right: 200 },
+                  borders: {
+                    top: {
+                      style: BorderStyle.SINGLE,
+                      size: 1,
+                      color: "000000",
+                    },
+                    bottom: {
+                      style: BorderStyle.SINGLE,
+                      size: 1,
+                      color: "000000",
+                    },
+                    left: {
+                      style: BorderStyle.SINGLE,
+                      size: 1,
+                      color: "000000",
+                    },
+                    right: {
+                      style: BorderStyle.SINGLE,
+                      size: 1,
+                      color: "000000",
+                    },
+                  },
                 })
             ),
           })
@@ -706,124 +738,37 @@ const CanvasPage = () => {
     throw new Error("Template not found");
   };
 
-  const handleCaptureAllTemplates = async ({
-    captureRef,
-    canvasId,
-    templateMapping,
-    setCurrentTemplateIndex,
-    setIsCapturing,
-    setIsExporting,
-  }) => {
+  const handleCaptureAllTemplates = async () => {
     try {
       setIsCapturing(true);
       setIsExporting(true);
 
-      const imageKeys = Object.keys(templateMapping).filter(
-        (key) => templateMapping[key].renderAs === "image"
+      const templateKeys = Object.keys(templateMapping);
+
+      // Generate the Word document using utility functions
+      const doc = await generateWordDocument({
+        templateKeys,
+        templateMapping,
+        canvasId,
+        researchTitle,
+        authorName,
+        captureRef,
+        setCurrentTemplateIndex,
+      });
+
+      // Export the document
+      const fileName = `LeanCanvas_Complete_Report_${researchTitle.replace(
+        /[^a-zA-Z0-9]/g,
+        "_"
+      )}_${Date.now()}.docx`;
+      await exportWordDocument(doc, fileName);
+
+      alert(
+        `Successfully exported ${templateKeys.length} templates to Word document!`
       );
-      const tableKeys = Object.keys(templateMapping).filter(
-        (key) => templateMapping[key].renderAs === "table"
-      );
-
-      const MAX_WIDTH = 600;
-      const MAX_HEIGHT = 800;
-      const docChildren = [];
-
-      // Step 1: Capture image templates
-      for (let i = 0; i < imageKeys.length; i++) {
-        const key = imageKeys[i];
-        setCurrentTemplateIndex(i);
-        await new Promise((res) => setTimeout(res, 1500));
-
-        const captureElement = captureRef.current;
-        if (!captureElement) continue;
-
-        const canvas = await html2canvas(captureElement);
-        const dataUrl = canvas.toDataURL("image/png");
-        const blob = await (await fetch(dataUrl)).blob();
-        const buffer = await blob.arrayBuffer();
-
-        let imageWidth = canvas.width * 0.75;
-        let imageHeight = canvas.height * 0.75;
-        const scale = Math.min(
-          MAX_WIDTH / imageWidth,
-          MAX_HEIGHT / imageHeight,
-          1
-        );
-        imageWidth *= scale;
-        imageHeight *= scale;
-
-        docChildren.push(
-          new Paragraph({
-            alignment: AlignmentType.CENTER,
-            pageBreakBefore: i !== 0,
-            children: [
-              new ImageRun({
-                data: buffer,
-                transformation: {
-                  width: Math.floor(imageWidth),
-                  height: Math.floor(imageHeight),
-                },
-              }),
-            ],
-          })
-        );
-      }
-
-      // Step 2: Generate tables for 'renderAs: table'
-      // Step 2: Generate tables for 'renderAs: table'
-      for (const key of tableKeys) {
-        try {
-          const template = await fetchTemplateData(canvasId, key);
-          const { componentName, checklistStep, description, content } =
-            template;
-
-          const heading = `${componentName} - Step ${checklistStep}`;
-          const descText = description || "No description provided.";
-
-          docChildren.push(
-            new Paragraph({
-              text: heading,
-              heading: "Heading2",
-              spacing: { after: 200 },
-            })
-          );
-
-          docChildren.push(
-            new Paragraph({
-              children: [
-                new TextRun({ text: "Description: ", bold: true }),
-                new TextRun(descText),
-              ],
-              spacing: { after: 200 },
-            })
-          );
-
-          const rows = [["Label", "Answer"]];
-          for (const [key, value] of Object.entries(content || {})) {
-            const label = key
-              .replace(/_/g, " ")
-              .replace(/([a-z])([A-Z])/g, "$1 $2")
-              .replace(/\b\w/g, (char) => char.toUpperCase());
-
-            rows.push([label, value]);
-          }
-
-          docChildren.push(createStyledTable(rows));
-          docChildren.push(new Paragraph({ children: [new TextRun(" ")] }));
-        } catch (err) {
-          console.warn(`Template ${key} not found. Skipping.`);
-          continue;
-        }
-      }
-
-      // Step 3: Create DOCX
-      const doc = new Document({ sections: [{ children: docChildren }] });
-      const blob = await Packer.toBlob(doc);
-      saveAs(blob, `LeanCanvas_Export_${Date.now()}.docx`);
-    } catch (err) {
-      console.error("Hybrid export failed:", err);
-      alert("Export failed");
+    } catch (error) {
+      console.error("Export failed:", error);
+      alert("Export failed. Please try again.");
     } finally {
       setIsCapturing(false);
       setIsExporting(false);
@@ -909,6 +854,10 @@ const CanvasPage = () => {
         setCanvasId(response.data._id);
         setView("canvas");
         setIsSubscribed(response.data.isSubscribed);
+
+        // Set chatbot context with canvas information
+        setContext(response.data._id, null, null);
+
         console.log("response is:", response);
       } catch (error) {
         console.log("No existing canvas found");
@@ -975,6 +924,9 @@ const CanvasPage = () => {
           ""
         )}-Step${selectedPoint.id}`;
         setTemplateKey(templateKeyString);
+
+        // Set chatbot context with template information
+        setContext(canvasId, templateKeyString, selectedComponent);
         try {
           const response = await axios.post(
             "http://localhost:5000/api/template/start",
@@ -1153,16 +1105,7 @@ const CanvasPage = () => {
               color="#f1f1f1"
               fontSize={"1.1em"}
               label="📸 Capture All Templates"
-              onClick={() =>
-                handleCaptureAllTemplates({
-                  captureRef,
-                  canvasId,
-                  setCurrentTemplateIndex,
-                  setIsCapturing,
-                  setIsExporting,
-                  templateMapping,
-                })
-              }
+              onClick={handleCaptureAllTemplates}
               className="capture-all-btn"
             />
           </>

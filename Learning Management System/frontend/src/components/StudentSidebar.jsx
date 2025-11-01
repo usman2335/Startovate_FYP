@@ -8,6 +8,7 @@ import {
   ReadOutlined,
   BulbOutlined,
   SettingOutlined,
+  MessageOutlined,
 } from "@ant-design/icons";
 import Button from "../components/Button";
 import Logout from "./LogoutButton";
@@ -30,6 +31,11 @@ const StudentSidebar = () => {
       name: "Enroll Courses",
       path: "/student/enroll",
       icon: <TransactionOutlined />,
+    },
+    {
+      name: "My Feedback",
+      path: "/student/feedback",
+      icon: <MessageOutlined />,
     },
   ];
 

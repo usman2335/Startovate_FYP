@@ -21,6 +21,8 @@ import EasyPaisaPaymentPage from "./pages/EasyPaisaPaymentPage.jsx";
 import PaymentApproval from "./pages/AdminDashboard/PaymentApproval.jsx";
 import AdminHome from "./pages/AdminDashboard/AdminHome.jsx";
 import TeacherHome from "./pages/TeacherDashboard/TeacherHome.jsx";
+import TeacherFeedbackPage from "./pages/TeacherDashboard/FeedbackPage.jsx";
+import StudentFeedbackPage from "./pages/StudentDashboard/StudentFeedbackPage.jsx";
 
 const App = () => {
   return (
@@ -43,6 +45,7 @@ const App = () => {
             <Route path="viewstudents" element={<ViewEnrolledStudents />} />
             <Route path="managecourses" element={<TeacherManageCourses />} />
             <Route path="addcourses" element={<AddCoursePage />} />
+            <Route path="feedback" element={<TeacherFeedbackPage />} />
           </Route>
           <Route path="/student" element={<StudentDashboardLayout />}>
             <Route index element={<StudentHome />} />
@@ -50,6 +53,7 @@ const App = () => {
             <Route path="mycourses" element={<MyCourses />} />
             <Route path="enroll" element={<EnrollCourses />} />
             <Route path="mycourses/:id" element={<StudentCoursePage />} />
+            <Route path="feedback" element={<StudentFeedbackPage />} />
           </Route>
 
           <Route path="/stripe-payment" element={<StripePaymentPage />} />

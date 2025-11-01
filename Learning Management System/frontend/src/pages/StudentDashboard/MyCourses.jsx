@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Progress, Button, Input, Badge, Spin, Empty } from "antd";
+import {
+  Progress,
+  Button,
+  Input,
+  Badge,
+  Spin,
+  Empty,
+  Space,
+  notification,
+} from "antd";
+import { MessageOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import FeedbackModal from "../../components/FeedbackModal";
 
 const { Search } = Input;
 
@@ -10,6 +21,9 @@ const MyCourses = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [feedbackModalVisible, setFeedbackModalVisible] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [courseFeedbackStatus, setCourseFeedbackStatus] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,6 +39,9 @@ const MyCourses = () => {
         if (res.data.success) {
           setCourses(res.data.enrolledCourses);
           console.log("courses:", res);
+
+          // Check feedback status for each course
+          await checkFeedbackStatus(res.data.enrolledCourses);
         } else {
           setError("Failed to fetch courses");
         }
@@ -39,10 +56,66 @@ const MyCourses = () => {
     fetchEnrolledCourses();
   }, []);
 
+  const checkFeedbackStatus = async (courses) => {
+    try {
+      const feedbackStatus = {};
+
+      for (const course of courses) {
+        try {
+          const response = await axios.get(
+            `http://localhost:5000/api/feedback/student/${course._id}`,
+            { withCredentials: true }
+          );
+          feedbackStatus[course._id] = response.data.hasFeedback;
+        } catch (error) {
+          // If no feedback exists, it will return 404, which is fine
+          feedbackStatus[course._id] = false;
+        }
+      }
+
+      setCourseFeedbackStatus(feedbackStatus);
+    } catch (error) {
+      console.error("Error checking feedback status:", error);
+    }
+  };
+
   const validCourses = courses.filter((course) => course); // removes null/undefined
   const filteredCourses = validCourses.filter((course) =>
     course.title?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleFeedbackClick = (course) => {
+    setSelectedCourse({
+      courseId: course._id,
+      courseTitle: course.title,
+      instructorName: course.instructorName,
+    });
+    setFeedbackModalVisible(true);
+  };
+
+  const handleFeedbackSuccess = (feedbackData) => {
+    // Update feedback status for the course
+    setCourseFeedbackStatus((prev) => ({
+      ...prev,
+      [feedbackData.course._id]: true,
+    }));
+
+    // Show a success notification
+    notification.success({
+      message: "Feedback Submitted! 🎉",
+      description:
+        "Your feedback has been successfully recorded. Thank you for helping improve the course!",
+      duration: 4,
+      placement: "topRight",
+      style: {
+        backgroundColor: "#f6ffed",
+        border: "1px solid #b7eb8f",
+      },
+    });
+
+    // Optionally refresh the courses list or show additional success message
+    console.log("Feedback submitted successfully");
+  };
 
   return (
     <div className="w-full px-8 py-10">
@@ -120,18 +193,49 @@ const MyCourses = () => {
                 </div>
               </div>
 
-              {/* Button */}
-              <Button
-                type="primary"
-                size="large"
-                className="ml-4 bg-[#183e6a] hover:bg-[#122e50] px-6"
-                onClick={() => navigate(`/student/mycourses/${course._id}`)}
-              >
-                Go to Course
-              </Button>
+              {/* Buttons */}
+              <Space direction="vertical" size="small">
+                <Button
+                  type="primary"
+                  size="large"
+                  className="bg-[#183e6a] hover:bg-[#122e50] px-6"
+                  onClick={() => navigate(`/student/mycourses/${course._id}`)}
+                >
+                  Go to Course
+                </Button>
+                <Button
+                  icon={<MessageOutlined />}
+                  size="large"
+                  onClick={() => handleFeedbackClick(course)}
+                  className="w-full"
+                  disabled={courseFeedbackStatus[course._id]}
+                  type={
+                    courseFeedbackStatus[course._id] ? "default" : "primary"
+                  }
+                >
+                  {courseFeedbackStatus[course._id]
+                    ? "Feedback Submitted ✓"
+                    : "Submit Feedback"}
+                </Button>
+              </Space>
             </div>
           ))}
         </div>
+      )}
+
+      {/* Feedback Modal */}
+      {selectedCourse && (
+        <FeedbackModal
+          visible={feedbackModalVisible}
+          onCancel={() => {
+            setFeedbackModalVisible(false);
+            setSelectedCourse(null);
+          }}
+          courseId={selectedCourse.courseId}
+          courseTitle={selectedCourse.courseTitle}
+          instructorName={selectedCourse.instructorName}
+          onSuccess={handleFeedbackSuccess}
+        />
       )}
     </div>
   );

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Spin, Breadcrumb, Progress } from "antd";
+import { Spin, Breadcrumb, Progress, Modal, Button, notification } from "antd";
+import { FastForwardOutlined } from "@ant-design/icons";
 import axios from "axios";
 import YouTube from "react-youtube";
 
@@ -9,8 +10,13 @@ const StudentCoursePage = () => {
   const navigate = useNavigate();
   const [course, setCourse] = useState(null);
   const [currentLesson, setCurrentLesson] = useState(null);
+  const [currentChapterIndex, setCurrentChapterIndex] = useState(0);
+  const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
   const [watchProgress, setWatchProgress] = useState({});
   const [loading, setLoading] = useState(true);
+  const [showNextVideoModal, setShowNextVideoModal] = useState(false);
+  const [nextVideoCountdown, setNextVideoCountdown] = useState(5);
+  const [autoplayEnabled, setAutoplayEnabled] = useState(true);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -22,7 +28,11 @@ const StudentCoursePage = () => {
         if (res.data.success) {
           setCourse(res.data.course);
           const firstLesson = res.data.course.videos?.[0]?.lessons?.[0];
-          if (firstLesson) setCurrentLesson(firstLesson);
+          if (firstLesson) {
+            setCurrentLesson(firstLesson);
+            setCurrentChapterIndex(0);
+            setCurrentLessonIndex(0);
+          }
         }
       } catch (error) {
         console.error("Failed to fetch course:", error);
@@ -34,9 +44,66 @@ const StudentCoursePage = () => {
     fetchCourse();
   }, [id]);
 
+  // Auto-play next video countdown
+  useEffect(() => {
+    let countdownInterval;
+    if (showNextVideoModal && nextVideoCountdown > 0) {
+      countdownInterval = setInterval(() => {
+        setNextVideoCountdown((prev) => prev - 1);
+      }, 1000);
+    } else if (showNextVideoModal && nextVideoCountdown === 0) {
+      playNextVideo();
+      setShowNextVideoModal(false);
+    }
+
+    return () => {
+      if (countdownInterval) clearInterval(countdownInterval);
+    };
+  }, [showNextVideoModal, nextVideoCountdown]);
+
   const getYouTubeVideoId = (url) => {
     const match = url.match(/(?:\?v=|\/embed\/|\.be\/)([^&?/]+)/);
     return match ? match[1] : null;
+  };
+
+  const getNextVideo = () => {
+    if (!course?.videos) return null;
+
+    const totalLessons = course.videos.reduce(
+      (sum, chapter) => sum + chapter.lessons.length,
+      0
+    );
+    const currentPosition =
+      course.videos
+        .slice(0, currentChapterIndex)
+        .reduce((sum, chapter) => sum + chapter.lessons.length, 0) +
+      currentLessonIndex;
+
+    if (currentPosition >= totalLessons - 1) return null; // Last video
+
+    let nextChapterIndex = currentChapterIndex;
+    let nextLessonIndex = currentLessonIndex + 1;
+
+    if (nextLessonIndex >= course.videos[currentChapterIndex].lessons.length) {
+      nextChapterIndex = currentChapterIndex + 1;
+      nextLessonIndex = 0;
+    }
+
+    return {
+      lesson: course.videos[nextChapterIndex]?.lessons?.[nextLessonIndex],
+      chapterIndex: nextChapterIndex,
+      lessonIndex: nextLessonIndex,
+      chapterTitle: course.videos[nextChapterIndex]?.chapterTitle,
+    };
+  };
+
+  const playNextVideo = () => {
+    const nextVideo = getNextVideo();
+    if (nextVideo?.lesson) {
+      setCurrentLesson(nextVideo.lesson);
+      setCurrentChapterIndex(nextVideo.chapterIndex);
+      setCurrentLessonIndex(nextVideo.lessonIndex);
+    }
   };
 
   const renderVideo = () => {
@@ -81,8 +148,24 @@ const StudentCoursePage = () => {
 
           if (percent >= 100) {
             clearInterval(interval);
+            // Trigger auto-play next video
+            handleVideoEnd();
           }
         }, 1000);
+      };
+
+      const handleVideoEnd = () => {
+        const nextVideo = getNextVideo();
+        if (nextVideo && autoplayEnabled) {
+          setShowNextVideoModal(true);
+          setNextVideoCountdown(5);
+        } else if (!nextVideo) {
+          notification.success({
+            message: "Course Completed! 🎉",
+            description: "Congratulations! You have completed this course.",
+            duration: 5,
+          });
+        }
       };
 
       return (
@@ -184,6 +267,34 @@ const StudentCoursePage = () => {
             status="active"
             className="mb-4"
           />
+
+          {/* Auto-play Controls */}
+          <div className="mb-4 flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={autoplayEnabled}
+                  onChange={(e) => setAutoplayEnabled(e.target.checked)}
+                  className="rounded"
+                />
+                <span className="text-sm text-gray-600">
+                  Auto-play next video
+                </span>
+              </label>
+            </div>
+            {getNextVideo() && (
+              <Button
+                type="primary"
+                icon={<FastForwardOutlined />}
+                onClick={playNextVideo}
+                size="small"
+              >
+                Next Video →
+              </Button>
+            )}
+          </div>
+
           <div className="mb-6">{renderVideo()}</div>
         </div>
 
@@ -204,7 +315,11 @@ const StudentCoursePage = () => {
                   return (
                     <div
                       key={lessonIndex}
-                      onClick={() => setCurrentLesson(lesson)}
+                      onClick={() => {
+                        setCurrentLesson(lesson);
+                        setCurrentChapterIndex(chapterIndex);
+                        setCurrentLessonIndex(lessonIndex);
+                      }}
                       className={`cursor-pointer p-3 rounded-lg border flex justify-between items-center ${
                         isActive
                           ? "bg-blue-50 border-blue-400"
@@ -231,6 +346,41 @@ const StudentCoursePage = () => {
           </div>
         </div>
       </div>
+
+      {/* Next Video Modal */}
+      <Modal
+        title={
+          <div className="flex items-center space-x-2">
+            <FastForwardOutlined className="text-blue-600" />
+            <span>Next Video Starting Soon</span>
+          </div>
+        }
+        open={showNextVideoModal}
+        onCancel={() => setShowNextVideoModal(false)}
+        footer={[
+          <Button key="cancel" onClick={() => setShowNextVideoModal(false)}>
+            Cancel
+          </Button>,
+          <Button key="skip" type="primary" onClick={playNextVideo}>
+            Skip Countdown
+          </Button>,
+        ]}
+        centered
+      >
+        <div className="text-center py-4">
+          <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-white text-2xl font-bold">
+              {nextVideoCountdown}
+            </span>
+          </div>
+          <h3 className="text-lg font-semibold mb-2">
+            {getNextVideo()?.lesson?.title}
+          </h3>
+          <p className="text-gray-600">
+            Next video will start automatically in {nextVideoCountdown} seconds
+          </p>
+        </div>
+      </Modal>
     </div>
   );
 };

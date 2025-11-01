@@ -29,30 +29,64 @@ const createCourse = async (req, res) => {
 
 const deleteCourse = async (req, res) => {
   try {
+    console.log("=== deleteCourse Debug ===");
+    console.log("Request params:", req.params);
+    console.log("Request user:", req.user);
+
     const courseId = req.params.id;
     const teacherId = req.user._id; // Extracted from JWT via protect middleware
-    console.log("courseid", courseId);
-    console.log("teacherID", teacherId);
+    console.log("Course ID:", courseId);
+    console.log("Teacher ID:", teacherId);
+    console.log("Teacher ID type:", typeof teacherId);
 
     const course = await Course.findById(courseId);
+    console.log("Course found:", course);
 
     if (!course) {
-      return res.status(404).json({ error: "Course not found" });
+      console.log("Course not found for ID:", courseId);
+      return res.status(404).json({
+        success: false,
+        error: "Course not found",
+      });
     }
 
-    // Only the instructor who created it can delete it
-    if (course.instructor.toString() !== teacherId) {
-      return res
-        .status(403)
-        .json({ error: "Unauthorized to delete this course" });
+    console.log("Course instructor:", course.instructor);
+    console.log("Course instructor type:", typeof course.instructor);
+    console.log("Course instructor toString:", course.instructor.toString());
+    console.log("Teacher ID toString:", teacherId.toString());
+    console.log(
+      "Ownership check (toString):",
+      course.instructor.toString() === teacherId.toString()
+    );
+    console.log(
+      "Ownership check (equals):",
+      course.instructor.equals(teacherId)
+    );
+
+    // Only the instructor who created it can delete it - using Mongoose's equals method
+    if (!course.instructor.equals(teacherId)) {
+      console.log("Course does not belong to teacher");
+      console.log("Expected teacher ID:", teacherId.toString());
+      console.log("Actual course instructor ID:", course.instructor.toString());
+      return res.status(403).json({
+        success: false,
+        error: "Unauthorized to delete this course",
+      });
     }
 
     await Course.findByIdAndDelete(courseId);
+    console.log("Course deleted successfully");
 
-    res.status(200).json({ message: "Course deleted successfully" });
+    res.status(200).json({
+      success: true,
+      message: "Course deleted successfully",
+    });
   } catch (error) {
     console.error("Error deleting course:", error.message);
-    res.status(500).json({ error: "Server error while deleting course" });
+    res.status(500).json({
+      success: false,
+      error: "Server error while deleting course",
+    });
   }
 };
 
@@ -104,20 +138,49 @@ const getTeacherCourses = async (req, res) => {
 
 const updateCourse = async (req, res) => {
   try {
+    console.log("=== updateCourse Debug ===");
+    console.log("Request params:", req.params);
+    console.log("Request body:", req.body);
+    console.log("Request user:", req.user);
+
     const courseId = req.params.id;
-    console.log("id", req.params.id);
     const teacherId = req.user._id; // Extracted from JWT in `protect` middleware
-    console.log("teacher id", req.user.id);
+    console.log("Course ID:", courseId);
+    console.log("Teacher ID:", teacherId);
 
     // Find course first to verify ownership
     const course = await Course.findById(courseId);
+    console.log("Course found:", course);
 
     if (!course) {
-      return res.status(404).json({ error: "Course not found" });
+      console.log("Course not found for ID:", courseId);
+      return res.status(404).json({
+        success: false,
+        error: "Course not found",
+      });
     }
 
-    console.log("instructor", course.instructor.toString());
-    console.log("teacher id", teacherId);
+    console.log("Course instructor:", course.instructor);
+    console.log("Course instructor type:", typeof course.instructor);
+    console.log("Course instructor toString:", course.instructor.toString());
+    console.log("Teacher ID toString:", teacherId.toString());
+    console.log(
+      "Ownership check (toString):",
+      course.instructor.toString() === teacherId.toString()
+    );
+    console.log(
+      "Ownership check (equals):",
+      course.instructor.equals(teacherId)
+    );
+
+    // Verify ownership using Mongoose's equals method
+    if (!course.instructor.equals(teacherId)) {
+      console.log("Course does not belong to teacher");
+      return res.status(403).json({
+        success: false,
+        error: "Unauthorized to update this course",
+      });
+    }
 
     // Update fields (destructure explicitly to prevent unwanted field updates)
     const { title, description, price, category, videos } = req.body;
@@ -129,11 +192,19 @@ const updateCourse = async (req, res) => {
     course.videos = videos || course.videos;
 
     const updatedCourse = await course.save();
+    console.log("Course updated successfully");
 
-    res.status(200).json(updatedCourse);
+    res.status(200).json({
+      success: true,
+      message: "Course updated successfully",
+      course: updatedCourse,
+    });
   } catch (err) {
     console.error("Error updating course:", err.message);
-    res.status(500).json({ error: "Server error updating course" });
+    res.status(500).json({
+      success: false,
+      error: "Server error updating course",
+    });
   }
 };
 

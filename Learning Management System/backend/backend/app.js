@@ -32,6 +32,9 @@ app.use("/api/payment", paymentRoutes);
 const enrollRoutes = require("./src/routes/enrollRoutes");
 app.use("/api/enroll", enrollRoutes);
 
+const feedbackRoutes = require("./src/routes/feedbackRoutes");
+app.use("/api/feedback", feedbackRoutes);
+
 // Root endpoint
 app.get("/", (req, res) => {
   res.send("User Management API is running");

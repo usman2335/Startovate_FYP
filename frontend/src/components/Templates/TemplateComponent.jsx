@@ -5,8 +5,11 @@ import { saveTemplates } from "../../utils/api";
 import axios from "axios";
 import "../../CSS/TemplateComponent.css";
 import { Snackbar } from "@mui/material";
+import { useChatbotContext } from "../../context/chatbotContext";
 
 const TemplateComponent = ({ templateKey, canvasId, hideButtons = false }) => {
+  const { setContext } = useChatbotContext();
+
   const mappingEntry =
     templateMapping[templateKey] ||
     templateMapping["ProblemIdentification-Step1"];
@@ -35,6 +38,9 @@ const TemplateComponent = ({ templateKey, canvasId, hideButtons = false }) => {
   useEffect(() => {
     if (!canvasId || !templateKey) return;
 
+    // Set chatbot context when template loads
+    setContext(canvasId, templateKey, null);
+
     const fetchTemplate = async () => {
       try {
         const response = await axios.get(
@@ -49,7 +55,7 @@ const TemplateComponent = ({ templateKey, canvasId, hideButtons = false }) => {
     };
 
     fetchTemplate();
-  }, [canvasId, templateKey]);
+  }, [canvasId, templateKey, setContext]);
 
   if (!DynamicComponent) {
     return <div>Invalid template key.</div>;
