@@ -53,7 +53,7 @@ const App = () => {
             <Route path="mycourses" element={<MyCourses />} />
             <Route path="enroll" element={<EnrollCourses />} />
             <Route path="mycourses/:id" element={<StudentCoursePage />} />
-            <Route path="feedback" element={<StudentFeedbackPage />} />
+            <Route path="feedback" element={<StudentFeedbackPage />} />.
           </Route>
 
           <Route path="/stripe-payment" element={<StripePaymentPage />} />
