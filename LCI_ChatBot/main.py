@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 from typing import List, Optional
 
 from fastapi import FastAPI, HTTPException
@@ -73,7 +74,16 @@ app.add_middleware(
 # 🧠 Helper: Call LLM API
 # ============================
 def call_llm(provider: str, messages: List[dict], model: Optional[str] = None) -> str:
+    print(f"🔍 DEBUG call_llm: Called with provider='{provider}', model='{model or MISTRAL_MODEL}', messages_count={len(messages)}")
+
     if provider.lower() == "mistral":
+        # Debug: Check API key
+        if not MISTRAL_API_KEY:
+            print("❌ DEBUG call_llm: MISTRAL_API_KEY is not set!")
+            raise HTTPException(status_code=500, detail="Mistral API key not configured")
+
+        print(f"🔑 DEBUG call_llm: API key is set (length: {len(MISTRAL_API_KEY)})")
+
         headers = {
             "Authorization": f"Bearer {MISTRAL_API_KEY}",
             "Content-Type": "application/json",
@@ -83,12 +93,54 @@ def call_llm(provider: str, messages: List[dict], model: Optional[str] = None) -
             "messages": messages,
             "temperature": 0.7,
         }
-        response = requests.post(BASE_URL, headers=headers, json=payload)
-        if response.status_code != 200:
-            raise HTTPException(status_code=response.status_code, detail=response.text)
-        data = response.json()
-        return data["choices"][0]["message"]["content"].strip()
+
+        print(f"📤 DEBUG call_llm: Sending request to {BASE_URL}")
+        print(f"📦 DEBUG call_llm: Payload model={payload['model']}, temperature={payload['temperature']}")
+
+        try:
+            response = requests.post(BASE_URL, headers=headers, json=payload, timeout=30)
+            print(f"📥 DEBUG call_llm: Response status code: {response.status_code}")
+
+            if response.status_code != 200:
+                print(f"❌ DEBUG call_llm: Error response: {response.text}")
+                raise HTTPException(status_code=response.status_code, detail=f"Mistral API error: {response.text}")
+
+            data = response.json()
+            print(f"✅ DEBUG call_llm: Response parsed successfully")
+
+            # Check response structure
+            if "choices" not in data:
+                print(f"❌ DEBUG call_llm: 'choices' key missing from response: {data}")
+                raise HTTPException(status_code=500, detail="Invalid response structure: missing 'choices'")
+
+            if not data["choices"]:
+                print(f"❌ DEBUG call_llm: 'choices' array is empty: {data}")
+                raise HTTPException(status_code=500, detail="Invalid response structure: empty 'choices'")
+
+            if "message" not in data["choices"][0]:
+                print(f"❌ DEBUG call_llm: 'message' key missing from choice: {data['choices'][0]}")
+                raise HTTPException(status_code=500, detail="Invalid response structure: missing 'message'")
+
+            if "content" not in data["choices"][0]["message"]:
+                print(f"❌ DEBUG call_llm: 'content' key missing from message: {data['choices'][0]['message']}")
+                raise HTTPException(status_code=500, detail="Invalid response structure: missing 'content'")
+
+            content = data["choices"][0]["message"]["content"].strip()
+            print(f"📝 DEBUG call_llm: Extracted content (length: {len(content)})")
+            return content
+
+        except requests.exceptions.Timeout:
+            print("❌ DEBUG call_llm: Request timed out")
+            raise HTTPException(status_code=500, detail="Mistral API request timed out")
+        except requests.exceptions.RequestException as e:
+            print(f"❌ DEBUG call_llm: Request exception: {e}")
+            raise HTTPException(status_code=500, detail=f"Mistral API request failed: {str(e)}")
+        except ValueError as e:
+            print(f"❌ DEBUG call_llm: JSON parsing error: {e}")
+            raise HTTPException(status_code=500, detail=f"Invalid JSON response from Mistral API: {str(e)}")
+
     else:
+        print(f"❌ DEBUG call_llm: Unknown provider: {provider}")
         raise ValueError(f"Unknown provider: {provider}")
 
 # ============================
@@ -147,6 +199,19 @@ class ChatResponse(BaseModel):
     answer: str
     context_used: Optional[List[str]] = None
     provider: str
+
+class AutoFillRequest(BaseModel):
+    templateKey: str
+    stepDescription: str
+    ideaDescription: Optional[str] = ""
+    fields: List[str]
+    fieldHints: dict
+    repeatedFields: Optional[List[dict]] = []
+
+class AutoFillResponse(BaseModel):
+    success: bool
+    answers: Optional[dict] = None
+    error: Optional[str] = None
 
 # ============================
 # 🌐 Endpoints
@@ -214,3 +279,210 @@ def chat_endpoint(request: ChatRequest):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/chatbot/auto-fill", response_model=AutoFillResponse)
+def auto_fill_endpoint(request: AutoFillRequest):
+    """
+    Auto-fill template fields using LLM based on context and hints.
+    
+    This endpoint accepts template information and uses an LLM to generate
+    appropriate answers for template fields based on the system prompt,
+    step description, field hints, and current answers.
+    """
+    try:
+        # Debug logging
+        print(f"📥 Received autofill request:")
+        print(f"   - Template Key: {request.templateKey}")
+        print(f"   - Idea Description: {'✅ PROVIDED' if request.ideaDescription and request.ideaDescription.strip() else '❌ NOT PROVIDED'}")
+        if request.ideaDescription and request.ideaDescription.strip():
+            print(f"   - Idea Preview: {request.ideaDescription[:100]}...")
+        print(f"   - Fields to fill: {len(request.fieldHints)}")
+        
+        if not request.fieldHints:
+            return AutoFillResponse(
+                success=False,
+                error="Field hints cannot be empty."
+            )
+        
+        # Construct the prompt for the LLM
+        prompt = construct_autofill_prompt(
+            template_key=request.templateKey,
+            step_description=request.stepDescription,
+            idea_description=request.ideaDescription or "",
+            field_hints=request.fieldHints,
+            repeated_fields=request.repeatedFields or [],
+            fields=request.fields
+        )
+        
+        # Prepare system message - emphasize idea context if available
+        system_content = """You are an AI assistant helping to autofill a Lean Canvas for Invention (LCI) template.
+
+CRITICAL REQUIREMENT: If the user provides their idea/business concept, you MUST base ALL your answers specifically on that idea. Do NOT generate generic or random answers.
+
+Your task:
+1. Carefully read and understand the user's idea/business concept
+2. Generate answers that are directly relevant and specific to their idea
+3. Be concise, relevant, and business-focused
+4. Only fill in fields that are empty or null
+5. Maintain consistency with the user's idea throughout all answers
+
+Remember: Every answer should clearly relate to the specific business idea provided by the user."""
+
+        # Call LLM to generate answers
+        messages = [
+            {
+                "role": "system",
+                "content": system_content
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+        
+        # Debug logging
+        print("=" * 80)
+        print("🔍 DEBUG: Autofill Prompt")
+        print("=" * 80)
+        print(prompt[:500] + "..." if len(prompt) > 500 else prompt)
+        print("=" * 80)
+        
+        llm_response = call_llm("mistral", messages)
+        
+        # Parse LLM response as JSON
+        try:
+            # Remove any potential markdown code blocks
+            cleaned_response = llm_response.strip()
+            if cleaned_response.startswith("```json"):
+                cleaned_response = cleaned_response[7:]
+            if cleaned_response.startswith("```"):
+                cleaned_response = cleaned_response[3:]
+            if cleaned_response.endswith("```"):
+                cleaned_response = cleaned_response[:-3]
+            cleaned_response = cleaned_response.strip()
+            
+            # Parse JSON safely
+            answers = json.loads(cleaned_response)
+            
+            # Validate that the response contains the expected fields
+            if not isinstance(answers, dict):
+                return AutoFillResponse(
+                    success=False,
+                    error="LLM response is not a valid JSON object."
+                )
+            
+            return AutoFillResponse(
+                success=True,
+                answers=answers
+            )
+            
+        except json.JSONDecodeError as e:
+            print(f"Error parsing LLM response: {e}")
+            print(f"Raw LLM response: {llm_response}")
+            return AutoFillResponse(
+                success=False,
+                error=f"Failed to parse LLM response as JSON: {str(e)}"
+            )
+    
+    except HTTPException as e:
+        return AutoFillResponse(
+            success=False,
+            error=f"API Error: {e.detail}"
+        )
+    
+    except Exception as e:
+        print(f"Unexpected error in auto_fill_endpoint: {e}")
+        return AutoFillResponse(
+            success=False,
+            error=f"An unexpected error occurred: {str(e)}"
+        )
+
+def construct_autofill_prompt(
+    template_key: str,
+    step_description: str,
+    idea_description: str,
+    field_hints: dict,
+    repeated_fields: List[dict],
+    fields: List[str]
+) -> str:
+    """
+    Construct a detailed prompt for the LLM to generate template answers.
+    
+    Args:
+        template_key: The unique identifier for the template
+        step_description: Description of the current step/template
+        idea_description: Description of the user's idea/business concept
+        field_hints: Dictionary of field names and their descriptions/hints
+        repeated_fields: List of repeated field patterns (e.g., for dynamic sections)
+        fields: List of fields to fill
+    
+    Returns:
+        A formatted prompt string for the LLM
+    """
+    prompt_parts = []
+    
+    # Add template information
+    prompt_parts.append(f"TEMPLATE: {template_key}")
+    prompt_parts.append(f"STEP DESCRIPTION: {step_description}\n")
+    
+    # Add idea description as context if available - MAKE IT PROMINENT
+    if idea_description and idea_description.strip():
+        prompt_parts.append("=" * 80)
+        prompt_parts.append("🎯 USER'S IDEA/BUSINESS CONCEPT (USE THIS AS PRIMARY CONTEXT):")
+        prompt_parts.append("=" * 80)
+        prompt_parts.append(f"{idea_description.strip()}")
+        prompt_parts.append("=" * 80)
+        prompt_parts.append("")
+    
+    # Add current answers as context
+    if fields:
+        prompt_parts.append("FIELDS (for context):")
+        for field in fields:
+            prompt_parts.append(f"  - {field}")
+        prompt_parts.append("")
+    
+    # Add field hints
+    prompt_parts.append("FIELDS TO FILL:")
+    for field_name, hint in field_hints.items():
+        prompt_parts.append(f"  - {field_name}: {hint} (currently empty)")
+    prompt_parts.append("")
+    
+    # Add repeated fields information if present
+    if repeated_fields:
+        prompt_parts.append("REPEATED FIELD PATTERNS:")
+        for rf in repeated_fields:
+            prompt_parts.append(f"  - {rf}")
+        prompt_parts.append("")
+    
+    # Add instructions
+    prompt_parts.append("INSTRUCTIONS:")
+    if idea_description and idea_description.strip():
+        prompt_parts.append("1. ⚠️ CRITICAL: All your answers MUST be directly based on the USER'S IDEA/BUSINESS CONCEPT provided above.")
+        prompt_parts.append("2. ⚠️ CRITICAL: Do NOT generate generic or random answers. Everything must be specific to the user's idea.")
+        prompt_parts.append("3. Analyze the user's idea carefully and tailor each field to match their specific business concept.")
+        prompt_parts.append("4. Use the current answers as context to maintain consistency with the user's idea.")
+        prompt_parts.append("5. If a field already has a value, improve it while staying true to the user's concept.")
+        prompt_parts.append("6. Make the answers specific, relevant, and professional - always aligned with the user's idea.")
+        prompt_parts.append("7. For repeated fields, generate multiple instances that fit the user's business concept.")
+        prompt_parts.append("8. Return ONLY a JSON object with field names as keys and generated values as values.")
+        prompt_parts.append("9. Do NOT include any explanations, markdown formatting, or code blocks.")
+        prompt_parts.append("10. Ensure the JSON is valid and properly formatted.")
+    else:
+        prompt_parts.append("1. Generate appropriate values for all fields listed above.")
+        prompt_parts.append("2. Use the current answers as context to maintain consistency.")
+        prompt_parts.append("3. If a field already has a value, you may improve it or keep it as is.")
+        prompt_parts.append("4. Make the answers specific, relevant, and professional.")
+        prompt_parts.append("5. For repeated fields, generate multiple instances if appropriate.")
+        prompt_parts.append("6. Return ONLY a JSON object with field names as keys and generated values as values.")
+        prompt_parts.append("7. Do NOT include any explanations, markdown formatting, or code blocks.")
+        prompt_parts.append("8. Ensure the JSON is valid and properly formatted.")
+    prompt_parts.append("")
+    prompt_parts.append("Example format:")
+    prompt_parts.append('{')
+    prompt_parts.append('  "fieldName1": "generated value 1",')
+    prompt_parts.append('  "fieldName2": "generated value 2"')
+    prompt_parts.append('}')
+    prompt_parts.append("")
+    prompt_parts.append("Now generate the JSON response:")
+    
+    return "\n".join(prompt_parts)

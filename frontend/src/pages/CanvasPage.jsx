@@ -544,6 +544,7 @@ import "../CSS/CanvasPage.css";
 import Navbar from "../components/Navbar";
 import Button from "../components/Button";
 import CreateNewCanvasModal from "../components/CreateNewCanvasModal";
+import IdeaDescriptionModal from "../components/IdeaDescriptionModal";
 import LeanCanvas from "../components/LeanCanvas";
 import { Breadcrumbs, Link, Typography } from "@mui/material";
 import { Backdrop, CircularProgress } from "@mui/material";
@@ -596,137 +597,8 @@ const CanvasPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
-  if (selectedChecklistPoint) {
-    console.log(selectedChecklistPoint.id);
-  }
-
-  // const handleCaptureAllTemplates = async () => {
-  //   setIsExporting(true);
-  //   const keys = Object.keys(templateMapping); // e.g. ['Problem-Step1', 'Solution-Step2', ...]
-  //   setIsCapturing(true);
-
-  //   const imageParagraphs = [];
-
-  //   const MAX_WIDTH = 600; // max width in points (approx 8 inches)
-  //   const MAX_HEIGHT = 800; // max height in points (approx 11 inches, minus margins)
-
-  //   for (let i = 0; i < keys.length; i++) {
-  //     setCurrentTemplateIndex(i);
-  //     await new Promise((res) => setTimeout(res, 1500));
-
-  //     const captureElement = captureRef.current;
-  //     if (!captureElement) continue;
-
-  //     const canvas = await html2canvas(captureElement);
-  //     const imageDataUrl = canvas.toDataURL("image/png");
-  //     const blob = await (await fetch(imageDataUrl)).blob();
-  //     const buffer = await blob.arrayBuffer();
-
-  //     let imageWidth = canvas.width * 0.75; // convert px to pt
-  //     let imageHeight = canvas.height * 0.75;
-
-  //     // Scale down if too wide or too tall
-  //     const widthRatio = MAX_WIDTH / imageWidth;
-  //     const heightRatio = MAX_HEIGHT / imageHeight;
-  //     const scaleRatio = Math.min(widthRatio, heightRatio, 1); // never upscale
-
-  //     imageWidth = imageWidth * scaleRatio;
-  //     imageHeight = imageHeight * scaleRatio;
-
-  //     imageParagraphs.push(
-  //       new Paragraph({
-  //         alignment: AlignmentType.CENTER,
-  //         pageBreakBefore: i !== 0,
-  //         children: [
-  //           new ImageRun({
-  //             data: buffer,
-  //             transformation: {
-  //               width: imageWidth,
-  //               height: imageHeight,
-  //             },
-  //           }),
-  //         ],
-  //       })
-  //     );
-  //   }
-
-  //   const doc = new Document({
-  //     sections: [
-  //       {
-  //         properties: {},
-  //         children: imageParagraphs,
-  //       },
-  //     ],
-  //   });
-
-  //   const blob = await Packer.toBlob(doc);
-  //   saveAs(blob, `LeanCanvas_Templates_${Date.now()}.docx`);
-
-  //   setIsCapturing(false);
-  //   setIsExporting(false);
-  //   alert("All templates captured and exported to Word!");
-  // };
-  const createStyledTable = (rows) =>
-    new Table({
-      width: { size: 100, type: WidthType.PERCENTAGE },
-      borders: {
-        top: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
-        bottom: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
-        left: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
-        right: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
-        insideHorizontal: {
-          style: BorderStyle.SINGLE,
-          size: 1,
-          color: "000000",
-        },
-        insideVertical: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
-      },
-      rows: rows.map(
-        (row, i) =>
-          new TableRow({
-            children: row.map(
-              (cellText) =>
-                new TableCell({
-                  children: [
-                    new Paragraph({
-                      children: [
-                        new TextRun({
-                          text: cellText,
-                          bold: i === 0,
-                          size: 22,
-                          font: "Calibri",
-                        }),
-                      ],
-                    }),
-                  ],
-                  margins: { top: 200, bottom: 200, left: 200, right: 200 },
-                  borders: {
-                    top: {
-                      style: BorderStyle.SINGLE,
-                      size: 1,
-                      color: "000000",
-                    },
-                    bottom: {
-                      style: BorderStyle.SINGLE,
-                      size: 1,
-                      color: "000000",
-                    },
-                    left: {
-                      style: BorderStyle.SINGLE,
-                      size: 1,
-                      color: "000000",
-                    },
-                    right: {
-                      style: BorderStyle.SINGLE,
-                      size: 1,
-                      color: "000000",
-                    },
-                  },
-                })
-            ),
-          })
-      ),
-    });
+  const [ideaDescription, setIdeaDescription] = useState("");
+  const [showIdeaModal, setShowIdeaModal] = useState(false);
 
   const fetchTemplateData = async (canvasId, templateKey) => {
     const res = await axios.get(
@@ -775,66 +647,6 @@ const CanvasPage = () => {
     }
   };
 
-  // const handleCaptureAllTemplates = async ({
-  //   captureRef,
-  //   canvasId,
-  //   setCurrentTemplateIndex,
-  //   setIsCapturing,
-  //   setIsExporting,
-  //   templateMapping,
-  // }) => {
-  //   try {
-  //     setIsExporting(true);
-  //     setIsCapturing(true);
-  //     if (!templateMapping) {
-  //       throw new Error("templateMapping is required but was not provided");
-  //     }
-
-  //     const imageTemplates = [];
-  //     const imageKeys = Object.keys(templateMapping).filter(
-  //       (key) => templateMapping[key].renderAs === "image"
-  //     );
-
-  //     const tableKeys = Object.keys(templateMapping).filter(
-  //       (key) => templateMapping[key].renderAs === "table"
-  //     );
-
-  //     for (let i = 0; i < imageKeys.length; i++) {
-  //       const key = imageKeys[i];
-  //       setCurrentTemplateIndex(i);
-  //       await new Promise((res) => setTimeout(res, 1500));
-
-  //       const captureElement = captureRef.current;
-  //       if (!captureElement) continue;
-
-  //       const canvas = await html2canvas(captureElement);
-  //       const dataUrl = canvas.toDataURL("image/png");
-
-  //       imageTemplates.push({ key, base64: dataUrl });
-  //     }
-
-  //     // Send data to backend for full HTML generation and Cloudmersive conversion
-  //     const { data } = await axios.post(
-  //       "http://localhost:5000/api/template/export/cloudmersive",
-  //       {
-  //         canvasId,
-  //         imageTemplates,
-  //         tableKeys,
-  //       },
-  //       {
-  //         responseType: "blob",
-  //       }
-  //     );
-
-  //     saveAs(data, `LeanCanvas_Export_${Date.now()}.docx`);
-  //   } catch (error) {
-  //     console.error("Hybrid export failed:", error);
-  //     alert("Export failed. Try again.");
-  //   } finally {
-  //     setIsCapturing(false);
-  //     setIsExporting(false);
-  //   }
-  // };
   useEffect(() => {
     const fetchCanvas = async () => {
       try {
@@ -851,6 +663,7 @@ const CanvasPage = () => {
         // }
         setResearchTitle(response.data.researchTitle);
         setAuthorName(response.data.authorName);
+        setIdeaDescription(response.data.ideaDescription || "");
         setCanvasId(response.data._id);
         setView("canvas");
         setIsSubscribed(response.data.isSubscribed);
@@ -900,6 +713,18 @@ const CanvasPage = () => {
     } else {
       setView("initial");
     }
+  };
+
+  const handleAutoFill = () => {
+    setShowIdeaModal(true);
+  };
+
+  const handleSaveIdeaDescription = (description) => {
+    setIdeaDescription(description);
+    // TODO: Implement auto-fill logic here after saving
+    alert(
+      "Idea description saved! Auto-fill functionality will be implemented soon!"
+    );
   };
 
   const handleComponentClick = (componentName) => {
@@ -1017,6 +842,14 @@ const CanvasPage = () => {
             ></LeanCanvas>
           </>
         )}
+        {/* Idea Description Modal */}
+        <IdeaDescriptionModal
+          open={showIdeaModal}
+          handleClose={() => setShowIdeaModal(false)}
+          onSave={handleSaveIdeaDescription}
+          canvasId={canvasId}
+          currentIdeaDescription={ideaDescription}
+        />
         {/* If no modal and view == initial, show initial message */}
         {!showModal && view === "initial" && (
           <div className="canvas-page-content">
@@ -1099,15 +932,29 @@ const CanvasPage = () => {
                 isBlurred={false}
                 onComponentClick={handleComponentClick}
               />
+              <div className="flex gap-4">
+                <Button
+                  padding="1% 2%"
+                  color="#f1f1f1"
+                  fontSize={"1.1em"}
+                  label={
+                    ideaDescription
+                      ? "🤖 Edit Idea & Auto-fill"
+                      : "🤖 Set Idea & Auto-fill"
+                  }
+                  onClick={handleAutoFill}
+                  className="autofill-btn"
+                />
+                <Button
+                  padding="1% 2%"
+                  color="#f1f1f1"
+                  fontSize={"1.1em"}
+                  label="📸 Capture All Templates"
+                  onClick={handleCaptureAllTemplates}
+                  className="capture-all-btn"
+                />
+              </div>
             </div>
-            <Button
-              padding="1% 0%"
-              color="#f1f1f1"
-              fontSize={"1.1em"}
-              label="📸 Capture All Templates"
-              onClick={handleCaptureAllTemplates}
-              className="capture-all-btn"
-            />
           </>
         )}
         {/* {!showModal && view === "checklist" && (

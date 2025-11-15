@@ -48,3 +48,27 @@ exports.getCanvas = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+exports.updateIdeaDescription = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { ideaDescription } = req.body;
+
+    const canvas = await Canvas.findOneAndUpdate(
+      { user: userId },
+      { ideaDescription: ideaDescription },
+      { new: true }
+    );
+
+    if (!canvas) {
+      return res.status(404).json({ message: "Canvas not found" });
+    }
+
+    res.status(200).json({
+      message: "Idea description updated successfully",
+      canvas: canvas
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

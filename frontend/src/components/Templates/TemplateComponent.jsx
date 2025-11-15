@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import templateMapping from "../../content/templateMapping";
 import Button from "../Button";
-import { saveTemplates } from "../../utils/api";
+import { saveTemplates, autofillTemplateFields } from "../../utils/api";
 import axios from "axios";
 import "../../CSS/TemplateComponent.css";
-import { Snackbar } from "@mui/material";
+import { Snackbar, CircularProgress } from "@mui/material";
 import { useChatbotContext } from "../../context/chatbotContext";
 
 const TemplateComponent = ({ templateKey, canvasId, hideButtons = false }) => {
@@ -17,6 +17,9 @@ const TemplateComponent = ({ templateKey, canvasId, hideButtons = false }) => {
 
   const [answers, setAnswers] = useState({});
   const [snackBarOpen, setSnackBarOpen] = useState(false);
+  const [snackBarMessage, setSnackBarMessage] = useState("");
+  const [isAutoFilling, setIsAutoFilling] = useState(false);
+  const [autoFillError, setAutoFillError] = useState("");
 
   const handleInputChange = (e, field) => {
     setAnswers((prev) => ({ ...prev, [field]: e.target.value }));
@@ -25,9 +28,71 @@ const TemplateComponent = ({ templateKey, canvasId, hideButtons = false }) => {
   const handleSave = async () => {
     try {
       await saveTemplates(canvasId, templateKey, answers);
+      setSnackBarMessage("Template saved successfully");
       setSnackBarOpen(true);
     } catch (error) {
       alert("Failed to save answers.");
+    }
+  };
+
+  const handleAutoFill = async () => {
+    try {
+      setIsAutoFilling(true);
+      setAutoFillError("");
+
+      // Validate that we have the required data
+      if (!canvasId) {
+        throw new Error("Canvas ID is required for autofill");
+      }
+
+      if (
+        !mappingEntry.fieldHints ||
+        Object.keys(mappingEntry.fieldHints).length === 0
+      ) {
+        throw new Error("No field hints available for this template");
+      }
+
+      console.log("Starting autofill for:", {
+        canvasId,
+        templateKey,
+        fieldsCount: Object.keys(mappingEntry.fieldHints).length,
+      });
+
+      // Prepare the payload
+      const payload = {
+        canvasId,
+        templateKey,
+        fieldHints: mappingEntry.fieldHints,
+        repeatedFields: mappingEntry.repeatedFields || [],
+        currentAnswers: answers,
+      };
+
+      // Call the autofill API
+      const generatedAnswers = await autofillTemplateFields(payload);
+
+      // Merge generated answers with existing answers
+      setAnswers((prev) => ({
+        ...prev,
+        ...generatedAnswers,
+      }));
+
+      console.log("Autofill completed successfully:", generatedAnswers);
+
+      // Show success message
+      setSnackBarMessage("Fields autofilled successfully based on your idea!");
+      setSnackBarOpen(true);
+    } catch (error) {
+      console.error("Autofill error:", error);
+      setAutoFillError(
+        error.message || "Failed to autofill. Please try again."
+      );
+      alert(
+        `Autofill Error: ${
+          error.message || "Failed to autofill. Please try again."
+        }`
+      );
+    } finally {
+      setIsAutoFilling(false);
     }
   };
 
@@ -55,7 +120,7 @@ const TemplateComponent = ({ templateKey, canvasId, hideButtons = false }) => {
     };
 
     fetchTemplate();
-  }, [canvasId, templateKey, setContext]);
+  }, [canvasId, templateKey]);
 
   if (!DynamicComponent) {
     return <div>Invalid template key.</div>;
@@ -73,25 +138,46 @@ const TemplateComponent = ({ templateKey, canvasId, hideButtons = false }) => {
             padding="10px 10px"
             color="white"
             fontSize="16px"
-            width="50%"
+            width="33%"
             marginTop="10px"
+            disabled={isAutoFilling}
+          />
+          <Button
+            label={isAutoFilling ? "Generating..." : "Auto Fill"}
+            onClick={handleAutoFill}
+            padding="10px 10px"
+            color="white"
+            fontSize="16px"
+            width="33%"
+            marginTop="10px"
+            disabled={isAutoFilling}
           />
           <Button
             label="Save"
             padding="10px 10px"
             color="white"
             fontSize="16px"
-            width="50%"
+            width="33%"
             marginTop="10px"
             onClick={handleSave}
+            disabled={isAutoFilling}
           />
+        </div>
+      )}
+      {isAutoFilling && (
+        <div style={{ textAlign: "center", marginTop: "20px" }}>
+          <CircularProgress size={30} />
+          <p style={{ marginTop: "10px", color: "#666" }}>
+            Generating answers based on your idea...
+          </p>
         </div>
       )}
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={snackBarOpen}
         onClose={handleClose}
-        message="Template saved successfully"
+        message={snackBarMessage}
+        autoHideDuration={4000}
       />
     </>
   );

@@ -96,3 +96,77 @@ export const getChatbotStatus = async () => {
     };
   }
 };
+
+/**
+ * Autofill template fields using AI
+ * @param {Object} payload - The autofill request payload
+ * @param {string} payload.canvasId - Optional canvas ID for context
+ * @param {string} payload.templateKey - Required template identifier (e.g., "ProblemIdentification-Step3")
+ * @param {string} payload.systemPrompt - Optional system prompt (defaults to LCI context)
+ * @param {Object} payload.fieldHints - Required object with field names as keys and descriptions as values
+ * @param {Array} payload.repeatedFields - Optional array of repeated field patterns
+ * @param {Object} payload.currentAnswers - Required object with current field values
+ * @returns {Promise<Object>} - Returns the autofilled answers
+ * @note The stepDescription is automatically fetched from the database based on templateKey
+ */
+export const autofillTemplateFields = async (payload) => {
+  try {
+    const {
+      canvasId,
+      templateKey,
+      fieldHints,
+      repeatedFields,
+      currentAnswers,
+    } = payload;
+
+    // Validate required fields
+    if (!templateKey) {
+      throw new Error("templateKey is required");
+    }
+    if (!fieldHints || Object.keys(fieldHints).length === 0) {
+      throw new Error("fieldHints is required and cannot be empty");
+    }
+
+    console.log("Sending autofill request:", {
+      templateKey,
+      canvasId: canvasId || "none",
+      fieldsCount: Object.keys(fieldHints).length,
+      hasCurrentAnswers: Object.keys(currentAnswers || {}).length > 0,
+    });
+
+    const response = await axios.post(
+      `${BACKEND_BASE_URL}/api/chatbot/autofill`,
+      {
+        canvasId,
+        templateKey,
+        fieldHints,
+        repeatedFields: repeatedFields || [],
+        currentAnswers: currentAnswers || {},
+      },
+      {
+        withCredentials: true,
+        timeout: 60000, // 60 second timeout
+      }
+    );
+
+    if (response.data.success) {
+      console.log("Autofill successful:", response.data.answers);
+      return response.data.answers;
+    } else {
+      throw new Error(response.data.error || "Autofill failed");
+    }
+  } catch (error) {
+    console.error("Error autofilling template fields:", error);
+
+    // Return more specific error messages
+    if (error.response?.data?.error) {
+      throw new Error(error.response.data.error);
+    } else if (error.code === "ECONNABORTED") {
+      throw new Error("Request timed out. Please try again.");
+    } else if (error.message) {
+      throw new Error(error.message);
+    } else {
+      throw new Error("Failed to autofill fields. Please try again.");
+    }
+  }
+};

@@ -3,6 +3,7 @@ const {
   sendChatMessage,
   checkChatbotHealth,
   getChatbotStatus,
+  autofillFields,
 } = require("../controllers/chatbotController");
 const protect = require("../middleware/authMiddleWare");
 
@@ -12,5 +13,6 @@ const router = express.Router();
 router.post("/send-message", protect, sendChatMessage);
 router.get("/health", protect, checkChatbotHealth);
 router.get("/status", protect, getChatbotStatus);
+router.post("/autofill", protect, autofillFields);
 
 module.exports = router;

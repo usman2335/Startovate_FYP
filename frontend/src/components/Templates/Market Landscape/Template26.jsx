@@ -17,8 +17,8 @@ const Template26 = ({ answers, onInputChange }) => {
           placeholder="Enter Here ..."
           multiline
           className="unique-textfield"
-          value={answers?.[`probability_]`] || ""}
-          onChange={(e) => onInputChange(e, `probability_]`)}
+          value={answers?.[`probability_`] || ""}
+          onChange={(e) => onInputChange(e, `probability_`)}
         />
       </div>
       <div className="header">

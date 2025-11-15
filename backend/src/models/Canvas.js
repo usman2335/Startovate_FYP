@@ -8,6 +8,7 @@ const CanvasSchema = new mongoose.Schema({
   },
   researchTitle: { type: String, required: true },
   authorName: { type: String, required: true },
+  ideaDescription: { type: String },
   createdAt: { type: Date, default: Date.now },
   completionStatus: {
     type: String,
