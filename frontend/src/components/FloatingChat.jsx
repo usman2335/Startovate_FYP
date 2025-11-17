@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Send, Bot, User, Loader2, X, Minimize2 } from "lucide-react";
-import { sendChatMessage, getChatbotStatus } from "../utils/api";
+import { Send, Bot, User, Loader2, X, Minimize2, Trash2 } from "lucide-react";
+import { sendChatMessage, getChatbotStatus, getChatHistory, clearChatHistory } from "../utils/api";
 import { useChatbotContext } from "../context/chatbotContext";
 import { formatChatbotResponse, typeText } from "../utils/chatbotTextProcessor";
 import "../CSS/FloatingChat.css";
@@ -8,20 +8,10 @@ import "../CSS/FloatingChat.css";
 const FloatingChat = ({ onClose }) => {
   const { context, getContextSummary, getTemplateContext } = useChatbotContext();
 
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      text: `Hello! I'm your LCI assistant. ${
-        context.canvasId
-          ? `I can see you're working on canvas ${context.canvasId}. `
-          : ""
-      }How can I help you today?`,
-      sender: "bot",
-      timestamp: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
   const [isConnected, setIsConnected] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -34,20 +24,84 @@ const FloatingChat = ({ onClose }) => {
     scrollToBottom();
   }, [messages]);
 
-  // Check connection status on component mount
+  // Load chat history and check connection on component mount
   useEffect(() => {
-    const checkConnection = async () => {
+    console.log("🚀 FloatingChat useEffect triggered - initializing chat");
+    
+    const initializeChat = async () => {
+      // Check connection
       try {
         const status = await getChatbotStatus();
         setIsConnected(status.success && status.data.status === "online");
+        console.log("🔌 Connection status:", status.success ? "online" : "offline");
       } catch (error) {
         console.log("Chatbot backend not available:", error.message);
         setIsConnected(false);
       }
+
+      // Load chat history
+      try {
+        setIsLoadingHistory(true);
+        console.log("🔍 Loading chat history for canvasId:", context.canvasId);
+        const history = await getChatHistory(context.canvasId);
+        console.log("📥 Received history:", JSON.stringify(history, null, 2));
+        
+        console.log("🔍 Checking history:", {
+          hasHistory: history.hasHistory,
+          messagesLength: history.messages?.length,
+          messages: history.messages
+        });
+
+        if (history.hasHistory && history.messages && history.messages.length > 0) {
+          console.log("📝 Converting messages to UI format...");
+          // Convert database messages to UI format
+          const formattedMessages = history.messages.map((msg, index) => {
+            console.log(`  Message ${index}:`, msg);
+            return {
+              id: index + 1,
+              text: msg.content,
+              sender: msg.role === "user" ? "user" : "bot",
+              timestamp: new Date(msg.timestamp),
+            };
+          });
+          console.log("📝 Formatted messages:", formattedMessages);
+          setMessages(formattedMessages);
+          console.log(`✅ Loaded ${formattedMessages.length} messages from history`);
+          console.log("✅ Messages state should now be:", formattedMessages);
+        } else {
+          console.log("ℹ️ No history found, showing welcome message");
+          // Show welcome message if no history
+          setMessages([
+            {
+              id: 1,
+              text: `Hello! I'm your LCI assistant. ${
+                context.canvasId
+                  ? `I can see you're working on a canvas. `
+                  : ""
+              }How can I help you today?`,
+              sender: "bot",
+              timestamp: new Date(),
+            },
+          ]);
+        }
+      } catch (error) {
+        console.error("❌ Error loading chat history:", error);
+        // Show welcome message on error
+        setMessages([
+          {
+            id: 1,
+            text: `Hello! I'm your LCI assistant. How can I help you today?`,
+            sender: "bot",
+            timestamp: new Date(),
+          },
+        ]);
+      } finally {
+        setIsLoadingHistory(false);
+      }
     };
 
-    checkConnection();
-  }, []);
+    initializeChat();
+  }, [context.canvasId]); // Reload when canvasId changes or component mounts
 
   const sendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return;
@@ -151,6 +205,28 @@ const FloatingChat = ({ onClose }) => {
     }
   };
 
+  const handleClearHistory = async () => {
+    if (!window.confirm("Are you sure you want to clear your chat history? This cannot be undone.")) {
+      return;
+    }
+
+    try {
+      await clearChatHistory(context.canvasId);
+      setMessages([
+        {
+          id: Date.now(),
+          text: `Chat history cleared. How can I help you today?`,
+          sender: "bot",
+          timestamp: new Date(),
+        },
+      ]);
+      console.log("✅ Chat history cleared");
+    } catch (error) {
+      console.error("Error clearing chat history:", error);
+      alert("Failed to clear chat history. Please try again.");
+    }
+  };
+
   const formatTime = (timestamp) => {
     return timestamp.toLocaleTimeString([], {
       hour: "2-digit",
@@ -174,6 +250,13 @@ const FloatingChat = ({ onClose }) => {
           </div>
         </div>
         <div className="floating-chat-actions">
+          <button 
+            className="action-btn" 
+            onClick={handleClearHistory}
+            title="Clear chat history"
+          >
+            <Trash2 size={16} />
+          </button>
           <button className="action-btn" onClick={onClose}>
             <X size={16} />
           </button>
@@ -193,7 +276,20 @@ const FloatingChat = ({ onClose }) => {
 
       {/* Messages */}
       <div className="floating-chat-messages">
-        {messages.map((message) => (
+        {isLoadingHistory ? (
+          <div className="floating-message bot">
+            <div className="floating-message-avatar">
+              <Bot size={16} />
+            </div>
+            <div className="floating-message-content">
+              <div className="floating-message-text loading">
+                <Loader2 className="loading-spinner" size={14} />
+                Loading chat history...
+              </div>
+            </div>
+          </div>
+        ) : (
+          messages.map((message) => (
           <div
             key={message.id}
             className={`floating-message ${message.sender}`}
@@ -217,7 +313,8 @@ const FloatingChat = ({ onClose }) => {
               </div>
             </div>
           </div>
-        ))}
+          ))
+        )}
         {isLoading && (
           <div className="floating-message bot">
             <div className="floating-message-avatar">

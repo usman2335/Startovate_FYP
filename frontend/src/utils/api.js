@@ -112,6 +112,64 @@ export const getChatbotStatus = async () => {
 };
 
 /**
+ * Get chat history for the current user
+ * @param {string} canvasId - Optional canvas ID to filter history
+ * @returns {Promise<Object>} - Returns chat history messages
+ */
+export const getChatHistory = async (canvasId = null) => {
+  try {
+    const params = {};
+    if (canvasId) {
+      params.canvasId = canvasId;
+    }
+
+    console.log("📡 Calling getChatHistory API with params:", params);
+
+    const response = await axios.get(`${BACKEND_BASE_URL}/api/chatbot/history`, {
+      params,
+      withCredentials: true,
+    });
+
+    console.log("📡 getChatHistory API response:", response.data);
+
+    if (response.data.success) {
+      return response.data.data;
+    } else {
+      throw new Error(response.data.message);
+    }
+  } catch (error) {
+    console.error("❌ Error fetching chat history:", error);
+    if (error.response) {
+      console.error("Response data:", error.response.data);
+      console.error("Response status:", error.response.status);
+    }
+    return {
+      messages: [],
+      hasHistory: false,
+    };
+  }
+};
+
+/**
+ * Clear chat history for the current user
+ * @param {string} canvasId - Optional canvas ID to clear specific history
+ * @returns {Promise<Object>} - Returns success status
+ */
+export const clearChatHistory = async (canvasId = null) => {
+  try {
+    const response = await axios.delete(`${BACKEND_BASE_URL}/api/chatbot/history`, {
+      data: { canvasId },
+      withCredentials: true,
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error clearing chat history:", error);
+    throw error;
+  }
+};
+
+/**
  * Autofill template fields using AI
  * @param {Object} payload - The autofill request payload
  * @param {string} payload.canvasId - Optional canvas ID for context

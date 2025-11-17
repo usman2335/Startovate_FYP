@@ -1,6 +1,8 @@
 const axios = require("axios");
+const mongoose = require("mongoose");
 const StepDescription = require("../models/StepDescriptions");
 const Canvas = require("../models/Canvas");
+const ChatHistory = require("../models/ChatHistory");
 
 // FastAPI ChatBot endpoint
 const CHATBOT_BASE_URL = "http://127.0.0.1:8000";
@@ -89,13 +91,37 @@ exports.sendChatMessage = async (req, res) => {
     // Fetch idea description from canvas if canvasId is provided
     if (canvasId) {
       try {
-        const canvas = await Canvas.findById(canvasId);
+        const userIdString = req.user.id || req.user._id;
+        const userId = new mongoose.Types.ObjectId(userIdString);
+        const canvasObjectId = new mongoose.Types.ObjectId(canvasId);
+        
+        console.log("🔍 Fetching canvas:", { canvasId: canvasObjectId, userId, userIdType: typeof userId });
+        
+        // Find canvas that belongs to the current user
+        const canvas = await Canvas.findOne({ _id: canvasObjectId, user: userId });
+        
+        console.log("🔍 Canvas found:", canvas ? "Yes" : "No");
+        if (canvas) {
+          console.log("🔍 Canvas owner:", canvas.user);
+          console.log("🔍 Current user:", userId);
+          console.log("🔍 Owner matches:", String(canvas.user) === String(userId));
+          console.log("🔍 Has idea:", !!canvas.ideaDescription);
+          if (canvas.ideaDescription) {
+            console.log("🔍 Idea preview:", canvas.ideaDescription.substring(0, 50) + "...");
+          }
+        }
+        
         if (canvas && canvas.ideaDescription) {
           requestPayload.ideaDescription = canvas.ideaDescription;
-          console.log("✅ Added idea description to chat context");
+          console.log("✅ Added idea description to chat context for user:", userId);
+        } else if (!canvas) {
+          console.log("⚠️ Canvas not found or doesn't belong to user:", userId);
+        } else {
+          console.log("⚠️ Canvas found but has no idea description");
         }
       } catch (error) {
-        console.warn("Could not fetch idea description:", error.message);
+        console.error("❌ Error fetching idea description:", error.message);
+        console.error("Full error:", error);
         // Continue without idea description
       }
     }
@@ -134,6 +160,63 @@ exports.sendChatMessage = async (req, res) => {
         },
       }
     );
+
+    // Save chat history to database
+    try {
+      const userIdString = req.user.id || req.user._id; // From auth middleware (JWT stores 'id')
+      const userId = new mongoose.Types.ObjectId(userIdString); // Convert to ObjectId
+      const canvasObjectId = canvasId ? new mongoose.Types.ObjectId(canvasId) : null;
+      
+      console.log("💾 Saving chat history for userId:", userId, "canvasId:", canvasObjectId || "null");
+      console.log("💾 userId type:", typeof userId, "is ObjectId:", userId instanceof mongoose.Types.ObjectId);
+      
+      // Find or create chat history for this user/canvas combination
+      let chatHistory = await ChatHistory.findOne({
+        userId: userId,
+        canvasId: canvasObjectId,
+      });
+
+      if (!chatHistory) {
+        console.log("📝 Creating new chat history document");
+        chatHistory = new ChatHistory({
+          userId: userId,
+          canvasId: canvasObjectId,
+          templateKey: templateKey || null,
+          messages: [],
+        });
+      } else {
+        console.log("📝 Updating existing chat history (current messages:", chatHistory.messages.length, ")");
+      }
+
+      // Add user message
+      chatHistory.messages.push({
+        role: "user",
+        content: query.trim(),
+        timestamp: new Date(),
+      });
+
+      // Add bot response
+      chatHistory.messages.push({
+        role: "assistant",
+        content: response.data.answer,
+        timestamp: new Date(),
+      });
+
+      // Update last message timestamp
+      chatHistory.lastMessageAt = new Date();
+      
+      // Update templateKey if provided
+      if (templateKey) {
+        chatHistory.templateKey = templateKey;
+      }
+
+      await chatHistory.save();
+      console.log("✅ Chat history saved to database (total messages:", chatHistory.messages.length, ")");
+    } catch (historyError) {
+      console.error("❌ Warning: Could not save chat history:", historyError.message);
+      console.error("Full error:", historyError);
+      // Don't fail the request if history save fails
+    }
 
     // Return the response from FastAPI
     res.status(200).json({
@@ -229,6 +312,96 @@ exports.getChatbotStatus = async (req, res) => {
 };
 
 /**
+ * Get chat history for the current user
+ */
+exports.getChatHistory = async (req, res) => {
+  try {
+    const userIdString = req.user.id || req.user._id; // JWT stores 'id'
+    const userId = new mongoose.Types.ObjectId(userIdString); // Convert to ObjectId
+    const { canvasId } = req.query;
+    const canvasObjectId = canvasId ? new mongoose.Types.ObjectId(canvasId) : null;
+
+    console.log("📥 getChatHistory request:", { userId, canvasId: canvasObjectId || "null" });
+    console.log("📥 userId type:", typeof userId, "is ObjectId:", userId instanceof mongoose.Types.ObjectId);
+    console.log("📥 req.user:", req.user);
+
+    // Build query - if no canvasId provided, look for documents with canvasId: null
+    const query = { 
+      userId: userId,
+      canvasId: canvasObjectId
+    };
+
+    console.log("🔍 Querying chat history with:", query);
+
+    // Find chat history, sorted by most recent
+    const chatHistory = await ChatHistory.findOne(query).sort({ lastMessageAt: -1 });
+
+    console.log("📊 Found chat history:", chatHistory ? `Yes (${chatHistory.messages.length} messages)` : "No");
+
+    if (!chatHistory) {
+      console.log("ℹ️ No chat history found, returning empty");
+      return res.status(200).json({
+        success: true,
+        data: {
+          messages: [],
+          hasHistory: false,
+        },
+      });
+    }
+
+    console.log("✅ Returning chat history with", chatHistory.messages.length, "messages");
+    console.log("📋 First message sample:", chatHistory.messages[0]);
+    res.status(200).json({
+      success: true,
+      data: {
+        messages: chatHistory.messages,
+        hasHistory: true,
+        lastMessageAt: chatHistory.lastMessageAt,
+      },
+    });
+  } catch (error) {
+    console.error("❌ Error fetching chat history:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch chat history",
+      error: "INTERNAL_ERROR",
+    });
+  }
+};
+
+/**
+ * Clear chat history for the current user
+ */
+exports.clearChatHistory = async (req, res) => {
+  try {
+    const userIdString = req.user.id || req.user._id; // JWT stores 'id'
+    const userId = new mongoose.Types.ObjectId(userIdString); // Convert to ObjectId
+    const { canvasId } = req.body;
+    const canvasObjectId = canvasId ? new mongoose.Types.ObjectId(canvasId) : null;
+
+    const query = { userId };
+    if (canvasId) {
+      query.canvasId = canvasObjectId;
+    }
+
+    console.log("🗑️ Clearing chat history for:", query);
+    await ChatHistory.deleteMany(query);
+
+    res.status(200).json({
+      success: true,
+      message: "Chat history cleared successfully",
+    });
+  } catch (error) {
+    console.error("Error clearing chat history:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to clear chat history",
+      error: "INTERNAL_ERROR",
+    });
+  }
+};
+
+/**
  * Autofill template fields using AI
  */
 exports.autofillFields = async (req, res) => {
@@ -307,18 +480,37 @@ exports.autofillFields = async (req, res) => {
     let ideaDescription = "";
     if (canvasId) {
       try {
-        const canvas = await Canvas.findById(canvasId);
+        const userIdString = req.user.id || req.user._id;
+        const userId = new mongoose.Types.ObjectId(userIdString);
+        const canvasObjectId = new mongoose.Types.ObjectId(canvasId);
+        
+        console.log("🔍 [AUTOFILL] Fetching canvas:", { canvasId: canvasObjectId, userId, userIdType: typeof userId });
+        
+        // Find canvas that belongs to the current user
+        const canvas = await Canvas.findOne({ _id: canvasObjectId, user: userId });
+        
+        console.log("🔍 [AUTOFILL] Canvas found:", canvas ? "Yes" : "No");
+        if (canvas) {
+          console.log("🔍 [AUTOFILL] Canvas owner:", canvas.user);
+          console.log("🔍 [AUTOFILL] Current user:", userId);
+          console.log("🔍 [AUTOFILL] Owner matches:", String(canvas.user) === String(userId));
+          console.log("🔍 [AUTOFILL] Has idea:", !!canvas.ideaDescription);
+          if (canvas.ideaDescription) {
+            console.log("🔍 [AUTOFILL] Idea preview:", canvas.ideaDescription.substring(0, 50) + "...");
+          }
+        }
+        
         if (canvas && canvas.ideaDescription) {
           ideaDescription = canvas.ideaDescription;
-          console.log("Fetched idea description:", {
-            canvasId,
-            ideaDescription: ideaDescription.substring(0, 100) + "...",
-          });
+          console.log("✅ [AUTOFILL] Fetched idea description for user:", userId);
+        } else if (!canvas) {
+          console.log("⚠️ [AUTOFILL] Canvas not found or doesn't belong to user:", userId);
         } else {
-          console.log("No idea description found for canvas:", canvasId);
+          console.log("⚠️ [AUTOFILL] Canvas found but has no idea description");
         }
       } catch (error) {
-        console.warn("Error fetching canvas idea description:", error.message);
+        console.error("❌ [AUTOFILL] Error fetching canvas idea description:", error.message);
+        console.error("Full error:", error);
         // Continue without idea description
       }
     }

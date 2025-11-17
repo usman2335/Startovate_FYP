@@ -4,6 +4,8 @@ const {
   checkChatbotHealth,
   getChatbotStatus,
   autofillFields,
+  getChatHistory,
+  clearChatHistory,
 } = require("../controllers/chatbotController");
 const protect = require("../middleware/authMiddleWare");
 
@@ -14,5 +16,7 @@ router.post("/send-message", protect, sendChatMessage);
 router.get("/health", protect, checkChatbotHealth);
 router.get("/status", protect, getChatbotStatus);
 router.post("/autofill", protect, autofillFields);
+router.get("/history", protect, getChatHistory);
+router.delete("/history", protect, clearChatHistory);
 
 module.exports = router;
