@@ -1,7 +1,8 @@
 import os
 import sys
 import json
-from typing import Dict, List, Optional
+import time
+from typing import List, Optional
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -26,7 +27,7 @@ try:
     sys.path.append('parsed_content')
     from sentence_transformer_search_function import search_chunks_sentence_transformer
     SEARCH_AVAILABLE = True
-except ImportError:
+except Exception:
     print("⚠️ Warning: sentence transformer search not available. Semantic search disabled.")
     SEARCH_AVAILABLE = False
 
@@ -34,7 +35,7 @@ except ImportError:
 # ⚙️ Configurations
 # ============================
 MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
-MISTRAL_MODEL = "mistral-small-latest"
+MISTRAL_MODEL = "mistral-tiny"
 BASE_URL = "https://api.mistral.ai/v1/chat/completions"
 
 # MongoDB setup (if available)
@@ -52,6 +53,24 @@ else:
 
 # Memory
 CHAT_HISTORY = []   # list of {"role": "user"/"assistant", "content": "..."}
+
+# ============================
+# 🔁 Shared AutoFill Context Store
+# ============================
+# Keys are typically templateKey (from AutoFillRequest.templateKey), but can be any identifier you want to use
+AUTO_CONTEXT = {}
+# Example structure:
+# AUTO_CONTEXT = {
+#     "template_abc": {
+#         "ideaDescription": "...",
+#         "stepDescription": "...",
+#         "fieldHints": {...},
+#         "fields": [...],
+#         "repeatedFields": [...],
+#         "generatedAnswers": {...},
+#         "timestamp": 1690000000.0
+#     }
+# }
 
 # ============================
 # 🚀 FastAPI Setup
@@ -146,11 +165,7 @@ def call_llm(provider: str, messages: List[dict], model: Optional[str] = None) -
 # ============================
 # 💬 Generate Chatbot Response
 # ============================
-def generate_chatbot_response(
-    query: str,
-    context_texts: List[str],
-    autofill_context: Optional[str] = None
-) -> str:
+def generate_chatbot_response(query: str, context_texts: List[str]) -> str:
     domain_instruction = """
 You are an AI assistant specialized in the **Lean Canvas for Invention (LCI)** methodology.
 
@@ -170,18 +185,8 @@ Your knowledge base includes:
 """
 
     combined_context = "\n\n".join(context_texts)
-
-    autofill_section = ""
-    if autofill_context:
-        autofill_section = f"""
-Autofill Context:
-{autofill_context}
-"""
-
     prompt = f"""
 {domain_instruction}
-
-{autofill_section}
 
 User Query:
 "{query}"
@@ -202,28 +207,16 @@ Relevant Context from Database and LCI Knowledge:
 # ============================
 # 📬 API Schemas
 # ============================
-class AutoFillContext(BaseModel):
-    """
-    Optional context sent from the auto-fill experience so the chat endpoint
-    understands the current template, the user's idea, and any collected answers.
-    """
-    templateKey: Optional[str] = None
-    stepDescription: Optional[str] = None
-    ideaDescription: Optional[str] = None
-    fieldHints: Optional[Dict[str, str]] = None
-    repeatedFields: Optional[List[dict]] = None
-    fields: Optional[List[str]] = None
-    currentAnswers: Optional[Dict[str, str]] = None
-    generatedAnswers: Optional[Dict[str, str]] = None
-
-
 class ChatRequest(BaseModel):
     query: str
     canvasId: Optional[str] = None
     templateId: Optional[str] = None
+    templateKey: Optional[str] = None
+    stepDescription: Optional[str] = None
+    ideaDescription: Optional[str] = None
+    fieldHints: Optional[dict] = None
+    currentAnswers: Optional[dict] = None
     top_k: Optional[int] = 3
-    autofillContext: Optional[AutoFillContext] = None
-
 
 class ChatResponse(BaseModel):
     query: str
@@ -244,66 +237,6 @@ class AutoFillResponse(BaseModel):
     answers: Optional[dict] = None
     error: Optional[str] = None
 
-
-def format_autofill_context(context: AutoFillContext) -> str:
-    """
-    Convert the auto-fill payload data into a readable block so the chat prompt
-    can leverage the same information.
-    """
-    ctx = context.model_dump(exclude_none=True)
-    if not ctx:
-        return "Auto-fill context was requested but no data was provided."
-
-    parts = []
-
-    template_key = ctx.get("templateKey")
-    if template_key:
-        parts.append(f"Template Key: {template_key}")
-
-    step_description = ctx.get("stepDescription")
-    if step_description:
-        parts.append(f"Step Description: {step_description}")
-
-    idea_description = ctx.get("ideaDescription")
-    if idea_description:
-        parts.append("User Idea / Concept:")
-        parts.append(idea_description)
-
-    fields = ctx.get("fields")
-    if fields:
-        parts.append("Fields Under Consideration:")
-        for field in fields:
-            parts.append(f"  - {field}")
-
-    field_hints = ctx.get("fieldHints")
-    if field_hints:
-        parts.append("Field Hints:")
-        for name, hint in field_hints.items():
-            parts.append(f"  - {name}: {hint}")
-
-    repeated_fields = ctx.get("repeatedFields")
-    if repeated_fields:
-        parts.append("Repeated Field Patterns:")
-        for entry in repeated_fields:
-            parts.append(f"  - {entry}")
-
-    current_answers = ctx.get("currentAnswers")
-    if current_answers:
-        parts.append("Current Answers Provided By User:")
-        for name, value in current_answers.items():
-            parts.append(f"  - {name}: {value}")
-
-    generated_answers = ctx.get("generatedAnswers")
-    if generated_answers:
-        parts.append("Previously Generated Auto-Fill Answers:")
-        for name, value in generated_answers.items():
-            parts.append(f"  - {name}: {value}")
-
-    if not parts:
-        return "Auto-fill context payload was empty."
-
-    return "\n".join(parts)
-
 # ============================
 # 🌐 Endpoints
 # ============================
@@ -314,6 +247,7 @@ def health_check():
         "provider": "mistral",
         "model": MISTRAL_MODEL,
         "chat_memory_size": len(CHAT_HISTORY),
+        "autofill_context_count": len(AUTO_CONTEXT),
     }
 
 @app.post("/chat", response_model=ChatResponse)
@@ -325,7 +259,28 @@ def chat_endpoint(request: ChatRequest):
     try:
         context_texts = []
 
-        # 1️⃣ Add Template Context (if MongoDB available)
+        # 1️⃣ Add Template-Specific Context (Step Description, Idea, Field Hints, Current Answers)
+        # This is the SAME context that autofill uses - now available to chat!
+        if request.stepDescription:
+            context_texts.append(f"📋 CURRENT STEP DESCRIPTION:\n{request.stepDescription}")
+            print(f"✅ Added step description to chat context")
+        
+        if request.ideaDescription:
+            context_texts.append(f"💡 USER'S IDEA/BUSINESS CONCEPT:\n{request.ideaDescription}")
+            print(f"✅ Added idea description to chat context")
+        
+        if request.fieldHints:
+            hints_text = "\n".join([f"  - {field}: {hint}" for field, hint in request.fieldHints.items()])
+            context_texts.append(f"📝 TEMPLATE FIELDS:\n{hints_text}")
+            print(f"✅ Added {len(request.fieldHints)} field hints to chat context")
+        
+        if request.currentAnswers:
+            answers_text = "\n".join([f"  - {field}: {value}" for field, value in request.currentAnswers.items() if value])
+            if answers_text:
+                context_texts.append(f"✍️ USER'S CURRENT ANSWERS:\n{answers_text}")
+                print(f"✅ Added {len([v for v in request.currentAnswers.values() if v])} current answers to chat context")
+
+        # 2️⃣ Add Template Context (if MongoDB available)
         if request.templateId and MONGO_AVAILABLE and db is not None:
             try:
                 template = db.templates.find_one({"templateId": request.templateId})
@@ -334,7 +289,7 @@ def chat_endpoint(request: ChatRequest):
             except Exception as e:
                 print(f"Warning: Could not fetch template context: {e}")
 
-        # 2️⃣ Add Canvas Context (if MongoDB available)
+        # 3️⃣ Add Canvas Context (if MongoDB available)
         if request.canvasId and MONGO_AVAILABLE and db is not None:
             try:
                 canvas = db.canvases.find_one({"canvasId": request.canvasId})
@@ -343,7 +298,7 @@ def chat_endpoint(request: ChatRequest):
             except Exception as e:
                 print(f"Warning: Could not fetch canvas context: {e}")
 
-        # 3️⃣ Add Semantic Search Context (if available)
+        # 4️⃣ Add Semantic Search Context (if available)
         if SEARCH_AVAILABLE:
             try:
                 results = search_chunks_sentence_transformer(query, top_k=request.top_k)
@@ -352,28 +307,55 @@ def chat_endpoint(request: ChatRequest):
             except Exception as e:
                 print(f"Warning: Could not perform semantic search: {e}")
         
-        # 4️⃣ Add basic context information
+        # 5️⃣ Add basic context information
         if request.canvasId:
             context_texts.append(f"User is working on canvas: {request.canvasId}")
         if request.templateId:
             context_texts.append(f"User is working on template: {request.templateId}")
+        if request.templateKey:
+            context_texts.append(f"User is working on template: {request.templateKey}")
 
-        # 4️⃣ Add Auto-Fill Context (if provided)
-        autofill_summary = None
-        if request.autofillContext:
-            autofill_summary = format_autofill_context(request.autofillContext)
+        # 6️⃣ Add AutoFill Shared Context if present (from previous autofill operations)
+        # Check by templateKey first (most specific), then templateId, then canvasId
+        added_autofill = False
+        
+        if request.templateKey and request.templateKey in AUTO_CONTEXT:
+            try:
+                ctx = AUTO_CONTEXT[request.templateKey]
+                pretty = json.dumps(ctx, indent=2)
+                context_texts.append(f"PREVIOUS AUTOFILL CONTEXT (templateKey={request.templateKey}):\n{pretty}")
+                added_autofill = True
+                print(f"🔁 Loaded autofill context for templateKey={request.templateKey}")
+            except Exception as e:
+                print(f"Warning: Could not append autofill context for templateKey={request.templateKey}: {e}")
+        
+        if not added_autofill and request.templateId and request.templateId in AUTO_CONTEXT:
+            try:
+                ctx = AUTO_CONTEXT[request.templateId]
+                pretty = json.dumps(ctx, indent=2)
+                context_texts.append(f"PREVIOUS AUTOFILL CONTEXT (templateId={request.templateId}):\n{pretty}")
+                added_autofill = True
+                print(f"🔁 Loaded autofill context for templateId={request.templateId}")
+            except Exception as e:
+                print(f"Warning: Could not append autofill context for templateId={request.templateId}: {e}")
 
-        context_used = list(context_texts)
-        if autofill_summary:
-            context_used.append(f"Auto-Fill Context:\n{autofill_summary}")
+        if not added_autofill and request.canvasId and request.canvasId in AUTO_CONTEXT:
+            try:
+                ctx = AUTO_CONTEXT[request.canvasId]
+                pretty = json.dumps(ctx, indent=2)
+                context_texts.append(f"PREVIOUS AUTOFILL CONTEXT (canvasId={request.canvasId}):\n{pretty}")
+                added_autofill = True
+                print(f"🔁 Loaded autofill context for canvasId={request.canvasId}")
+            except Exception as e:
+                print(f"Warning: Could not append autofill context for canvasId={request.canvasId}: {e}")
 
-        # 5️⃣ Generate Answer
-        answer = generate_chatbot_response(query, context_texts, autofill_summary)
+        # 7️⃣ Generate Answer
+        answer = generate_chatbot_response(query, context_texts)
 
         return ChatResponse(
             query=query,
             answer=answer,
-            context_used=context_used,
+            context_used=context_texts,
             provider="mistral"
         )
 
@@ -384,7 +366,7 @@ def chat_endpoint(request: ChatRequest):
 def auto_fill_endpoint(request: AutoFillRequest):
     """
     Auto-fill template fields using LLM based on context and hints.
-    
+
     This endpoint accepts template information and uses an LLM to generate
     appropriate answers for template fields based on the system prompt,
     step description, field hints, and current answers.
@@ -427,7 +409,7 @@ Your task:
 5. Maintain consistency with the user's idea throughout all answers
 
 Remember: Every answer should clearly relate to the specific business idea provided by the user."""
-
+        
         # Call LLM to generate answers
         messages = [
             {
@@ -471,6 +453,23 @@ Remember: Every answer should clearly relate to the specific business idea provi
                     error="LLM response is not a valid JSON object."
                 )
             
+            # ---------------------------
+            # SAVE AUTO-FILL CONTEXT HERE
+            # ---------------------------
+            try:
+                AUTO_CONTEXT[request.templateKey] = {
+                    "ideaDescription": request.ideaDescription,
+                    "stepDescription": request.stepDescription,
+                    "fieldHints": request.fieldHints,
+                    "fields": request.fields,
+                    "repeatedFields": request.repeatedFields or [],
+                    "generatedAnswers": answers,
+                    "timestamp": time.time()
+                }
+                print(f"✅ Saved autofill context under key: {request.templateKey}")
+            except Exception as e:
+                print(f"Warning: Could not save autofill context: {e}")
+            
             return AutoFillResponse(
                 success=True,
                 answers=answers
@@ -507,7 +506,7 @@ def construct_autofill_prompt(
 ) -> str:
     """
     Construct a detailed prompt for the LLM to generate template answers.
-    
+
     Args:
         template_key: The unique identifier for the template
         step_description: Description of the current step/template
@@ -515,7 +514,7 @@ def construct_autofill_prompt(
         field_hints: Dictionary of field names and their descriptions/hints
         repeated_fields: List of repeated field patterns (e.g., for dynamic sections)
         fields: List of fields to fill
-    
+
     Returns:
         A formatted prompt string for the LLM
     """

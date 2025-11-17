@@ -32,7 +32,15 @@ const parseTemplateKey = (templateKey) => {
  */
 exports.sendChatMessage = async (req, res) => {
   try {
-    const { query, top_k = 3, canvasId, templateId } = req.body;
+    const { 
+      query, 
+      top_k = 3, 
+      canvasId, 
+      templateId,
+      templateKey,
+      fieldHints,
+      currentAnswers 
+    } = req.body;
 
     // Validate input
     if (!query || query.trim() === "") {
@@ -55,11 +63,64 @@ exports.sendChatMessage = async (req, res) => {
     if (templateId) {
       requestPayload.templateId = templateId;
     }
+    if (templateKey) {
+      requestPayload.templateKey = templateKey;
+    }
 
-    console.log("Sending context-aware request:", {
+    // Fetch step description if templateKey is provided
+    if (templateKey) {
+      try {
+        const parsed = parseTemplateKey(templateKey);
+        const stepDescription = await StepDescription.findOne({
+          componentName: parsed.componentName,
+          stepNumber: parsed.stepNumber,
+        });
+
+        if (stepDescription) {
+          requestPayload.stepDescription = stepDescription.description;
+          console.log("✅ Added step description to chat context");
+        }
+      } catch (error) {
+        console.warn("Could not fetch step description:", error.message);
+        // Continue without step description
+      }
+    }
+
+    // Fetch idea description from canvas if canvasId is provided
+    if (canvasId) {
+      try {
+        const canvas = await Canvas.findById(canvasId);
+        if (canvas && canvas.ideaDescription) {
+          requestPayload.ideaDescription = canvas.ideaDescription;
+          console.log("✅ Added idea description to chat context");
+        }
+      } catch (error) {
+        console.warn("Could not fetch idea description:", error.message);
+        // Continue without idea description
+      }
+    }
+
+    // Add field hints if provided
+    if (fieldHints && Object.keys(fieldHints).length > 0) {
+      requestPayload.fieldHints = fieldHints;
+      console.log(`✅ Added ${Object.keys(fieldHints).length} field hints to chat context`);
+    }
+
+    // Add current answers if provided
+    if (currentAnswers && Object.keys(currentAnswers).length > 0) {
+      requestPayload.currentAnswers = currentAnswers;
+      console.log(`✅ Added ${Object.keys(currentAnswers).length} current answers to chat context`);
+    }
+
+    console.log("Sending enriched context-aware request:", {
       query: requestPayload.query,
       canvasId: requestPayload.canvasId || "none",
       templateId: requestPayload.templateId || "none",
+      templateKey: requestPayload.templateKey || "none",
+      hasStepDescription: !!requestPayload.stepDescription,
+      hasIdeaDescription: !!requestPayload.ideaDescription,
+      hasFieldHints: !!requestPayload.fieldHints,
+      hasCurrentAnswers: !!requestPayload.currentAnswers,
     });
 
     // Forward request to FastAPI ChatBot

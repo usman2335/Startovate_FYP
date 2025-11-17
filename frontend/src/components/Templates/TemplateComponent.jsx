@@ -103,8 +103,13 @@ const TemplateComponent = ({ templateKey, canvasId, hideButtons = false }) => {
   useEffect(() => {
     if (!canvasId || !templateKey) return;
 
-    // Set chatbot context when template loads
-    setContext(canvasId, templateKey, null);
+    // Set chatbot context when template loads - including template-specific data
+    const templateData = {
+      templateKey,
+      fieldHints: mappingEntry.fieldHints || {},
+      currentAnswers: answers,
+    };
+    setContext(canvasId, templateKey, null, templateData);
 
     const fetchTemplate = async () => {
       try {
@@ -121,6 +126,18 @@ const TemplateComponent = ({ templateKey, canvasId, hideButtons = false }) => {
 
     fetchTemplate();
   }, [canvasId, templateKey]);
+
+  // Update chatbot context whenever answers change
+  useEffect(() => {
+    if (!canvasId || !templateKey) return;
+
+    const templateData = {
+      templateKey,
+      fieldHints: mappingEntry.fieldHints || {},
+      currentAnswers: answers,
+    };
+    setContext(canvasId, templateKey, null, templateData);
+  }, [answers]);
 
   if (!DynamicComponent) {
     return <div>Invalid template key.</div>;

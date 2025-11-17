@@ -20,7 +20,7 @@ export const saveTemplates = async (canvasId, templateId, answers) => {
 // Chatbot API functions - Updated to use Node.js backend as proxy
 const BACKEND_BASE_URL = "http://localhost:5000";
 
-export const sendChatMessage = async (query, topK = 3, context = {}) => {
+export const sendChatMessage = async (query, topK = 3, context = {}, templateContext = {}) => {
   try {
     const requestPayload = {
       query,
@@ -35,10 +35,24 @@ export const sendChatMessage = async (query, topK = 3, context = {}) => {
       requestPayload.templateId = context.templateId;
     }
 
-    console.log("Sending context-aware chat request:", {
+    // Add template-specific context (same as autofill uses)
+    if (templateContext.templateKey) {
+      requestPayload.templateKey = templateContext.templateKey;
+    }
+    if (templateContext.fieldHints) {
+      requestPayload.fieldHints = templateContext.fieldHints;
+    }
+    if (templateContext.currentAnswers) {
+      requestPayload.currentAnswers = templateContext.currentAnswers;
+    }
+
+    console.log("Sending enriched context-aware chat request:", {
       query: requestPayload.query,
       canvasId: requestPayload.canvasId || "none",
       templateId: requestPayload.templateId || "none",
+      templateKey: requestPayload.templateKey || "none",
+      hasFieldHints: !!requestPayload.fieldHints,
+      hasCurrentAnswers: !!requestPayload.currentAnswers,
     });
 
     const response = await axios.post(

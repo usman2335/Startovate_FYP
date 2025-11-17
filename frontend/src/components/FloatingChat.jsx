@@ -6,7 +6,7 @@ import { formatChatbotResponse, typeText } from "../utils/chatbotTextProcessor";
 import "../CSS/FloatingChat.css";
 
 const FloatingChat = ({ onClose }) => {
-  const { context, getContextSummary } = useChatbotContext();
+  const { context, getContextSummary, getTemplateContext } = useChatbotContext();
 
   const [messages, setMessages] = useState([
     {
@@ -66,7 +66,9 @@ const FloatingChat = ({ onClose }) => {
     try {
       console.log("Sending message to chatbot:", inputMessage);
       console.log("Context being sent:", getContextSummary());
-      const data = await sendChatMessage(inputMessage, 3, context);
+      const templateContext = getTemplateContext();
+      console.log("Template context:", templateContext);
+      const data = await sendChatMessage(inputMessage, 3, context, templateContext);
       console.log("Received response from chatbot:", data);
 
       const botMessage = {
