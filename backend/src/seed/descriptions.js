@@ -1,8 +1,9 @@
+require("dotenv").config();
 const mongoose = require("mongoose");
 const StepDescription = require("../models/StepDescriptions");
 
-// Replace with your MongoDB connection string
-const mongoURI = "mongodb://localhost:27017/startovate";
+// Use MongoDB connection string from .env file, with fallback to default
+const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/startovate";
 
 const stepDescriptions = [
   {

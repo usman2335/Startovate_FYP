@@ -1,7 +1,7 @@
 import os
 import sys
 import json
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -146,7 +146,11 @@ def call_llm(provider: str, messages: List[dict], model: Optional[str] = None) -
 # ============================
 # 💬 Generate Chatbot Response
 # ============================
-def generate_chatbot_response(query: str, context_texts: List[str]) -> str:
+def generate_chatbot_response(
+    query: str,
+    context_texts: List[str],
+    autofill_context: Optional[str] = None
+) -> str:
     domain_instruction = """
 You are an AI assistant specialized in the **Lean Canvas for Invention (LCI)** methodology.
 
@@ -166,8 +170,18 @@ Your knowledge base includes:
 """
 
     combined_context = "\n\n".join(context_texts)
+
+    autofill_section = ""
+    if autofill_context:
+        autofill_section = f"""
+Autofill Context:
+{autofill_context}
+"""
+
     prompt = f"""
 {domain_instruction}
+
+{autofill_section}
 
 User Query:
 "{query}"
@@ -188,11 +202,28 @@ Relevant Context from Database and LCI Knowledge:
 # ============================
 # 📬 API Schemas
 # ============================
+class AutoFillContext(BaseModel):
+    """
+    Optional context sent from the auto-fill experience so the chat endpoint
+    understands the current template, the user's idea, and any collected answers.
+    """
+    templateKey: Optional[str] = None
+    stepDescription: Optional[str] = None
+    ideaDescription: Optional[str] = None
+    fieldHints: Optional[Dict[str, str]] = None
+    repeatedFields: Optional[List[dict]] = None
+    fields: Optional[List[str]] = None
+    currentAnswers: Optional[Dict[str, str]] = None
+    generatedAnswers: Optional[Dict[str, str]] = None
+
+
 class ChatRequest(BaseModel):
     query: str
     canvasId: Optional[str] = None
     templateId: Optional[str] = None
     top_k: Optional[int] = 3
+    autofillContext: Optional[AutoFillContext] = None
+
 
 class ChatResponse(BaseModel):
     query: str
@@ -212,6 +243,66 @@ class AutoFillResponse(BaseModel):
     success: bool
     answers: Optional[dict] = None
     error: Optional[str] = None
+
+
+def format_autofill_context(context: AutoFillContext) -> str:
+    """
+    Convert the auto-fill payload data into a readable block so the chat prompt
+    can leverage the same information.
+    """
+    ctx = context.model_dump(exclude_none=True)
+    if not ctx:
+        return "Auto-fill context was requested but no data was provided."
+
+    parts = []
+
+    template_key = ctx.get("templateKey")
+    if template_key:
+        parts.append(f"Template Key: {template_key}")
+
+    step_description = ctx.get("stepDescription")
+    if step_description:
+        parts.append(f"Step Description: {step_description}")
+
+    idea_description = ctx.get("ideaDescription")
+    if idea_description:
+        parts.append("User Idea / Concept:")
+        parts.append(idea_description)
+
+    fields = ctx.get("fields")
+    if fields:
+        parts.append("Fields Under Consideration:")
+        for field in fields:
+            parts.append(f"  - {field}")
+
+    field_hints = ctx.get("fieldHints")
+    if field_hints:
+        parts.append("Field Hints:")
+        for name, hint in field_hints.items():
+            parts.append(f"  - {name}: {hint}")
+
+    repeated_fields = ctx.get("repeatedFields")
+    if repeated_fields:
+        parts.append("Repeated Field Patterns:")
+        for entry in repeated_fields:
+            parts.append(f"  - {entry}")
+
+    current_answers = ctx.get("currentAnswers")
+    if current_answers:
+        parts.append("Current Answers Provided By User:")
+        for name, value in current_answers.items():
+            parts.append(f"  - {name}: {value}")
+
+    generated_answers = ctx.get("generatedAnswers")
+    if generated_answers:
+        parts.append("Previously Generated Auto-Fill Answers:")
+        for name, value in generated_answers.items():
+            parts.append(f"  - {name}: {value}")
+
+    if not parts:
+        return "Auto-fill context payload was empty."
+
+    return "\n".join(parts)
 
 # ============================
 # 🌐 Endpoints
@@ -267,13 +358,22 @@ def chat_endpoint(request: ChatRequest):
         if request.templateId:
             context_texts.append(f"User is working on template: {request.templateId}")
 
-        # 4️⃣ Generate Answer
-        answer = generate_chatbot_response(query, context_texts)
+        # 4️⃣ Add Auto-Fill Context (if provided)
+        autofill_summary = None
+        if request.autofillContext:
+            autofill_summary = format_autofill_context(request.autofillContext)
+
+        context_used = list(context_texts)
+        if autofill_summary:
+            context_used.append(f"Auto-Fill Context:\n{autofill_summary}")
+
+        # 5️⃣ Generate Answer
+        answer = generate_chatbot_response(query, context_texts, autofill_summary)
 
         return ChatResponse(
             query=query,
             answer=answer,
-            context_used=context_texts,
+            context_used=context_used,
             provider="mistral"
         )
 
