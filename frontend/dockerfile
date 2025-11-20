@@ -2,6 +2,10 @@
     FROM node:18-alpine AS build
     WORKDIR /app
     
+    # Pass build-time argument
+    ARG VITE_API_URL
+    ENV VITE_API_URL=$VITE_API_URL
+    
     COPY package*.json ./
     RUN npm install
     
@@ -11,16 +15,8 @@
     # ---- Production Stage ----
     FROM nginx:alpine
     WORKDIR /usr/share/nginx/html
-    
-    # Remove default Nginx static files
     RUN rm -rf ./*
-    
-    # Copy build output from previous stage
     COPY --from=build /app/dist .
-    
-    # Expose port 80
     EXPOSE 80
-    
-    # Default Nginx command
     CMD ["nginx", "-g", "daemon off;"]
     
