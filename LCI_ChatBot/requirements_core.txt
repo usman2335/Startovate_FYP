@@ -19,6 +19,10 @@ unstructured==0.15.12
 camelot-py==0.11.0
 tabula-py==2.9.3
 
+# Optional ML/AI (install if needed)
+sentence-transformers==3.2.1
+transformers==4.46.2
+
 # Optional utilities
 python-dotenv==1.0.1
 tqdm==4.66.5
