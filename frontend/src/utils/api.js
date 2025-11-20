@@ -1,9 +1,10 @@
 import axios from "axios";
 
 export const saveTemplates = async (canvasId, templateId, answers) => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   try {
     const reponse = await axios.post(
-      "http://localhost:5000/api/template/save",
+      `${BACKEND_BASE_URL}/api/template/save`,
       {
         canvasId,
         templateId,
@@ -18,10 +19,10 @@ export const saveTemplates = async (canvasId, templateId, answers) => {
 };
 
 // Chatbot API functions - Updated to use Node.js backend as proxy
-const BACKEND_BASE_URL = "http://localhost:5000";
 
 export const sendChatMessage = async (query, topK = 3, context = {}) => {
   try {
+    const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
     const requestPayload = {
       query,
       top_k: topK,
@@ -61,6 +62,7 @@ export const sendChatMessage = async (query, topK = 3, context = {}) => {
 };
 
 export const checkChatbotHealth = async () => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   try {
     const response = await axios.get(`${BACKEND_BASE_URL}/api/chatbot/health`, {
       withCredentials: true,
@@ -78,6 +80,7 @@ export const checkChatbotHealth = async () => {
 };
 
 export const getChatbotStatus = async () => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   try {
     const response = await axios.get(`${BACKEND_BASE_URL}/api/chatbot/status`, {
       withCredentials: true,
@@ -110,6 +113,7 @@ export const getChatbotStatus = async () => {
  * @note The stepDescription is automatically fetched from the database based on templateKey
  */
 export const autofillTemplateFields = async (payload) => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   try {
     const {
       canvasId,

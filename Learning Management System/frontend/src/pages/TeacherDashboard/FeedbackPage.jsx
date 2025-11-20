@@ -28,6 +28,7 @@ import FeedbackDisplay from "../../components/FeedbackDisplay";
 const { Title, Text, Paragraph } = Typography;
 
 const TeacherFeedbackPage = () => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const [feedbackByCourse, setFeedbackByCourse] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -46,7 +47,7 @@ const TeacherFeedbackPage = () => {
       console.log("Fetching teacher feedback...");
 
       const response = await axios.get(
-        "http://localhost:5000/api/feedback/teacher/all",
+        `${BACKEND_BASE_URL}/api/feedback/teacher/all`,
         {
           withCredentials: true,
         }

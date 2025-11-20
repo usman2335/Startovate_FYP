@@ -8,6 +8,7 @@ import { Snackbar, CircularProgress } from "@mui/material";
 import { useChatbotContext } from "../../context/chatbotContext";
 
 const TemplateComponent = ({ templateKey, canvasId, hideButtons = false }) => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const { setContext } = useChatbotContext();
 
   const mappingEntry =
@@ -109,7 +110,7 @@ const TemplateComponent = ({ templateKey, canvasId, hideButtons = false }) => {
     const fetchTemplate = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/template/get-template/${canvasId}/${templateKey}`
+          `${BACKEND_BASE_URL}/api/template/get-template/${canvasId}/${templateKey}`
         );
         if (response.data.success) {
           setAnswers(response.data.template.content);

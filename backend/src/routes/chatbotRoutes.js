@@ -5,7 +5,7 @@ const {
   getChatbotStatus,
   autofillFields,
 } = require("../controllers/chatbotController");
-const protect = require("../middleware/authMiddleWare");
+const protect = require("../middleware/authMiddleware");
 
 const router = express.Router();
 

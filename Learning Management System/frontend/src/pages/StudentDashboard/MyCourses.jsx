@@ -17,6 +17,7 @@ import FeedbackModal from "../../components/FeedbackModal";
 const { Search } = Input;
 
 const MyCourses = () => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const [searchTerm, setSearchTerm] = useState("");
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,7 +31,7 @@ const MyCourses = () => {
     const fetchEnrolledCourses = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/enroll/my-courses",
+          `${BACKEND_BASE_URL}/api/enroll/my-courses`,
           {
             withCredentials: true,
           }
@@ -63,7 +64,7 @@ const MyCourses = () => {
       for (const course of courses) {
         try {
           const response = await axios.get(
-            `http://localhost:5000/api/feedback/student/${course._id}`,
+            `${BACKEND_BASE_URL}/api/feedback/student/${course._id}`,
             { withCredentials: true }
           );
           feedbackStatus[course._id] = response.data.hasFeedback;

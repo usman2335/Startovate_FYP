@@ -14,6 +14,7 @@ const IdeaDescriptionModal = ({
     currentIdeaDescription
   );
   const [isLoading, setIsLoading] = useState(false);
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
 
   // Update state when modal opens or currentIdeaDescription changes
   useEffect(() => {
@@ -27,7 +28,7 @@ const IdeaDescriptionModal = ({
       setIsLoading(true);
       try {
         const response = await axios.put(
-          "http://localhost:5000/api/canvas/updateIdeaDescription",
+          `${BACKEND_BASE_URL}/api/canvas/updateIdeaDescription`,
           { ideaDescription: ideaDescription.trim() },
           { withCredentials: true }
         );

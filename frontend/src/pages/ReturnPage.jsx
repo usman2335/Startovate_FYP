@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import axios from "axios";
 
 const ReturnPage = () => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const [status, setStatus] = useState(null);
   const [customerEmail, setCustomerEmail] = useState("");
   const [redirect, setRedirect] = useState(false);
@@ -16,7 +17,7 @@ const ReturnPage = () => {
 
     axios
       .get(
-        `http://localhost:5000/api/payment/session-status?session_id=${sessionId}`,
+        `${BACKEND_BASE_URL}/api/payment/session-status?session_id=${sessionId}`,
         {
           withCredentials: true,
         }
@@ -98,7 +99,7 @@ const ReturnPage = () => {
 
   if (status === "complete") {
     axios.patch(
-      "http://localhost:5000/api/users/mark-subscribed",
+      `${BACKEND_BASE_URL}/api/users/mark-subscribed`,
       {},
       {
         withCredentials: true,

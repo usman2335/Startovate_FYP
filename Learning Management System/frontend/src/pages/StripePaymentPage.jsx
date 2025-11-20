@@ -11,6 +11,7 @@ import {
 const stripePromise = loadStripe("pk_test_XXXXXXXXXXXXXXXXXXXXXXXX");
 
 const StripePaymentPage = () => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const location = useLocation();
   const course = location.state?.course;
@@ -29,7 +30,7 @@ const StripePaymentPage = () => {
 
       try {
         const res = await axios.post(
-          "http://localhost:5000/api/payment/create-checkout-session",
+          `${BACKEND_BASE_URL}/api/payment/create-checkout-session`,
           {
             courseId: course.id,
             amount: course.price * 100,

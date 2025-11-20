@@ -6,6 +6,7 @@ import axios from "axios";
 import YouTube from "react-youtube";
 
 const StudentCoursePage = () => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const { id } = useParams(); // course ID
   const navigate = useNavigate();
   const [course, setCourse] = useState(null);
@@ -21,7 +22,7 @@ const StudentCoursePage = () => {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/courses/${id}`, {
+        const res = await axios.get(`${BACKEND_BASE_URL}/api/courses/${id}`, {
           withCredentials: true,
         });
 
@@ -134,7 +135,7 @@ const StudentCoursePage = () => {
             console.log("percent", percent);
             // 🔥 Save progress in backend
             axios.put(
-              `http://localhost:5000/api/courses/progress`,
+              `${BACKEND_BASE_URL}/api/courses/progress`,
               {
                 courseId: course._id,
                 progress: calculateOverallProgress({

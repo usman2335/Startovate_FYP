@@ -21,7 +21,7 @@ const { Option } = Select;
 const AddCoursePage = ({ onCourseAdded }) => {
   const [form] = Form.useForm();
   const { user } = useContext(AuthContext);
-
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const handleFinish = async (values) => {
     try {
       const payload = {
@@ -29,7 +29,7 @@ const AddCoursePage = ({ onCourseAdded }) => {
         instructor: user._id,
       };
 
-      await axios.post("http://localhost:5000/api/courses", payload, {
+      await axios.post(`${BACKEND_BASE_URL}/api/courses`, payload, {
         withCredentials: true,
       });
 

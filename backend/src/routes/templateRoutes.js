@@ -6,7 +6,7 @@ const {
   getAllTemplates,
 } = require("../controllers/templateController");
 const { exportCanvasAsDocx } = require("../controllers/exportController");
-const protect = require("../middleware/authMiddleWare");
+const protect = require("../middleware/authMiddleware");
 
 const router = express.Router();
 

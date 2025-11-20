@@ -1,6 +1,10 @@
 const express = require("express");
-const { createCanvas, getCanvas, updateIdeaDescription } = require("../controllers/canvasController");
-const protect = require("../middleware/authMiddleWare");
+const {
+  createCanvas,
+  getCanvas,
+  updateIdeaDescription,
+} = require("../controllers/canvasController");
+const protect = require("../middleware/authMiddleware");
 
 const router = express.Router();
 

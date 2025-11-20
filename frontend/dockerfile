@@ -1,0 +1,26 @@
+# ---- Build Stage ----
+    FROM node:18-alpine AS build
+    WORKDIR /app
+    
+    COPY package*.json ./
+    RUN npm install
+    
+    COPY . .
+    RUN npm run build
+    
+    # ---- Production Stage ----
+    FROM nginx:alpine
+    WORKDIR /usr/share/nginx/html
+    
+    # Remove default Nginx static files
+    RUN rm -rf ./*
+    
+    # Copy build output from previous stage
+    COPY --from=build /app/dist .
+    
+    # Expose port 80
+    EXPOSE 80
+    
+    # Default Nginx command
+    CMD ["nginx", "-g", "daemon off;"]
+    

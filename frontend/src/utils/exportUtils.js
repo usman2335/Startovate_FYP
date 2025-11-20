@@ -2,6 +2,8 @@
  * Export utilities for generating Word documents from templates
  */
 
+const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
+
 import {
   Document,
   Packer,
@@ -123,7 +125,7 @@ export const formatTemplateKey = (templateKey) => {
  */
 export const fetchTemplateData = async (canvasId, templateKey) => {
   const res = await axios.get(
-    `http://localhost:5000/api/template/get-template/${canvasId}/${templateKey}`
+    `${BACKEND_BASE_URL}/api/template/get-template/${canvasId}/${templateKey}`
   );
   if (res.data.success) {
     return res.data.template;

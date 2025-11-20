@@ -43,6 +43,7 @@ import { useNavigate } from "react-router-dom";
 const { Title, Text, Paragraph } = Typography;
 
 const AdminHome = () => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const [stats, setStats] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -55,7 +56,7 @@ const AdminHome = () => {
         setLoading(true);
 
         const response = await axios.get(
-          "http://localhost:5000/api/users/dashboard",
+          `${BACKEND_BASE_URL}/api/users/dashboard`,
           {
             withCredentials: true,
           }

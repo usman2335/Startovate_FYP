@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  frontend:
+    build: ./frontend
+    container_name: startovate-frontend
+    ports:
+      - "8080:80"
+    env_file:
+      - .env
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    container_name: startovate-backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    depends_on:
+      - chatbot
+
+  chatbot:
+    build: ./LCI_ChatBot
+    container_name: startovate-chatbot
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env

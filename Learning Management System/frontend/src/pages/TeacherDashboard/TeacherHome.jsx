@@ -37,6 +37,7 @@ import { useNavigate } from "react-router-dom";
 const { Title, Text } = Typography;
 
 const TeacherHome = () => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const [stats, setStats] = useState(null);
   const [feedbackStats, setFeedbackStats] = useState(null);
   const [recentCourses, setRecentCourses] = useState([]);
@@ -50,7 +51,7 @@ const TeacherHome = () => {
 
         // Fetch main dashboard stats
         const statsResponse = await axios.get(
-          "http://localhost:5000/api/users/teacher/dashboard",
+          `${BACKEND_BASE_URL}/api/users/teacher/dashboard`,
           {
             withCredentials: true,
           }
@@ -63,7 +64,7 @@ const TeacherHome = () => {
         // Fetch feedback stats
         try {
           const feedbackResponse = await axios.get(
-            "http://localhost:5000/api/feedback/teacher/all",
+            `${BACKEND_BASE_URL}/api/feedback/teacher/all`,
             {
               withCredentials: true,
             }
@@ -79,7 +80,7 @@ const TeacherHome = () => {
         // Fetch recent courses
         try {
           const coursesResponse = await axios.get(
-            "http://localhost:5000/api/courses/teacher/my-courses",
+            `${BACKEND_BASE_URL}/api/courses/teacher/my-courses`,
             {
               withCredentials: true,
             }

@@ -3,7 +3,8 @@ const StepDescription = require("../models/StepDescriptions");
 const Canvas = require("../models/Canvas");
 
 // FastAPI ChatBot endpoint
-const CHATBOT_BASE_URL = "http://127.0.0.1:8000";
+const CHATBOT_BASE_URL = process.env.CHATBOT_BASE_URL;
+console.log("CHATBOT_BASE_URL:", CHATBOT_BASE_URL);
 
 /**
  * Parse templateKey to extract component name and step number

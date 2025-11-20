@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
 const SignupPage = () => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -70,7 +71,7 @@ const SignupPage = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/users/signup",
+        `${BACKEND_BASE_URL}/api/users/signup`,
         formData
       );
       console.log("User signed up:", response.data);

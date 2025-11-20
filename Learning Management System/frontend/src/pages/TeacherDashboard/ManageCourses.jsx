@@ -21,9 +21,9 @@ const TeacherManageCourses = () => {
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
   const { user } = useContext(AuthContext);
-
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const fetchCourses = async () => {
-    const res = await axios.get("http://localhost:5000/api/courses", {
+    const res = await axios.get(`${BACKEND_BASE_URL}/api/courses`, {
       withCredentials: true,
     });
     setCourses(res.data);
@@ -45,7 +45,7 @@ const TeacherManageCourses = () => {
       };
 
       const response = await axios.put(
-        `http://localhost:5000/api/courses/update/${editingCourse?._id}`,
+        `${BACKEND_BASE_URL}/api/courses/update/${editingCourse?._id}`,
         testPayload,
         {
           withCredentials: true,
@@ -104,11 +104,11 @@ const TeacherManageCourses = () => {
         console.log("Updating course with ID:", editingCourse._id);
         console.log(
           "Request URL:",
-          `http://localhost:5000/api/courses/update/${editingCourse._id}`
+          `${BACKEND_BASE_URL}/api/courses/update/${editingCourse._id}`
         );
 
         const response = await axios.put(
-          `http://localhost:5000/api/courses/update/${editingCourse._id}`,
+          `${BACKEND_BASE_URL}/api/courses/update/${editingCourse._id}`,
           payload,
           {
             withCredentials: true,
@@ -136,7 +136,7 @@ const TeacherManageCourses = () => {
       } else {
         console.log("Creating new course");
         const response = await axios.post(
-          "http://localhost:5000/api/courses",
+          `${BACKEND_BASE_URL}/api/courses`,
           {
             ...payload,
             instructor: user._id,
@@ -207,10 +207,10 @@ const TeacherManageCourses = () => {
       if (confirm.isConfirmed) {
         console.log("=== Frontend Delete Course Debug ===");
         console.log("Deleting course with ID:", id);
-        console.log("Request URL:", `http://localhost:5000/api/courses/${id}`);
+        console.log("Request URL:", `${BACKEND_BASE_URL}/api/courses/${id}`);
 
         const response = await axios.delete(
-          `http://localhost:5000/api/courses/${id}`,
+          `${BACKEND_BASE_URL}/api/courses/${id}`,
           {
             withCredentials: true,
             headers: {
