@@ -72,8 +72,8 @@ exports.login = async (req, res) => {
     console.log("hellow token:", token);
     res.cookie("token", token, {
       httpOnly: true, // Prevents client-side access (XSS protection)
-      secure: true, // HTTPS in production
-      sameSite: "Strict", // CSRF protection
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax", // CSRF protection
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
     res.status(200).json({
