@@ -68,7 +68,6 @@ exports.sendChatMessage = async (req, res) => {
       `${CHATBOT_BASE_URL}/chat`,
       requestPayload,
       {
-        timeout: 30000, // 30 second timeout
         headers: {
           "Content-Type": "application/json",
         },

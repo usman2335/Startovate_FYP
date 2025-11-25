@@ -1,3 +1,4 @@
+import psutil
 import os
 import sys
 import json
@@ -9,10 +10,15 @@ from pydantic import BaseModel
 import requests
 from dotenv import load_dotenv
 
-# ============================
+# ============================  
 # 🔧 Environment Setup
 # ============================
 load_dotenv()
+
+def log_memory(stage=""):
+    process = psutil.Process(os.getpid())
+    mem = process.memory_info()
+    print(f"[MEMORY] {stage} - RSS: {mem.rss / 1024**2:.2f} MB, VMS: {mem.vms / 1024**2:.2f} MB")
 
 # Optional dependencies - handle gracefully if not available
 try:
@@ -61,10 +67,12 @@ app = FastAPI(
     description="FastAPI backend for LCI chatbot using Mistral with hybrid context (template + canvas + semantic search).",
     version="3.0.0",
 )
+log_memory("After FastAPI startup")
+
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173", "http://localhost:51722"],
+    allow_origins=["http://localhost:3000", "http://localhost:5173", "http://localhost:51722", "https://startovate-frontend.pages.dev"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -74,6 +82,8 @@ app.add_middleware(
 # 🧠 Helper: Call LLM API
 # ============================
 def call_llm(provider: str, messages: List[dict], model: Optional[str] = None) -> str:
+    log_memory("Before LLM call")
+
     print(f"🔍 DEBUG call_llm: Called with provider='{provider}', model='{model or MISTRAL_MODEL}', messages_count={len(messages)}")
 
     if provider.lower() == "mistral":
@@ -127,6 +137,8 @@ def call_llm(provider: str, messages: List[dict], model: Optional[str] = None) -
 
             content = data["choices"][0]["message"]["content"].strip()
             print(f"📝 DEBUG call_llm: Extracted content (length: {len(content)})")
+            log_memory("After LLM call")
+
             return content
 
         except requests.exceptions.Timeout:
@@ -147,6 +159,10 @@ def call_llm(provider: str, messages: List[dict], model: Optional[str] = None) -
 # 💬 Generate Chatbot Response
 # ============================
 def generate_chatbot_response(query: str, context_texts: List[str]) -> str:
+    print(f"🤖 [GENERATE] Starting chatbot response generation...")
+    print(f"🤖 [GENERATE] Query: {query[:50]}...")
+    print(f"🤖 [GENERATE] Context texts count: {len(context_texts)}")
+
     domain_instruction = """
 You are an AI assistant specialized in the **Lean Canvas for Invention (LCI)** methodology.
 
@@ -160,11 +176,12 @@ Your knowledge base includes:
 🧠 Your behavior:
 1. Stay within the LCI context.
 2. If the user asks something unrelated, respond with:
-   “I’m here to assist only with Lean Canvas for Invention methodology and its templates.”
+   "I'm here to assist only with Lean Canvas for Invention methodology and its templates."
 3. Use existing user data (from templates/canvas) to give personalized, contextual help.
 4. Be clear, structured, and professional.
 """
 
+    print(f"🤖 [GENERATE] Building prompt...")
     combined_context = "\n\n".join(context_texts)
     prompt = f"""
 {domain_instruction}
@@ -176,12 +193,18 @@ Relevant Context from Database and LCI Knowledge:
 "{combined_context}"
 """
 
+    print(f"🤖 [GENERATE] Updating chat history...")
     # Update chat memory
     CHAT_HISTORY.append({"role": "user", "content": prompt})
     recent_history = CHAT_HISTORY[-10:]
+    print(f"🤖 [GENERATE] Chat history updated, recent messages: {len(recent_history)}")
 
+    print(f"🤖 [GENERATE] Calling LLM...")
     answer = call_llm("mistral", recent_history)
+    print(f"🤖 [GENERATE] LLM call completed")
+
     CHAT_HISTORY.append({"role": "assistant", "content": answer})
+    print(f"🤖 [GENERATE] Response generation completed")
 
     return answer
 
@@ -227,83 +250,128 @@ def health_check():
 
 @app.post("/chat", response_model=ChatResponse)
 def chat_endpoint(request: ChatRequest):
+    print(f"🚀 [CHAT START] {request.query[:50]}...")
+
     query = request.query.strip()
+    print(f"📝 [CHAT] Validating query...")
     if not query:
         raise HTTPException(status_code=400, detail="Query cannot be empty.")
+    print(f"✅ [CHAT] Query validation passed")
 
     try:
         context_texts = []
+        print(f"📚 [CHAT] Starting context collection...")
 
         # 1️⃣ Add Template Context (if MongoDB available)
+        print(f"📄 [CHAT] Checking template context...")
         if request.templateId and MONGO_AVAILABLE and db is not None:
             try:
+                print(f"📄 [CHAT] Fetching template: {request.templateId}")
                 template = db.templates.find_one({"templateId": request.templateId})
                 if template:
                     context_texts.append(f"Template Context ({request.templateId}):\n{template.get('content', '')}")
+                    print(f"📄 [CHAT] Template context added")
+                else:
+                    print(f"📄 [CHAT] Template not found: {request.templateId}")
             except Exception as e:
                 print(f"Warning: Could not fetch template context: {e}")
+        else:
+            print(f"📄 [CHAT] Template context skipped (templateId: {request.templateId}, MONGO_AVAILABLE: {MONGO_AVAILABLE})")
 
         # 2️⃣ Add Canvas Context (if MongoDB available)
+        print(f"🎨 [CHAT] Checking canvas context...")
         if request.canvasId and MONGO_AVAILABLE and db is not None:
             try:
+                print(f"🎨 [CHAT] Fetching canvas: {request.canvasId}")
                 canvas = db.canvases.find_one({"canvasId": request.canvasId})
                 if canvas:
                     context_texts.append(f"Canvas Overview ({request.canvasId}):\n{canvas}")
+                    print(f"🎨 [CHAT] Canvas context added")
+                else:
+                    print(f"🎨 [CHAT] Canvas not found: {request.canvasId}")
             except Exception as e:
                 print(f"Warning: Could not fetch canvas context: {e}")
+        else:
+            print(f"🎨 [CHAT] Canvas context skipped (canvasId: {request.canvasId}, MONGO_AVAILABLE: {MONGO_AVAILABLE})")
 
         # 3️⃣ Add Semantic Search Context (if available)
+        print(f"🔍 [CHAT] Checking semantic search...")
         if SEARCH_AVAILABLE:
+            print(f"🔍 [CHAT] Performing semantic search with top_k={request.top_k}")
+            log_memory("Before semantic search")
             try:
                 results = search_chunks_sentence_transformer(query, top_k=request.top_k)
                 if results:
                     context_texts += [chunk["text"] for chunk in results]
+                    print(f"🔍 [CHAT] Semantic search completed, found {len(results)} results")
+                else:
+                    print(f"🔍 [CHAT] Semantic search completed, no results found")
+                log_memory("After semantic search")
             except Exception as e:
                 print(f"Warning: Could not perform semantic search: {e}")
+        else:
+            print(f"🔍 [CHAT] Semantic search skipped (SEARCH_AVAILABLE: {SEARCH_AVAILABLE})")
         
         # 4️⃣ Add basic context information
+        print(f"📋 [CHAT] Adding basic context information...")
         if request.canvasId:
             context_texts.append(f"User is working on canvas: {request.canvasId}")
+            print(f"📋 [CHAT] Added canvas context: {request.canvasId}")
         if request.templateId:
             context_texts.append(f"User is working on template: {request.templateId}")
+            print(f"📋 [CHAT] Added template context: {request.templateId}")
 
-        # 4️⃣ Generate Answer
+        print(f"🧠 [CHAT] Starting answer generation...")
+        print(f"🧠 [CHAT] Context texts count: {len(context_texts)}")
+        # 5️⃣ Generate Answer
         answer = generate_chatbot_response(query, context_texts)
+        print(f"🧠 [CHAT] Answer generation completed")
 
-        return ChatResponse(
+        print(f"✅ [CHAT] Preparing response...")
+        response = ChatResponse(
             query=query,
             answer=answer,
             context_used=context_texts,
             provider="mistral"
         )
+        print(f"✅ [CHAT END] Request completed successfully")
+        return response
 
     except Exception as e:
+        print(f"❌ [CHAT END] Request failed with error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/chatbot/auto-fill", response_model=AutoFillResponse)
 def auto_fill_endpoint(request: AutoFillRequest):
     """
     Auto-fill template fields using LLM based on context and hints.
-    
+
     This endpoint accepts template information and uses an LLM to generate
     appropriate answers for template fields based on the system prompt,
     step description, field hints, and current answers.
     """
+    print(f"🔄 [AUTOFILL START] Template: {request.templateKey}")
+
     try:
         # Debug logging
-        print(f"📥 Received autofill request:")
+        print(f"📥 [AUTOFILL] Received autofill request:")
         print(f"   - Template Key: {request.templateKey}")
         print(f"   - Idea Description: {'✅ PROVIDED' if request.ideaDescription and request.ideaDescription.strip() else '❌ NOT PROVIDED'}")
         if request.ideaDescription and request.ideaDescription.strip():
             print(f"   - Idea Preview: {request.ideaDescription[:100]}...")
         print(f"   - Fields to fill: {len(request.fieldHints)}")
+
+        print(f"🔍 [AUTOFILL] Validating request...")
         
         if not request.fieldHints:
+            print(f"❌ [AUTOFILL] Validation failed: No field hints")
             return AutoFillResponse(
                 success=False,
                 error="Field hints cannot be empty."
             )
-        
+
+        print(f"✅ [AUTOFILL] Validation passed")
+        print(f"📝 [AUTOFILL] Constructing prompt...")
         # Construct the prompt for the LLM
         prompt = construct_autofill_prompt(
             template_key=request.templateKey,
@@ -313,6 +381,7 @@ def auto_fill_endpoint(request: AutoFillRequest):
             repeated_fields=request.repeatedFields or [],
             fields=request.fields
         )
+        print(f"📝 [AUTOFILL] Prompt construction completed")
         
         # Prepare system message - emphasize idea context if available
         system_content = """You are an AI assistant helping to autofill a Lean Canvas for Invention (LCI) template.
@@ -346,11 +415,16 @@ Remember: Every answer should clearly relate to the specific business idea provi
         print("=" * 80)
         print(prompt[:500] + "..." if len(prompt) > 500 else prompt)
         print("=" * 80)
-        
+
+        print(f"🤖 [AUTOFILL] Calling LLM...")
         llm_response = call_llm("mistral", messages)
+        print(f"🤖 [AUTOFILL] LLM call completed")
+
+        print(f"🔄 [AUTOFILL] Parsing LLM response...")
         
         # Parse LLM response as JSON
         try:
+            print(f"🧹 [AUTOFILL] Cleaning LLM response...")
             # Remove any potential markdown code blocks
             cleaned_response = llm_response.strip()
             if cleaned_response.startswith("```json"):
@@ -360,38 +434,43 @@ Remember: Every answer should clearly relate to the specific business idea provi
             if cleaned_response.endswith("```"):
                 cleaned_response = cleaned_response[:-3]
             cleaned_response = cleaned_response.strip()
-            
+
+            print(f"📄 [AUTOFILL] Parsing JSON...")
             # Parse JSON safely
             answers = json.loads(cleaned_response)
-            
+
+            print(f"✅ [AUTOFILL] JSON parsed successfully")
             # Validate that the response contains the expected fields
             if not isinstance(answers, dict):
+                print(f"❌ [AUTOFILL] Validation failed: Not a dict")
                 return AutoFillResponse(
                     success=False,
                     error="LLM response is not a valid JSON object."
                 )
-            
+
+            print(f"✅ [AUTOFILL] Response validation passed")
             return AutoFillResponse(
                 success=True,
                 answers=answers
             )
             
         except json.JSONDecodeError as e:
-            print(f"Error parsing LLM response: {e}")
+            print(f"❌ [AUTOFILL END] JSON parsing failed: {e}")
             print(f"Raw LLM response: {llm_response}")
             return AutoFillResponse(
                 success=False,
                 error=f"Failed to parse LLM response as JSON: {str(e)}"
             )
-    
+
     except HTTPException as e:
+        print(f"❌ [AUTOFILL END] HTTP exception: {e.detail}")
         return AutoFillResponse(
             success=False,
             error=f"API Error: {e.detail}"
         )
-    
+
     except Exception as e:
-        print(f"Unexpected error in auto_fill_endpoint: {e}")
+        print(f"❌ [AUTOFILL END] Unexpected error: {e}")
         return AutoFillResponse(
             success=False,
             error=f"An unexpected error occurred: {str(e)}"
@@ -407,7 +486,7 @@ def construct_autofill_prompt(
 ) -> str:
     """
     Construct a detailed prompt for the LLM to generate template answers.
-    
+
     Args:
         template_key: The unique identifier for the template
         step_description: Description of the current step/template
@@ -415,10 +494,14 @@ def construct_autofill_prompt(
         field_hints: Dictionary of field names and their descriptions/hints
         repeated_fields: List of repeated field patterns (e.g., for dynamic sections)
         fields: List of fields to fill
-    
+
     Returns:
         A formatted prompt string for the LLM
     """
+    print(f"📝 [CONSTRUCT_PROMPT] Building prompt for template: {template_key}")
+    print(f"📝 [CONSTRUCT_PROMPT] Idea provided: {'Yes' if idea_description and idea_description.strip() else 'No'}")
+    print(f"📝 [CONSTRUCT_PROMPT] Fields to fill: {len(field_hints)}")
+
     prompt_parts = []
     
     # Add template information
@@ -484,5 +567,7 @@ def construct_autofill_prompt(
     prompt_parts.append('}')
     prompt_parts.append("")
     prompt_parts.append("Now generate the JSON response:")
-    
-    return "\n".join(prompt_parts)
+
+    result = "\n".join(prompt_parts)
+    print(f"📝 [CONSTRUCT_PROMPT] Prompt construction completed, length: {len(result)}")
+    return result

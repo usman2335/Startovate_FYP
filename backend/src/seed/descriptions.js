@@ -1,8 +1,14 @@
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "../../.env") });
+
+console.log("mongoURI:", process.env.MONGO_URI); // should print your URI
+
 const mongoose = require("mongoose");
 const StepDescription = require("../models/StepDescriptions");
 
 // Replace with your MongoDB connection string
-const mongoURI = "mongodb://localhost:27017/startovate";
+const mongoURI = process.env.MONGO_URI;
+console.log("mongoURI:", mongoURI);
 
 const stepDescriptions = [
   {
