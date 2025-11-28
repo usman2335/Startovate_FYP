@@ -24,11 +24,13 @@ except ImportError:
     MONGO_AVAILABLE = False
 
 try:
-    sys.path.append('parsed_content')
-    from sentence_transformer_search_function import search_chunks_sentence_transformer
+    # Using Qdrant for semantic search
+    from qdrant_search import search_chunks_qdrant as search_chunks_sentence_transformer
     SEARCH_AVAILABLE = True
-except Exception:
-    print("⚠️ Warning: sentence transformer search not available. Semantic search disabled.")
+    print("✅ Using Qdrant for semantic search")
+except Exception as e:
+    print(f"❌ Error: Qdrant not available: {e}")
+    print("💡 Make sure Qdrant is configured in .env and running")
     SEARCH_AVAILABLE = False
 
 # ============================
@@ -51,8 +53,8 @@ if MONGO_AVAILABLE:
 else:
     db = None
 
-# Memory
-CHAT_HISTORY = []   # list of {"role": "user"/"assistant", "content": "..."}
+# Memory - Per-user chat history
+CHAT_HISTORY = {}   # dict of {user_id: [{"role": "user"/"assistant", "content": "..."}]}
 
 # ============================
 # 🔁 Shared AutoFill Context Store
@@ -165,7 +167,7 @@ def call_llm(provider: str, messages: List[dict], model: Optional[str] = None) -
 # ============================
 # 💬 Generate Chatbot Response
 # ============================
-def generate_chatbot_response(query: str, context_texts: List[str]) -> str:
+def generate_chatbot_response(query: str, context_texts: List[str], user_id: str = "default") -> str:
     domain_instruction = """
 You are an AI assistant specialized in the **Lean Canvas for Invention (LCI)** methodology.
 
@@ -181,7 +183,9 @@ Your knowledge base includes:
 2. If the user asks something unrelated, respond with:
    “I’m here to assist only with Lean Canvas for Invention methodology and its templates.”
 3. Use existing user data (from templates/canvas) to give personalized, contextual help.
-4. Be clear, structured, and professional.
+4. Be CONCISE - answer with just enough detail to be helpful, no more. One clear paragraph is usually enough.
+5. Use bullet points for lists.
+6. Avoid unnecessary elaboration - get straight to the point.
 """
 
     combined_context = "\n\n".join(context_texts)
@@ -193,14 +197,20 @@ User Query:
 
 Relevant Context from Database and LCI Knowledge:
 "{combined_context}"
+
+IMPORTANT: Keep your response concise - just enough to answer the question clearly. One paragraph is usually sufficient.
 """
 
-    # Update chat memory
-    CHAT_HISTORY.append({"role": "user", "content": prompt})
-    recent_history = CHAT_HISTORY[-10:]
+    # Initialize user's chat history if not exists
+    if user_id not in CHAT_HISTORY:
+        CHAT_HISTORY[user_id] = []
+    
+    # Update user's chat memory
+    CHAT_HISTORY[user_id].append({"role": "user", "content": prompt})
+    recent_history = CHAT_HISTORY[user_id][-10:]  # Last 10 messages for this user
 
     answer = call_llm("mistral", recent_history)
-    CHAT_HISTORY.append({"role": "assistant", "content": answer})
+    CHAT_HISTORY[user_id].append({"role": "assistant", "content": answer})
 
     return answer
 
@@ -209,6 +219,7 @@ Relevant Context from Database and LCI Knowledge:
 # ============================
 class ChatRequest(BaseModel):
     query: str
+    userId: Optional[str] = None
     canvasId: Optional[str] = None
     templateId: Optional[str] = None
     templateKey: Optional[str] = None
@@ -246,7 +257,8 @@ def health_check():
         "status": "ok",
         "provider": "mistral",
         "model": MISTRAL_MODEL,
-        "chat_memory_size": len(CHAT_HISTORY),
+        "active_users": len(CHAT_HISTORY),
+        "total_messages": sum(len(history) for history in CHAT_HISTORY.values()),
         "autofill_context_count": len(AUTO_CONTEXT),
     }
 
@@ -350,7 +362,9 @@ def chat_endpoint(request: ChatRequest):
                 print(f"Warning: Could not append autofill context for canvasId={request.canvasId}: {e}")
 
         # 7️⃣ Generate Answer
-        answer = generate_chatbot_response(query, context_texts)
+        # Use userId for chat history isolation, fallback to canvasId or "default"
+        user_id = request.userId or request.canvasId or "default"
+        answer = generate_chatbot_response(query, context_texts, user_id)
 
         return ChatResponse(
             query=query,
