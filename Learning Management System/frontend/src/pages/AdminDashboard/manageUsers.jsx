@@ -7,12 +7,13 @@ import { PlusOutlined } from "@ant-design/icons";
 const { Option } = Select;
 
 const ManageUsers = () => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const [users, setUsers] = useState([]);
   const [filteredRole, setFilteredRole] = useState("all");
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/users");
+      const response = await axios.get(`${BACKEND_BASE_URL}/api/users`);
       setUsers(response.data);
     } catch (error) {
       Swal.fire("Error", "Failed to fetch users", "error");
@@ -114,7 +115,7 @@ const ManageUsers = () => {
           const updatedUser = result.value;
 
           const response = await axios.put(
-            `http://localhost:5000/api/users/${user._id}`,
+            `${BACKEND_BASE_URL}/api/users/${user._id}`,
             updatedUser,
             { withCredentials: true } // ✅ ensure this if using cookies
           );
@@ -135,7 +136,7 @@ const ManageUsers = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/users/${id}`);
+      await axios.delete(`${BACKEND_BASE_URL}/api/users/${id}`);
       Swal.fire("Deleted", "User has been deleted", "success");
       fetchUsers(); // Refresh list
     } catch (error) {
@@ -169,7 +170,7 @@ const ManageUsers = () => {
     if (formValues) {
       try {
         const response = await axios.post(
-          "http://localhost:5000/api/users/createAdmin",
+          `${BACKEND_BASE_URL}/api/users/createAdmin`,
           {
             ...formValues,
             role: "superadmin", // ensure the role is explicitly admin

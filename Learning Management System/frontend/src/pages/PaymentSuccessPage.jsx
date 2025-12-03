@@ -4,6 +4,7 @@ import axios from "axios";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 
 const PaymentSuccessPage = () => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const [status, setStatus] = useState("loading");
   const [message, setMessage] = useState("");
   const hasEnrolled = useRef(false); // ✅ new ref guard
@@ -24,7 +25,7 @@ const PaymentSuccessPage = () => {
 
       try {
         const res = await axios.post(
-          "http://localhost:5000/api/enroll",
+          `${BACKEND_BASE_URL}/api/enroll`,
           { courseId },
           { withCredentials: true }
         );

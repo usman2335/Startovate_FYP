@@ -5,6 +5,7 @@ import { DownloadOutlined } from "@ant-design/icons";
 import axios from "axios";
 
 const ExportButton = ({ canvasId }) => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const handleExport = async () => {
     try {
       const element = document.getElementById("export-section");
@@ -23,14 +24,14 @@ const ExportButton = ({ canvasId }) => {
       console.log("Base64 Image:", base64Image);
       // Send base64 image to backend
       await axios.post(
-        `http://localhost:5000/api/template/export/upload`,
+        `${BACKEND_BASE_URL}/api/template/export/upload`,
         { base64Image, canvasId },
         { withCredentials: true }
       );
 
       // Trigger Word download
       const response = await axios.get(
-        `http://localhost:5000/api/template/export/docx/${canvasId}`,
+        `${BACKEND_BASE_URL}/api/template/export/docx/${canvasId}`,
         {
           responseType: "blob",
           withCredentials: true,

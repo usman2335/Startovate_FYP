@@ -4,12 +4,13 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 const PaymentApproval = () => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const [payments, setPayments] = useState([]);
 
   const fetchPendingPayments = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/payment/easypaisa-pending",
+        `${BACKEND_BASE_URL}/api/payment/easypaisa-pending`,
         { withCredentials: true }
       );
       setPayments(res.data.payments);
@@ -30,7 +31,7 @@ const PaymentApproval = () => {
     if (result.isConfirmed) {
       try {
         await axios.put(
-          `http://localhost:5000/api/payment/easypaisa-approve/${paymentId}`,
+          `${BACKEND_BASE_URL}/api/payment/easypaisa-approve/${paymentId}`,
           null,
           { withCredentials: true }
         );
@@ -78,7 +79,7 @@ const PaymentApproval = () => {
       render: (url) => (
         <Image
           width={100}
-          src={`http://localhost:5000${url}`}
+          src={`${BACKEND_BASE_URL}${url}`}
           alt="Payment Screenshot"
         />
       ),

@@ -77,6 +77,7 @@ regex==2024.9.11
 
 # Optional PDF processing (install if needed)
 unstructured==0.15.12
+unstructured==0.15.12
 camelot-py==0.11.0
 tabula-py==2.9.3
 

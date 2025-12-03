@@ -4,13 +4,14 @@ import { createContext, useEffect, useState } from "react";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const [user, setUser] = useState(null);
   // const navigate = useNavigate();
 
   const checkAuthStatus = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/users/getUser",
+        `${BACKEND_BASE_URL}/api/users/getUser`,
         { withCredentials: true }
       );
       setUser(response.data.user);
@@ -23,7 +24,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await axios.post(
-        "http://localhost:5000/api/users/logout",
+        `${BACKEND_BASE_URL}/api/users/logout`,
         {},
         { withCredentials: true }
       );

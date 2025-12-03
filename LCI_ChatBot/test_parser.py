@@ -110,14 +110,6 @@ def test_optional_imports():
         optional_packages.append(False)
     
     try:
-        import torch
-        print(f"✓ torch imported successfully (version: {torch.__version__})")
-        optional_packages.append(True)
-    except ImportError as e:
-        print(f"⚠ torch import failed (optional): {e}")
-        optional_packages.append(False)
-    
-    try:
         import transformers
         print(f"✓ transformers imported successfully (version: {transformers.__version__})")
         optional_packages.append(True)

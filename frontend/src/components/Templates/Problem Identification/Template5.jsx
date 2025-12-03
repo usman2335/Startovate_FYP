@@ -200,6 +200,7 @@ import Button from "../../Button";
 import axios from "axios";
 
 const StakeholderMatrix = ({ canvasId, templateId }) => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const matrixRef = useRef();
 
   const [stakeholders, setStakeholders] = useState({
@@ -289,7 +290,7 @@ const StakeholderMatrix = ({ canvasId, templateId }) => {
       };
 
       const response = await axios.post(
-        "http://localhost:5000/api/template/export-image",
+        `${BACKEND_BASE_URL}/api/template/export-image`,
         payload,
         { responseType: "blob", withCredentials: true }
       );

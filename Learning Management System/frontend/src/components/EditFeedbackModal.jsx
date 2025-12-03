@@ -6,6 +6,7 @@ import axios from "axios";
 const { TextArea } = Input;
 
 const EditFeedbackModal = ({ visible, onCancel, feedbackData, onSuccess }) => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
@@ -27,7 +28,7 @@ const EditFeedbackModal = ({ visible, onCancel, feedbackData, onSuccess }) => {
       console.log("Updated values:", values);
 
       const response = await axios.put(
-        `http://localhost:5000/api/feedback/update/${feedbackData._id}`,
+        `${BACKEND_BASE_URL}/api/feedback/update/${feedbackData._id}`,
         {
           rating: values.rating,
           comment: values.comment,

@@ -1,3 +1,4 @@
+import psutil
 import os
 import sys
 import json
@@ -10,10 +11,15 @@ from pydantic import BaseModel
 import requests
 from dotenv import load_dotenv
 
-# ============================
+# ============================  
 # 🔧 Environment Setup
 # ============================
 load_dotenv()
+
+def log_memory(stage=""):
+    process = psutil.Process(os.getpid())
+    mem = process.memory_info()
+    print(f"[MEMORY] {stage} - RSS: {mem.rss / 1024**2:.2f} MB, VMS: {mem.vms / 1024**2:.2f} MB")
 
 # Optional dependencies - handle gracefully if not available
 try:
@@ -82,10 +88,12 @@ app = FastAPI(
     description="FastAPI backend for LCI chatbot using Mistral with hybrid context (template + canvas + semantic search).",
     version="3.0.0",
 )
+log_memory("After FastAPI startup")
+
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173", "http://localhost:51722"],
+    allow_origins=["http://localhost:3000", "http://localhost:5173", "http://localhost:51722", "https://startovate-frontend.pages.dev"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -95,6 +103,8 @@ app.add_middleware(
 # 🧠 Helper: Call LLM API
 # ============================
 def call_llm(provider: str, messages: List[dict], model: Optional[str] = None) -> str:
+    log_memory("Before LLM call")
+
     print(f"🔍 DEBUG call_llm: Called with provider='{provider}', model='{model or MISTRAL_MODEL}', messages_count={len(messages)}")
 
     if provider.lower() == "mistral":
@@ -148,6 +158,8 @@ def call_llm(provider: str, messages: List[dict], model: Optional[str] = None) -
 
             content = data["choices"][0]["message"]["content"].strip()
             print(f"📝 DEBUG call_llm: Extracted content (length: {len(content)})")
+            log_memory("After LLM call")
+
             return content
 
         except requests.exceptions.Timeout:
@@ -186,6 +198,7 @@ Your knowledge base includes:
 🧠 Your behavior:
 1. Stay within the LCI context.
 2. If the user asks something unrelated, respond with:
+   "I'm here to assist only with Lean Canvas for Invention methodology and its templates."
    "I'm here to assist only with Lean Canvas for Invention methodology and its templates."
 3. Use existing user data (from templates/canvas) to give personalized, contextual help.
 4. Be CONCISE - answer with just enough detail to be helpful, no more. One clear paragraph is usually enough.
@@ -287,6 +300,7 @@ def chat_endpoint(request: ChatRequest):
 
     query = request.query.strip()
     print(f"📝 [CHAT] Validating query...")
+    print(f"📝 [CHAT] Validating query...")
     if not query:
         print("❌ [CHAT] Query validation failed: empty query")
         raise HTTPException(status_code=400, detail="Query cannot be empty.")
@@ -368,6 +382,8 @@ def chat_endpoint(request: ChatRequest):
         print(f"   - top_k: {request.top_k}")
 
         if SEARCH_AVAILABLE:
+            print(f"🔍 [CHAT] Performing semantic search with top_k={request.top_k}")
+            log_memory("Before semantic search")
             try:
                 print(f"🔍 [CHAT] Performing semantic search for query: {query[:50]}...")
                 results = search_chunks_sentence_transformer(query, top_k=request.top_k)
@@ -467,6 +483,7 @@ def chat_endpoint(request: ChatRequest):
 def auto_fill_endpoint(request: AutoFillRequest):
     """
     Auto-fill template fields using LLM based on context and hints.
+
 
     This endpoint accepts template information and uses an LLM to generate
     appropriate answers for template fields based on the system prompt,
@@ -615,12 +632,15 @@ Remember: Every answer should clearly relate to the specific business idea provi
                 error=f"Failed to parse LLM response as JSON: {str(e)}"
             )
 
+
     except HTTPException as e:
+        print(f"❌ [AUTOFILL END] HTTP exception: {e.detail}")
         print(f"❌ [AUTOFILL END] HTTP exception: {e.detail}")
         return AutoFillResponse(
             success=False,
             error=f"API Error: {e.detail}"
         )
+
 
     except Exception as e:
         print(f"❌ [AUTOFILL END] Unexpected error in autofill endpoint: {str(e)}")
@@ -643,6 +663,7 @@ def construct_autofill_prompt(
     """
     Construct a detailed prompt for the LLM to generate template answers.
 
+
     Args:
         template_key: The unique identifier for the template
         step_description: Description of the current step/template
@@ -650,6 +671,7 @@ def construct_autofill_prompt(
         field_hints: Dictionary of field names and their descriptions/hints
         repeated_fields: List of repeated field patterns (e.g., for dynamic sections)
         fields: List of fields to fill
+
 
     Returns:
         A formatted prompt string for the LLM

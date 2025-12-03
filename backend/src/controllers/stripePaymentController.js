@@ -12,7 +12,7 @@ exports.createSession = async (req, res) => {
         },
       ],
       mode: "subscription",
-      return_url: `http://localhost:5173/return?session_id={CHECKOUT_SESSION_ID}`,
+      return_url: `${process.env.FRONTEND_URL}/return?session_id={CHECKOUT_SESSION_ID}`,
     });
 
     res.send({ clientSecret: session.client_secret });
