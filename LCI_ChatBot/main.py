@@ -31,9 +31,11 @@ except ImportError:
 
 try:
     # Using Qdrant for semantic search
+    # NOTE: Model (all-MiniLM-L6-v2, 384-dim) is lazy-loaded on first search, not at startup
+    # This reduces RAM usage - model will be cached after first load for fast subsequent searches
     from qdrant_search import search_chunks_qdrant as search_chunks_sentence_transformer
     SEARCH_AVAILABLE = True
-    print("✅ Using Qdrant for semantic search")
+    print("✅ Using Qdrant for semantic search (lazy-loaded model)")
 except Exception as e:
     print(f"❌ Error: Qdrant not available: {e}")
     print("💡 Make sure Qdrant is configured in .env and running")
