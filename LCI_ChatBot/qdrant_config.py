@@ -18,17 +18,26 @@ QDRANT_URL = os.getenv("QDRANT_URL", None)  # For Qdrant Cloud
 COLLECTION_NAME = os.getenv("QDRANT_COLLECTION_NAME", "lci_knowledge_base")
 EMBEDDING_DIMENSION = 384  # all-MiniLM-L6-v2 dimension
 
+# Cache the Qdrant client to avoid reconnecting on every search
+_client_cache = None
+
 def get_qdrant_client():
     """
-    Initialize and return a Qdrant client.
+    Initialize and return a Qdrant client (lazy-loaded and cached).
     
     Supports both local and cloud deployments:
     - Local: Uses QDRANT_HOST and QDRANT_PORT
     - Cloud: Uses QDRANT_URL and QDRANT_API_KEY
     
+    The client is cached after first connection to avoid reconnecting on every search.
+    
     Returns:
         QdrantClient: Configured Qdrant client
     """
+    global _client_cache
+    if _client_cache is not None:
+        return _client_cache
+    
     try:
         if QDRANT_URL and QDRANT_URL.strip():
             # Cloud deployment
@@ -51,7 +60,9 @@ def get_qdrant_client():
         collections = client.get_collections()
         print(f"✅ Successfully connected to Qdrant")
         print(f"📚 Available collections: {len(collections.collections)}")
+        print("✅ Qdrant client cached - subsequent searches will reuse it")
         
+        _client_cache = client
         return client
     
     except Exception as e:

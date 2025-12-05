@@ -1,6 +1,8 @@
 """
 Search function using Qdrant vector database
 """
+import os
+import psutil
 from sentence_transformers import SentenceTransformer
 from qdrant_client.models import Filter, FieldCondition, MatchValue
 
@@ -9,13 +11,40 @@ from qdrant_config import get_qdrant_client, COLLECTION_NAME
 # Cache the model to avoid reloading on every search
 _model_cache = None
 
+def log_memory(stage=""):
+    """Log current memory usage for debugging."""
+    try:
+        process = psutil.Process(os.getpid())
+        mem = process.memory_info()
+        print(f"[MEMORY] {stage} - RSS: {mem.rss / 1024**2:.2f} MB, VMS: {mem.vms / 1024**2:.2f} MB")
+    except Exception as e:
+        print(f"[MEMORY] {stage} - Error logging memory: {e}")
+
 def get_model():
-    """Get or initialize the embedding model (cached)."""
+    """
+    Get or initialize the embedding model (lazy-loaded and cached).
+    
+    Model: all-MiniLM-L6-v2 (384 dimensions, ~80 MB RAM)
+    The model is loaded only on first use and then cached for subsequent searches.
+    """
     global _model_cache
     if _model_cache is None:
-        print("🧠 Loading Sentence Transformer model...")
+        log_memory("Before model loading")
+        print("🧠 Loading Sentence Transformer model (all-MiniLM-L6-v2, 384-dim)...")
+        print("   This is a lazy load - model will be cached after first use")
         _model_cache = SentenceTransformer('all-MiniLM-L6-v2')
-        print("✅ Model loaded and cached")
+        
+        # Verify model configuration
+        if hasattr(_model_cache, 'get_sentence_embedding_dimension'):
+            dim = _model_cache.get_sentence_embedding_dimension()
+            print(f"✅ Model loaded: all-MiniLM-L6-v2, dimension={dim}")
+            if dim != 384:
+                print(f"⚠️ Warning: Expected 384 dimensions, got {dim}")
+        else:
+            print("✅ Model loaded: all-MiniLM-L6-v2")
+        
+        log_memory("After model loading")
+        print("✅ Model cached - subsequent searches will reuse it")
     return _model_cache
 
 def search_chunks_qdrant(query, top_k=3, score_threshold=0.0, filters=None):
@@ -39,14 +68,20 @@ def search_chunks_qdrant(query, top_k=3, score_threshold=0.0, filters=None):
         >>>     print(f"Text: {result['text'][:100]}...")
     """
     try:
-        # Get Qdrant client
+        log_memory("Before search (before model/client)")
+        
+        # Get Qdrant client (lazy-loaded)
         client = get_qdrant_client()
         
-        # Get embedding model
+        # Get embedding model (lazy-loaded, cached after first use)
         model = get_model()
+        
+        log_memory("After model/client (before encoding)")
         
         # Encode query
         query_embedding = model.encode([query])[0].tolist()
+        
+        log_memory("After encoding (before search)")
         
         # Build filter if provided
         qdrant_filter = None
@@ -85,6 +120,7 @@ def search_chunks_qdrant(query, top_k=3, score_threshold=0.0, filters=None):
                 'chunk_index': hit.payload.get('chunk_index', 0)
             })
         
+        log_memory("After search complete")
         return results
     
     except Exception as e:
