@@ -6,6 +6,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 const EasypaisaCoursePayment = () => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const location = useLocation();
   const courseId = location.state?.courseId;
   const [course, setCourse] = useState(null);
@@ -18,7 +19,7 @@ const EasypaisaCoursePayment = () => {
     const fetchCourse = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/courses/${courseId}`
+          `${BACKEND_BASE_URL}/api/courses/${courseId}`
         );
         setCourse(res.data.course);
         console.log(course);
@@ -42,7 +43,7 @@ const EasypaisaCoursePayment = () => {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/payment/easypaisa-submit",
+        `${BACKEND_BASE_URL}/api/payment/easypaisa-submit`,
         formData,
         {
           headers: {

@@ -35,6 +35,7 @@ const StudentHome = () => {
   const [loading, setLoading] = useState(true);
   const [announcements, setAnnouncements] = useState([]);
   const navigate = useNavigate();
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     fetchDashboardData();
@@ -44,7 +45,7 @@ const StudentHome = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        "http://localhost:5000/api/enroll/student/dashboard",
+        `${BACKEND_BASE_URL}/api/enroll/student/dashboard`,
         {
           withCredentials: true,
         }

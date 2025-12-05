@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import { AuthContext } from "../context/authContext";
 
 const LoginPage = () => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -39,7 +40,7 @@ const LoginPage = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/users/login",
+        `${BACKEND_BASE_URL}/api/users/login`,
         formData,
         { withCredentials: true }
       );

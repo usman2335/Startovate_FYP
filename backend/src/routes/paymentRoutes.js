@@ -3,7 +3,7 @@ const {
   createSession,
   getSession,
 } = require("../controllers/stripePaymentController");
-const protect = require("../middleware/authMiddleWare");
+const protect = require("../middleware/authMiddleware");
 const {
   upload,
   handleEasypaisaPayment,

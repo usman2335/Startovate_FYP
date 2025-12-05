@@ -31,6 +31,7 @@ import DeleteFeedbackModal from "../../components/DeleteFeedbackModal";
 const { Title, Text, Paragraph } = Typography;
 
 const StudentFeedbackPage = () => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const [feedback, setFeedback] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -48,7 +49,7 @@ const StudentFeedbackPage = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        "http://localhost:5000/api/feedback/student",
+        `${BACKEND_BASE_URL}/api/feedback/student`,
         {
           withCredentials: true,
         }
@@ -115,7 +116,7 @@ const StudentFeedbackPage = () => {
       console.log("Deleting feedback:", deletingFeedback._id);
 
       const response = await axios.delete(
-        `http://localhost:5000/api/feedback/delete/${deletingFeedback._id}`,
+        `${BACKEND_BASE_URL}/api/feedback/delete/${deletingFeedback._id}`,
         {
           withCredentials: true,
           headers: {

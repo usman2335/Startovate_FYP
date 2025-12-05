@@ -31,6 +31,7 @@ const buttonStyle = {
 };
 
 const PaymentPage = () => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const [clientSecret, setClientSecret] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -47,7 +48,7 @@ const PaymentPage = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/payment/create-checkout-session",
+        `${BACKEND_BASE_URL}/api/payment/create-checkout-session`,
         {},
         { withCredentials: true }
       );

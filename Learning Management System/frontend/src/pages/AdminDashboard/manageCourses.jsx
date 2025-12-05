@@ -11,9 +11,10 @@ const ManageCourses = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingCourse, setEditingCourse] = useState(null);
   const [form] = Form.useForm();
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
 
   const fetchCourses = async () => {
-    const res = await axios.get("http://localhost:5000/api/courses/all", {
+    const res = await axios.get(`${BACKEND_BASE_URL}/api/courses/all`, {
       withCredentials: true,
     });
     console.log("course", res.data);
@@ -23,7 +24,7 @@ const ManageCourses = () => {
 
   const fetchTeachers = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/users");
+      const res = await axios.get(`${BACKEND_BASE_URL}/api/users`);
       const allUsers = res.data;
 
       if (Array.isArray(allUsers)) {
@@ -51,12 +52,12 @@ const ManageCourses = () => {
     try {
       if (editingCourse) {
         await axios.put(
-          `http://localhost:5000/api/courses/${editingCourse._id}`,
+          `${BACKEND_BASE_URL}/api/courses/${editingCourse._id}`,
           payload,
           { withCredentials: true }
         );
       } else {
-        await axios.post("http://localhost:5000/api/courses", payload, {
+        await axios.post(`${BACKEND_BASE_URL}/api/courses`, payload, {
           withCredentials: true,
         });
       }
@@ -89,7 +90,7 @@ const ManageCourses = () => {
       });
 
       if (confirm.isConfirmed) {
-        await axios.delete(`http://localhost:5000/api/courses/admin/${id}`, {
+        await axios.delete(`${BACKEND_BASE_URL}/api/courses/admin/${id}`, {
           withCredentials: true,
         });
 

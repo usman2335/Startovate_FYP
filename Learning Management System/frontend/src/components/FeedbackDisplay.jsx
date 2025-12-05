@@ -25,6 +25,7 @@ import axios from "axios";
 const { Title, Text, Paragraph } = Typography;
 
 const FeedbackDisplay = ({ courseId, courseTitle }) => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const [feedback, setFeedback] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -52,11 +53,11 @@ const FeedbackDisplay = ({ courseId, courseTitle }) => {
       console.log("Fetching feedback for courseId:", courseId);
       console.log(
         "Request URL:",
-        `http://localhost:5000/api/feedback/course/${courseId}`
+        `${BACKEND_BASE_URL}/api/feedback/course/${courseId}`
       );
 
       const response = await axios.get(
-        `http://localhost:5000/api/feedback/course/${courseId}`,
+        `${BACKEND_BASE_URL}/api/feedback/course/${courseId}`,
         {
           withCredentials: true,
         }

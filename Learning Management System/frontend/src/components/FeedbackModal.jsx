@@ -13,6 +13,7 @@ const FeedbackModal = ({
   instructorName,
   onSuccess,
 }) => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [confirmationVisible, setConfirmationVisible] = useState(false);
@@ -22,7 +23,7 @@ const FeedbackModal = ({
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/feedback/submit",
+        `${BACKEND_BASE_URL}/api/feedback/submit`,
         {
           courseId,
           rating: values.rating,

@@ -5,13 +5,14 @@ import axios from "axios";
 const { Title } = Typography;
 
 const ViewEnrolledStudents = () => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const [enrollments, setEnrollments] = useState([]);
 
   useEffect(() => {
     const fetchEnrollments = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/courses/teacher/enrollments",
+          `${BACKEND_BASE_URL}/api/courses/teacher/enrollments`,
           {
             withCredentials: true,
           }

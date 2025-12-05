@@ -5,7 +5,8 @@ const Canvas = require("../models/Canvas");
 const ChatHistory = require("../models/ChatHistory");
 
 // FastAPI ChatBot endpoint
-const CHATBOT_BASE_URL = "http://127.0.0.1:8000";
+const CHATBOT_BASE_URL = process.env.CHATBOT_BASE_URL;
+console.log("CHATBOT_BASE_URL:", CHATBOT_BASE_URL);
 
 /**
  * Parse templateKey to extract component name and step number
@@ -154,7 +155,6 @@ exports.sendChatMessage = async (req, res) => {
       `${CHATBOT_BASE_URL}/chat`,
       requestPayload,
       {
-        timeout: 30000, // 30 second timeout
         headers: {
           "Content-Type": "application/json",
         },

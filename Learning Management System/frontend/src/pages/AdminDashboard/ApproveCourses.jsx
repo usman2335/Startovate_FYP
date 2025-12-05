@@ -4,12 +4,13 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 const ApproveCourses = () => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const [courses, setCourses] = useState([]);
 
   const fetchUnapprovedCourses = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/courses/unapproved",
+        `${BACKEND_BASE_URL}/api/courses/unapproved`,
         {
           withCredentials: true,
         }
@@ -33,7 +34,7 @@ const ApproveCourses = () => {
 
       if (result.isConfirmed) {
         await axios.put(
-          `http://localhost:5000/api/courses/approve/${courseId}`,
+          `${BACKEND_BASE_URL}/api/courses/approve/${courseId}`,
           null,
           {
             withCredentials: true,

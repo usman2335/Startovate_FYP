@@ -8,6 +8,7 @@ const { Search } = Input;
 const { Option } = Select;
 
 const EnrollCourses = () => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const [courses, setCourses] = useState([]);
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -28,7 +29,7 @@ const EnrollCourses = () => {
     const fetchCourses = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/enroll/available-courses",
+          `${BACKEND_BASE_URL}/api/enroll/available-courses`,
           { withCredentials: true }
         );
 

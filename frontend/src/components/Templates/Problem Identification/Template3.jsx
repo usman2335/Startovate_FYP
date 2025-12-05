@@ -44,6 +44,7 @@ import Button from "../../Button";
 import axios from "axios";
 
 const Template3 = ({ answers, onInputChange, canvasId, templateId }) => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   const handleExportToWord = async () => {
     try {
       const payload = {
@@ -58,7 +59,7 @@ const Template3 = ({ answers, onInputChange, canvasId, templateId }) => {
       };
 
       const response = await axios.post(
-        "http://localhost:5000/api/template/export-text",
+        `${BACKEND_BASE_URL}/api/template/export-text`,
         payload,
         { responseType: "blob", withCredentials: true }
       );
