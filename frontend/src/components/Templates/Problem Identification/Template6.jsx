@@ -19,153 +19,163 @@ const ProblemInvestigation = ({ answers, onInputChange }) => {
       <h2>Problem Investigation Script</h2>
 
       <h3>Introduction by an Academic Inventor</h3>
-      <Box
-        component="form"
-        sx={{
-          display: "flex",
-          width: "100%",
-          gap: "10px",
-        }}
-        noValidate
-        autoComplete="off"
-      >
-        <TextField
-          id="outlined-basic"
-          label="Name"
-          variant="outlined"
-          fullWidth
-          value={answers?.[`name_`] || ""}
-          onChange={(e) => onInputChange(e, `name_`)}
-        />
-        <TextField
-          id="outlined-basic"
-          label="Institutional Association"
-          variant="outlined"
-          fullWidth
-          value={answers?.[`instAsso_`] || ""}
-          onChange={(e) => onInputChange(e, `instAsso_`)}
-        />
-      </Box>
 
-      <Box
-        component="form"
-        sx={{
-          display: "flex",
-          width: "100%",
-        }}
-        noValidate
-        autoComplete="off"
-      >
-        <TextField
-          id="outlined-basic"
-          label="Research Expertise"
-          variant="outlined"
-          fullWidth
-          value={answers?.[`resExp_`] || ""}
-          onChange={(e) => onInputChange(e, `resExp_`)}
-        />
-      </Box>
-
-      <Box
-        component="form"
-        sx={{
-          width: "100%",
-          display: "flex",
-        }}
-        noValidate
-        autoComplete="off"
-      >
-        <TextField
-          id="outlined-basic"
-          label="Objective of conducting research"
-          variant="outlined"
-          fullWidth
-          value={answers?.[`obj_`] || ""}
-          onChange={(e) => onInputChange(e, `obj_`)}
-        />
-      </Box>
-      <Box
-        component="form"
-        sx={{
-          display: "flex",
-          width: "100%",
-        }}
-        noValidate
-        autoComplete="off"
-      >
-        <TextField
-          id="outlined-textarea"
-          label="Two Minute Story"
-          multiline
-          fullWidth
-          value={answers?.[`twominstory_`] || ""}
-          onChange={(e) => onInputChange(e, `twominstory_`)}
-        />
-      </Box>
-      <Box
-        component="form"
-        sx={{
-          display: "flex",
-          width: "100%",
-        }}
-        noValidate
-        autoComplete="off"
-      >
-        <TextField
-          id="outlined-textarea"
-          label="What is required from this interview?"
-          multiline
-          fullWidth
-          value={answers?.[`whatIsRequired_`] || ""}
-          onChange={(e) => onInputChange(e, `whatIsRequired_`)}
-        />
-      </Box>
-
-      <h3>Problems Identified through 5 Whys Technique</h3>
-      <Box
-        component="form"
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "10px",
-          width: "100%",
-        }}
-        noValidate
-        autoComplete="off"
-      >
-        {[1, 2, 3, 4, 5].map((num) => (
+      {/* Wrap form sections with data attribute */}
+      <div data-export-section="text">
+        <Box
+          component="form"
+          sx={{
+            display: "flex",
+            width: "100%",
+            gap: "10px",
+          }}
+          noValidate
+          autoComplete="off"
+        >
           <TextField
-            key={num}
-            id={`outlined-textarea-${num}`}
-            label={`Problem ${num}`}
+            id="outlined-basic"
+            label="Name"
+            variant="outlined"
+            fullWidth
+            value={answers?.[`name_`] || ""}
+            onChange={(e) => onInputChange(e, `name_`)}
+          />
+          <TextField
+            id="outlined-basic"
+            label="Institutional Association"
+            variant="outlined"
+            fullWidth
+            value={answers?.[`instAsso_`] || ""}
+            onChange={(e) => onInputChange(e, `instAsso_`)}
+          />
+        </Box>
+
+        <Box
+          component="form"
+          sx={{
+            display: "flex",
+            width: "100%",
+          }}
+          noValidate
+          autoComplete="off"
+        >
+          <TextField
+            id="outlined-basic"
+            label="Research Expertise"
+            variant="outlined"
+            fullWidth
+            value={answers?.[`resExp_`] || ""}
+            onChange={(e) => onInputChange(e, `resExp_`)}
+          />
+        </Box>
+
+        <Box
+          component="form"
+          sx={{
+            width: "100%",
+            display: "flex",
+          }}
+          noValidate
+          autoComplete="off"
+        >
+          <TextField
+            id="outlined-basic"
+            label="Objective of conducting research"
+            variant="outlined"
+            fullWidth
+            value={answers?.[`obj_`] || ""}
+            onChange={(e) => onInputChange(e, `obj_`)}
+          />
+        </Box>
+        <Box
+          component="form"
+          sx={{
+            display: "flex",
+            width: "100%",
+          }}
+          noValidate
+          autoComplete="off"
+        >
+          <TextField
+            id="outlined-textarea"
+            label="Two Minute Story"
             multiline
             fullWidth
-            onChange={(e) => onInputChange(e, `problem_${num}`)}
-            value={answers?.[`problem_${num}`] || ""}
+            value={answers?.[`twominstory_`] || ""}
+            onChange={(e) => onInputChange(e, `twominstory_`)}
           />
-        ))}
-      </Box>
+        </Box>
+        <Box
+          component="form"
+          sx={{
+            display: "flex",
+            width: "100%",
+          }}
+          noValidate
+          autoComplete="off"
+        >
+          <TextField
+            id="outlined-textarea"
+            label="What is required from this interview?"
+            multiline
+            fullWidth
+            value={answers?.[`whatIsRequired_`] || ""}
+            onChange={(e) => onInputChange(e, `whatIsRequired_`)}
+          />
+        </Box>
+      </div>
+
+      <h3>Problems Identified through 5 Whys Technique</h3>
+
+      {/* Form section for problems */}
+      <div data-export-section="text">
+        <Box
+          component="form"
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+            width: "100%",
+          }}
+          noValidate
+          autoComplete="off"
+        >
+          {[1, 2, 3, 4, 5].map((num) => (
+            <TextField
+              key={num}
+              id={`outlined-textarea-${num}`}
+              label={`Problem ${num}`}
+              multiline
+              fullWidth
+              onChange={(e) => onInputChange(e, `problem_${num}`)}
+              value={answers?.[`problem_${num}`] || ""}
+            />
+          ))}
+        </Box>
+      </div>
 
       <h4>
         1. What are three main problems stakeholders are facing? What are
         difficult to achieve? Where changes are possible?
       </h4>
-      <Box
-        component="form"
-        sx={{
-          display: "flex",
-          width: "100%",
-        }}
-        noValidate
-        autoComplete="off"
-      >
-        <TextField
-          multiline
-          fullWidth
-          value={answers?.[`threeMainProblems_`] || ""}
-          onChange={(e) => onInputChange(e, `threeMainProblems_`)}
-        />
-      </Box>
+      <div data-export-section="text">
+        <Box
+          component="form"
+          sx={{
+            display: "flex",
+            width: "100%",
+          }}
+          noValidate
+          autoComplete="off"
+        >
+          <TextField
+            multiline
+            fullWidth
+            value={answers?.[`threeMainProblems_`] || ""}
+            onChange={(e) => onInputChange(e, `threeMainProblems_`)}
+          />
+        </Box>
+      </div>
 
       <h5>
         NOTE: Once 3 problems are given by stakeholder, try to find any match
@@ -176,24 +186,27 @@ const ProblemInvestigation = ({ answers, onInputChange }) => {
         2. Share the already identified 5 problems with the stakeholders and
         discuss their limitations one by one?
       </h4>
-      <Box
-        component="form"
-        sx={{
-          display: "flex",
-          width: "100%",
-        }}
-        noValidate
-        autoComplete="off"
-      >
-        <TextField
-          multiline
-          fullWidth
-          value={answers?.[`limitations_`] || ""}
-          onChange={(e) => onInputChange(e, `limitations_`)}
-        />
-      </Box>
+      <div data-export-section="text">
+        <Box
+          component="form"
+          sx={{
+            display: "flex",
+            width: "100%",
+          }}
+          noValidate
+          autoComplete="off"
+        >
+          <TextField
+            multiline
+            fullWidth
+            value={answers?.[`limitations_`] || ""}
+            onChange={(e) => onInputChange(e, `limitations_`)}
+          />
+        </Box>
+      </div>
 
-      <div className="table-container">
+      {/* Table sections - mark as table */}
+      <div className="table-container" data-export-section="table">
         <table>
           <thead>
             <tr>
@@ -290,7 +303,7 @@ const ProblemInvestigation = ({ answers, onInputChange }) => {
         </table>
       </div>
 
-      <div className="table-container">
+      <div className="table-container" data-export-section="table">
         <table>
           <thead>
             <tr>
@@ -350,22 +363,24 @@ const ProblemInvestigation = ({ answers, onInputChange }) => {
         3. What Standards and Regulations exist within industry and what impact
         these involve on the real- world ractical roblem?
       </h4>
-      <Box
-        component="form"
-        sx={{
-          display: "flex",
-          width: "100%",
-        }}
-        noValidate
-        autoComplete="off"
-      >
-        <TextField
-          multiline
-          fullWidth
-          value={answers?.[`standards_`] || ""}
-          onChange={(e) => onInputChange(e, `standards_`)}
-        />
-      </Box>
+      <div data-export-section="text">
+        <Box
+          component="form"
+          sx={{
+            display: "flex",
+            width: "100%",
+          }}
+          noValidate
+          autoComplete="off"
+        >
+          <TextField
+            multiline
+            fullWidth
+            value={answers?.[`standards_`] || ""}
+            onChange={(e) => onInputChange(e, `standards_`)}
+          />
+        </Box>
+      </div>
     </div>
   );
 };

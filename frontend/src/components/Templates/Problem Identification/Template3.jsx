@@ -77,14 +77,15 @@ const Template3 = ({ answers, onInputChange, canvasId, templateId }) => {
 
   return (
     <div className="container" style={{ maxWidth: "90%", margin: "0 auto" }}>
-      <p className="description" style={{ textAlign: "center" }}>
+      <h3 className="description" style={{ textAlign: "center" }}>
         <strong>Motivation and justification</strong> of the proposed invention
         for solving the real-world practical problem.
-      </p>
+      </h3>
 
       <div
         className="template-form"
         style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
+        data-export-section="text"
       >
         <div className="column" style={{ width: "100%" }}>
           <label>

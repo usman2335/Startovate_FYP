@@ -305,6 +305,396 @@ export const calculateImageDimensions = (
 };
 
 /**
+ * Extract text content from form elements and format as paragraphs
+ * Also extracts headings (h2, h3, h4, h5) in order
+ */
+const extractFormFieldsAsText = (
+  element,
+  templateData,
+  templateConfig = null,
+  alreadyProcessedHeadingTexts = new Set() // Headings already extracted at section level
+) => {
+  const paragraphs = [];
+  const processedInputs = new Set(); // Track processed inputs to avoid duplicates
+  const processedHeadings = new Set(); // Track processed heading DOM nodes to avoid duplicates
+  const processedHeadingTexts = new Set(alreadyProcessedHeadingTexts); // Track processed heading texts to prevent reuse as labels
+
+  // Helper function to get heading level and size
+  const getHeadingStyle = (tagName) => {
+    switch (tagName) {
+      case "H2":
+        return { size: 32, bold: true, spacing: { before: 400, after: 300 } };
+      case "H3":
+        return { size: 28, bold: true, spacing: { before: 300, after: 250 } };
+      case "H4":
+        return { size: 24, bold: true, spacing: { before: 250, after: 200 } };
+      case "H5":
+        return { size: 22, bold: true, spacing: { before: 200, after: 150 } };
+      default:
+        return { size: 20, bold: false, spacing: { before: 200, after: 150 } };
+    }
+  };
+
+  // Recursive function to walk through DOM tree in order
+  const walkElements = (node) => {
+    if (!node) return;
+
+    // Process headings
+    if (
+      node.nodeType === Node.ELEMENT_NODE &&
+      node.tagName &&
+      node.tagName.match(/^H[2-5]$/)
+    ) {
+      if (!processedHeadings.has(node)) {
+        processedHeadings.add(node);
+        const headingText = node.textContent?.trim() || "";
+        if (headingText) {
+          // Track the heading text so we don't reuse it as a label
+          processedHeadingTexts.add(headingText);
+
+          const style = getHeadingStyle(node.tagName);
+          paragraphs.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: headingText,
+                  bold: style.bold,
+                  size: style.size,
+                  font: "Calibri",
+                }),
+              ],
+              spacing: style.spacing,
+            })
+          );
+        }
+      }
+    }
+
+    // Process Material-UI TextField containers
+    if (
+      node.nodeType === Node.ELEMENT_NODE &&
+      node.classList &&
+      node.classList.contains("MuiTextField-root")
+    ) {
+      const input = node.querySelector("input, textarea");
+      if (input && !processedInputs.has(input)) {
+        processedInputs.add(input);
+
+        // Extract label from Material-UI TextField structure
+        const labelElement = node.querySelector("label");
+        let label = labelElement ? labelElement.textContent.trim() : "";
+
+        // Get field identifier for template data lookup
+        const fieldId = input.id || "";
+        const fieldName = input.name || fieldId;
+
+        // Get value from input (prioritize DOM value)
+        const inputValue = input.value || "";
+
+        // Try to get value from templateData if input is empty
+        let value = inputValue;
+        let matchedFieldKey = fieldName;
+
+        if (!value && templateData?.content) {
+          // First try direct match
+          value =
+            templateData.content[fieldName] ||
+            templateData.content[fieldId] ||
+            "";
+          if (value) {
+            matchedFieldKey = fieldName || fieldId;
+          }
+        }
+
+        // If we have a value but no field name (common with Material-UI TextFields),
+        // try to match the value against templateData to find the correct field key
+        if (
+          value &&
+          (!fieldName || fieldName === fieldId) &&
+          templateConfig?.fieldHints &&
+          templateData?.content
+        ) {
+          // Try to find the matching key by comparing values
+          for (const [key, contentValue] of Object.entries(
+            templateData.content
+          )) {
+            if (
+              String(contentValue).trim() === String(value).trim() &&
+              templateConfig.fieldHints[key]
+            ) {
+              matchedFieldKey = key;
+              break;
+            }
+          }
+        }
+
+        // If still no value, try to get from templateData using matchedFieldKey
+        if (!value && matchedFieldKey && templateData?.content) {
+          value = templateData.content[matchedFieldKey] || "";
+        }
+
+        // PRIORITIZE fieldHints over heading text to avoid duplication
+        // If no label found, try to get from templateConfig fieldHints first
+        if (!label) {
+          // Use matchedFieldKey (which might be more accurate than fieldName)
+          const keyToUse = matchedFieldKey || fieldName;
+
+          if (keyToUse && templateConfig?.fieldHints) {
+            // Try to get from templateConfig fieldHints first (prevents duplication)
+            const fieldHint = templateConfig.fieldHints[keyToUse];
+            if (fieldHint) {
+              // Check if this fieldHint is contained in any processed heading text
+              // If it is, don't use it to avoid duplication - use a shorter label instead
+              let isContainedInHeading = false;
+              for (const headingText of processedHeadingTexts) {
+                // Check if fieldHint is a substring of heading (case-insensitive)
+                const headingLower = headingText.toLowerCase();
+                const hintLower = fieldHint.toLowerCase();
+                if (headingLower.includes(hintLower)) {
+                  isContainedInHeading = true;
+                  break;
+                }
+              }
+
+              // Only use fieldHint if it's not contained in any processed heading
+              if (!isContainedInHeading) {
+                label = fieldHint;
+              } else {
+                // If fieldHint is contained in heading, use a generic label to avoid duplication
+                // This prevents repeating the heading text as a field label
+                label = "Response";
+              }
+            }
+          }
+        }
+
+        // Only use heading text as fallback if no fieldHint was found
+        // AND only if the heading wasn't already processed (to avoid duplication)
+        if (!label) {
+          let prevSibling = node.previousElementSibling;
+          while (prevSibling) {
+            if (prevSibling.tagName && prevSibling.tagName.match(/^H[2-5]$/)) {
+              const headingText = prevSibling.textContent?.trim() || "";
+
+              // NEVER use a heading text that was already processed as a heading
+              if (headingText && !processedHeadingTexts.has(headingText)) {
+                label = headingText;
+              }
+              break;
+            }
+            prevSibling = prevSibling.previousElementSibling;
+          }
+        }
+
+        // If still no label, try to find heading in parent's previous siblings
+        // But still check if it was already processed
+        if (!label) {
+          let parent = node.parentElement;
+          while (parent && parent !== element) {
+            let prevSibling = parent.previousElementSibling;
+            while (prevSibling) {
+              if (
+                prevSibling.tagName &&
+                prevSibling.tagName.match(/^H[2-5]$/)
+              ) {
+                const headingText = prevSibling.textContent?.trim() || "";
+
+                // NEVER use a heading text that was already processed as a heading
+                if (headingText && !processedHeadingTexts.has(headingText)) {
+                  label = headingText;
+                }
+                break;
+              }
+              prevSibling = prevSibling.previousElementSibling;
+            }
+            if (label) break;
+            parent = parent.parentElement;
+          }
+        }
+
+        // Final fallback: format field name
+        if (!label) {
+          const keyToUse = matchedFieldKey || fieldName;
+          if (keyToUse) {
+            label = keyToUse
+              .replace(/_/g, " ")
+              .replace(/\b\w/g, (l) => l.toUpperCase());
+          }
+        }
+
+        // Add paragraph if we have a value (label is optional but preferred)
+        if (value) {
+          paragraphs.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: label ? `${label}: ` : "",
+                  bold: true,
+                  size: 22,
+                  font: "Calibri",
+                }),
+                new TextRun({
+                  text: value,
+                  size: 20,
+                  font: "Calibri",
+                }),
+              ],
+              spacing: { after: 200 },
+            })
+          );
+        }
+      }
+    }
+
+    // Process standalone inputs/textareas (not inside MuiTextField-root)
+    if (
+      node.nodeType === Node.ELEMENT_NODE &&
+      ((node.tagName === "INPUT" && node.type === "text") ||
+        node.tagName === "TEXTAREA") &&
+      !node.closest(".MuiTextField-root")
+    ) {
+      if (!processedInputs.has(node)) {
+        processedInputs.add(node);
+
+        // Try to get label from various sources
+        const label =
+          node.getAttribute("aria-label") ||
+          node.getAttribute("placeholder") ||
+          node.previousElementSibling?.textContent?.trim() ||
+          node.closest("label")?.textContent?.trim() ||
+          "";
+
+        const fieldName = node.name || node.id || "";
+        const value = node.value || templateData?.content?.[fieldName] || "";
+
+        // Only add if we have meaningful content
+        if (value && (label || fieldName)) {
+          const displayLabel =
+            label ||
+            fieldName
+              .replace(/_/g, " ")
+              .replace(/\b\w/g, (l) => l.toUpperCase());
+          paragraphs.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: `${displayLabel}: `,
+                  bold: true,
+                  size: 22,
+                  font: "Calibri",
+                }),
+                new TextRun({
+                  text: value,
+                  size: 20,
+                  font: "Calibri",
+                }),
+              ],
+              spacing: { after: 200 },
+            })
+          );
+        }
+      }
+    }
+
+    // Recursively process children
+    if (node.childNodes) {
+      node.childNodes.forEach((child) => {
+        walkElements(child);
+      });
+    }
+  };
+
+  // Start walking from the element
+  walkElements(element);
+
+  return paragraphs;
+};
+
+/**
+ * Extract table structure from DOM and convert to Word table
+ */
+const extractTableFromDOM = (tableElement) => {
+  const rows = [];
+  const tableRows = tableElement.querySelectorAll("tr");
+
+  tableRows.forEach((row) => {
+    const cells = [];
+    const rowCells = row.querySelectorAll("th, td");
+
+    rowCells.forEach((cell) => {
+      let cellText = "";
+
+      // Extract text content
+      const textNodes = Array.from(cell.childNodes)
+        .filter((node) => node.nodeType === Node.TEXT_NODE)
+        .map((node) => node.textContent.trim())
+        .filter((text) => text.length > 0);
+
+      // Check for input values
+      const input = cell.querySelector(
+        'input[type="text"], input[type="number"], textarea'
+      );
+      const checkbox = cell.querySelector('input[type="checkbox"]');
+
+      if (checkbox) {
+        cellText = checkbox.checked ? "✓" : "";
+      } else if (input) {
+        cellText = input.value || "";
+      } else {
+        cellText = textNodes.join(" ") || cell.textContent?.trim() || "";
+      }
+
+      // Remove label text if present
+      const label = cell.querySelector("label");
+      if (label && cellText.includes(label.textContent)) {
+        cellText = cellText.replace(label.textContent, "").trim();
+      }
+
+      cells.push(
+        new TableCell({
+          children: [
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: cellText || "",
+                  size: cell.tagName === "TH" ? 22 : 20,
+                  bold: cell.tagName === "TH",
+                  font: "Calibri",
+                }),
+              ],
+            }),
+          ],
+          margins: { top: 200, bottom: 200, left: 200, right: 200 },
+          borders: {
+            top: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+            bottom: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+            left: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+            right: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+          },
+        })
+      );
+    });
+
+    if (cells.length > 0) {
+      rows.push(new TableRow({ children: cells }));
+    }
+  });
+
+  return new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    borders: {
+      top: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+      bottom: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+      left: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+      right: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+      insideHorizontal: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+      insideVertical: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+    },
+    rows: rows,
+  });
+};
+
+/**
  * Generate Word document from templates
  */
 export const generateWordDocument = async ({
@@ -425,8 +815,240 @@ export const generateWordDocument = async ({
 
     // Special handling for Problem Identification - Step 6: prefer table; otherwise smaller image
     const isProblemStep6 = templateKey === "ProblemIdentification-Step6";
+    const renderConfig = templateConfig.renderAs;
 
-    if (templateConfig.renderAs === "image") {
+    // Handle array-based renderAs configuration
+    if (Array.isArray(renderConfig)) {
+      setCurrentTemplateIndex(i);
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait for render
+
+      const captureElement = captureRef.current;
+      if (!captureElement) {
+        docChildren.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: "[Template element not found]",
+                italics: true,
+                color: "FF0000",
+              }),
+            ],
+            spacing: { after: 200 },
+          })
+        );
+        continue;
+      }
+
+      // Fetch template data for reference
+      let templateData = null;
+      try {
+        templateData = await fetchTemplateData(canvasId, templateKey);
+      } catch (error) {
+        console.warn(
+          `Could not fetch template data for ${templateKey}:`,
+          error
+        );
+      }
+
+      // Track processed headings to avoid duplicates
+      const processedHeadings = new Set();
+
+      // Helper function to get heading style
+      const getHeadingStyle = (tagName) => {
+        switch (tagName) {
+          case "H2":
+            return {
+              size: 32,
+              bold: true,
+              spacing: { before: 400, after: 300 },
+            };
+          case "H3":
+            return {
+              size: 28,
+              bold: true,
+              spacing: { before: 300, after: 250 },
+            };
+          case "H4":
+            return {
+              size: 24,
+              bold: true,
+              spacing: { before: 250, after: 200 },
+            };
+          case "H5":
+            return {
+              size: 22,
+              bold: true,
+              spacing: { before: 200, after: 150 },
+            };
+          default:
+            return {
+              size: 20,
+              bold: false,
+              spacing: { before: 200, after: 150 },
+            };
+        }
+      };
+
+      // Track all heading texts extracted at template level
+      const templateLevelHeadingTexts = new Set();
+
+      // Extract the first heading (h2) if it exists at the start of the template
+      const firstHeading = captureElement.querySelector("h2");
+      if (firstHeading) {
+        const headingKey = `${
+          firstHeading.tagName
+        }-${firstHeading.textContent?.trim()}`;
+        if (!processedHeadings.has(headingKey)) {
+          processedHeadings.add(headingKey);
+          const headingText = firstHeading.textContent?.trim() || "";
+          if (headingText) {
+            // Track this heading text
+            templateLevelHeadingTexts.add(headingText);
+
+            const style = getHeadingStyle(firstHeading.tagName);
+            docChildren.push(
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: headingText,
+                    bold: style.bold,
+                    size: style.size,
+                    font: "Calibri",
+                  }),
+                ],
+                spacing: style.spacing,
+              })
+            );
+          }
+        }
+      }
+
+      // Process each section according to renderConfig
+      for (const sectionConfig of renderConfig) {
+        const { selector, type } = sectionConfig;
+        const sectionElements = captureElement.querySelectorAll(selector);
+
+        if (sectionElements.length === 0) continue;
+
+        for (const sectionElement of sectionElements) {
+          switch (type) {
+            case "text":
+              // Track heading texts extracted at section level to prevent reuse as labels
+              const sectionLevelHeadingTexts = new Set();
+
+              // Extract headings that are siblings (previous siblings) of this section
+              const previousHeadings = [];
+              let prevSibling = sectionElement.previousElementSibling;
+
+              // Collect headings that come before this section
+              while (prevSibling) {
+                if (
+                  prevSibling.tagName &&
+                  prevSibling.tagName.match(/^H[2-5]$/)
+                ) {
+                  // Create unique key for heading to avoid duplicates
+                  const headingKey = `${
+                    prevSibling.tagName
+                  }-${prevSibling.textContent?.trim()}`;
+
+                  if (!processedHeadings.has(headingKey)) {
+                    processedHeadings.add(headingKey);
+                    const headingText = prevSibling.textContent?.trim() || "";
+                    if (headingText) {
+                      // Track this heading text so it's not reused as a label
+                      sectionLevelHeadingTexts.add(headingText);
+
+                      const style = getHeadingStyle(prevSibling.tagName);
+                      previousHeadings.unshift(
+                        new Paragraph({
+                          children: [
+                            new TextRun({
+                              text: headingText,
+                              bold: style.bold,
+                              size: style.size,
+                              font: "Calibri",
+                            }),
+                          ],
+                          spacing: style.spacing,
+                        })
+                      );
+                    }
+                  }
+                }
+                prevSibling = prevSibling.previousElementSibling;
+              }
+
+              // Add headings in order (oldest first, then newest)
+              previousHeadings.forEach((heading) => docChildren.push(heading));
+
+              // Extract form fields from the section
+              // Merge template-level and section-level heading texts to prevent reuse as labels
+              const allProcessedHeadingTexts = new Set([
+                ...templateLevelHeadingTexts,
+                ...sectionLevelHeadingTexts,
+              ]);
+
+              const textParagraphs = extractFormFieldsAsText(
+                sectionElement,
+                templateData,
+                templateConfig,
+                allProcessedHeadingTexts
+              );
+              textParagraphs.forEach((para) => docChildren.push(para));
+              break;
+
+            case "table":
+              const table = sectionElement.querySelector("table");
+              if (table) {
+                docChildren.push(extractTableFromDOM(table));
+                docChildren.push(
+                  new Paragraph({
+                    children: [new TextRun({ text: "" })],
+                    spacing: { after: 300 },
+                  })
+                );
+              }
+              break;
+
+            case "image":
+              // Capture section as image
+              try {
+                const { buffer, dimensions } = await captureTemplateAsImage(
+                  sectionElement
+                );
+                docChildren.push(
+                  new Paragraph({
+                    children: [
+                      new ImageRun({
+                        data: buffer,
+                        transformation: dimensions,
+                      }),
+                    ],
+                    alignment: AlignmentType.CENTER,
+                    spacing: { after: 200 },
+                  })
+                );
+              } catch (error) {
+                console.error(`Error capturing section image:`, error);
+              }
+              break;
+          }
+        }
+      }
+
+      // Add spacing after template
+      docChildren.push(
+        new Paragraph({
+          children: [new TextRun({ text: "" })],
+          spacing: { after: 400 },
+        })
+      );
+
+      continue; // Skip the old rendering logic
+    }
+
+    // Keep existing backward compatibility for string-based renderAs
+    if (renderConfig === "image") {
       if (isProblemStep6) {
         try {
           const templateData = await fetchTemplateData(canvasId, templateKey);
@@ -491,7 +1113,7 @@ export const generateWordDocument = async ({
           );
         }
       }
-    } else if (templateConfig.renderAs === "table") {
+    } else if (renderConfig === "table") {
       // Generate table from template data
       try {
         const templateData = await fetchTemplateData(canvasId, templateKey);
