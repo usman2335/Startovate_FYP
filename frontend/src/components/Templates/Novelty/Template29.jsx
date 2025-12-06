@@ -5,14 +5,12 @@ import "../../../CSS/Template29.css";
 const Template29 = ({ answers, onInputChange }) => {
   return (
     <div className="container">
-      <div className="header">
-        <h4>
-          Discussions on whether proposed invention claims for similarities with
-          other inventors’ work or offers a critique that led to the novelty
-          feature(s)
-        </h4>
-      </div>
-      <div className="unique-textfield-container">
+      <h3 className="header">
+        Discussions on whether proposed invention claims for similarities with
+        other inventors' work or offers a critique that led to the novelty
+        feature(s)
+      </h3>
+      <div className="unique-textfield-container" data-export-section="text">
         <TextField
           id="unique-textfield"
           placeholder="Enter Here ..."

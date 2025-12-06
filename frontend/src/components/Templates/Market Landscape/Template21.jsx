@@ -4,14 +4,14 @@ import "../../../CSS/Template21.css";
 
 const Template21 = ({ answers, onInputChange }) => {
   return (
-    <div className="container">
+    <div className="container" data-export-section="main-section">
       {/* Header Section */}
-      <div className="header">
+      <h3 className="header">
         Market Mapping and Competitive Landscape Matrix
-      </div>
+      </h3>
 
       {/* CAGR Input Section */}
-      <div className="cagr-container">
+      <div className="cagr-container" data-export-section="text">
         <span className="cagr-label">
           <strong>Compound Annual Growth Rate (CAGR)</strong>
         </span>
@@ -26,7 +26,8 @@ const Template21 = ({ answers, onInputChange }) => {
       </div>
 
       {/* Table Section */}
-      <table className="table">
+      <div data-export-section="table">
+        <table className="table">
         <thead>
           <tr>
             <th>No.</th>
@@ -44,6 +45,8 @@ const Template21 = ({ answers, onInputChange }) => {
                   id="unique-textfield"
                   multiline
                   className="unique-textfield"
+                  value={answers?.[`value_${index}_0`] || ""}
+                  onChange={(e) => onInputChange(e, `value_${index}_0`)}
                 />
               </td>
               <td>
@@ -51,6 +54,8 @@ const Template21 = ({ answers, onInputChange }) => {
                   id="unique-textfield"
                   multiline
                   className="unique-textfield"
+                  value={answers?.[`value_${index}_1`] || ""}
+                  onChange={(e) => onInputChange(e, `value_${index}_1`)}
                 />
               </td>
               <td>
@@ -58,12 +63,15 @@ const Template21 = ({ answers, onInputChange }) => {
                   id="unique-textfield"
                   multiline
                   className="unique-textfield"
+                  value={answers?.[`value_${index}_2`] || ""}
+                  onChange={(e) => onInputChange(e, `value_${index}_2`)}
                 />
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 };

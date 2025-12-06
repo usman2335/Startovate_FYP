@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "../../../CSS/Template2.css";
 import Button from "../../Button";
 import {
@@ -37,8 +37,6 @@ const Template1 = ({ answers, onInputChange }) => {
     "5 - Strongly Agree",
   ];
 
-  const [selections, setSelections] = useState({});
-
   const handleRadioClick = (criterionIndex, optionIndex) => {
     const key = `criterion_${criterionIndex}`;
     const current = answers?.[key];
@@ -50,17 +48,18 @@ const Template1 = ({ answers, onInputChange }) => {
     <div
       className="template-container"
       style={{ maxWidth: "90%", margin: "0 auto" }}
+      data-export-section="main-section"
     >
-      <p className="template-description">
-        <strong>LCI Template XX</strong>
-      </p>
-
       <div
         className="template-form"
         style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
       >
         {/* Problem Statement */}
-        <div className="template-column" style={{ flex: "1" }}>
+        <div
+          className="template-column"
+          style={{ flex: "1" }}
+          data-export-section="text"
+        >
           <label className="template-label" htmlFor="ProblemStatment-textarea">
             <strong>Problem Statement Derived</strong>
           </label>
@@ -77,85 +76,91 @@ const Template1 = ({ answers, onInputChange }) => {
         </div>
 
         {/* Selection Table */}
-        <TableContainer component={Paper} style={{ marginTop: "2rem" }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell
-                  sx={{
-                    background:
-                      "linear-gradient(90deg, #ed2567 0%, #ee343b 100%)",
-                    color: "white",
-                    fontWeight: "bold",
-                    width: "30%",
-                    minWidth: "200px",
-                  }}
-                >
-                  Elements
-                </TableCell>
-                {options.map((option, index) => (
+        <div data-export-section="table">
+          <TableContainer component={Paper} style={{ marginTop: "2rem" }}>
+            <Table>
+              <TableHead>
+                <TableRow>
                   <TableCell
-                    key={index}
-                    align="center"
                     sx={{
                       background:
                         "linear-gradient(90deg, #ed2567 0%, #ee343b 100%)",
                       color: "white",
                       fontWeight: "bold",
-                      width: `${70 / options.length}%`,
-                      minWidth: "100px",
+                      width: "30%",
+                      minWidth: "200px",
                     }}
                   >
-                    {option}
+                    Elements
                   </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {criteria.map((criterion, criterionIndex) => {
-                const selectedOption = answers?.[`criterion_${criterionIndex}`];
-                return (
-                  <TableRow key={criterionIndex}>
+                  {options.map((option, index) => (
                     <TableCell
+                      key={index}
+                      align="center"
                       sx={{
-                        padding: "12px",
+                        background:
+                          "linear-gradient(90deg, #ed2567 0%, #ee343b 100%)",
+                        color: "white",
                         fontWeight: "bold",
-                        verticalAlign: "middle",
+                        width: `${70 / options.length}%`,
+                        minWidth: "100px",
                       }}
                     >
-                      {criterion}
+                      {option}
                     </TableCell>
-                    {options.map((_, optionIndex) => (
-                      <TableCell key={optionIndex} align="center">
-                        <Box
-                          display="flex"
-                          justifyContent="center"
-                          alignItems="center"
-                          height="100%"
-                          minHeight="50px"
-                          ml={3}
-                        >
-                          <FormControlLabel
-                            control={
-                              <Radio
-                                checked={selectedOption === optionIndex}
-                                onClick={() =>
-                                  handleRadioClick(criterionIndex, optionIndex)
-                                }
-                              />
-                            }
-                            label=""
-                          />
-                        </Box>
+                  ))}
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {criteria.map((criterion, criterionIndex) => {
+                  const selectedOption =
+                    answers?.[`criterion_${criterionIndex}`];
+                  return (
+                    <TableRow key={criterionIndex}>
+                      <TableCell
+                        sx={{
+                          padding: "12px",
+                          fontWeight: "bold",
+                          verticalAlign: "middle",
+                        }}
+                      >
+                        {criterion}
                       </TableCell>
-                    ))}
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                      {options.map((_, optionIndex) => (
+                        <TableCell key={optionIndex} align="center">
+                          <Box
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                            height="100%"
+                            minHeight="50px"
+                            ml={3}
+                          >
+                            <FormControlLabel
+                              control={
+                                <Radio
+                                  checked={selectedOption === optionIndex}
+                                  onClick={() =>
+                                    handleRadioClick(
+                                      criterionIndex,
+                                      optionIndex
+                                    )
+                                  }
+                                />
+                              }
+                              label=""
+                            />
+                          </Box>
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
       </div>
     </div>
   );

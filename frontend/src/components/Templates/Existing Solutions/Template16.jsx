@@ -5,15 +5,16 @@ import "../../../CSS/Template16.css";
 
 const Template16 = ({ answers, onInputChange }) => {
   return (
-    <div className="container">
+    <div className="container" data-export-section="main-section">
       {/* Header Section */}
-      <div className="header">
+      <h3 className="header">
         Limitations of the existing solutions and reasons behind failing to
         exactly solve the real-world
-      </div>
+      </h3>
 
       {/* Table Section */}
-      <table className="table">
+      <div data-export-section="table">
+        <table className="table">
         <thead>
           {/* Market Matrix Row */}
           <tr className="table-title-row">
@@ -51,6 +52,7 @@ const Template16 = ({ answers, onInputChange }) => {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 };

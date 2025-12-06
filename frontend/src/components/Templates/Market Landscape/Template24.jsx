@@ -5,13 +5,11 @@ import "../../../CSS/Template24.css";
 const Template24 = ({ answers, onInputChange }) => {
   return (
     <div className="container">
-      <div className="header">
-        <h4>
-          Identification of similar inventions in the R&D pipeline, found during
-          conferences and meetings with stakeholders.
-        </h4>
-      </div>
-      <div className="unique-textfield-container">
+      <h3 className="header">
+        Identification of similar inventions in the R&D pipeline, found during
+        conferences and meetings with stakeholders.
+      </h3>
+      <div className="unique-textfield-container" data-export-section="text">
         <TextField
           id="unique-textfield"
           placeholder="Enter Here ..."

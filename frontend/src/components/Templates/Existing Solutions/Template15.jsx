@@ -5,10 +5,10 @@ import "../../../CSS/Template15.css";
 const Template15 = ({ answers, onInputChange }) => {
   return (
     <div className="container">
-      <h4>
+      <h3>
         Exploration of similar problems and solutions beyond the single industry
-      </h4>
-      <div className="unique-textfield-container">
+      </h3>
+      <div className="unique-textfield-container" data-export-section="text">
         <TextField
           id="unique-textfield"
           placeholder="Enter Analysis Here..."

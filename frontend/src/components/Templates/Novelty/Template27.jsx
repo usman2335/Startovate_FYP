@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import TextField from "@mui/material/TextField";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
@@ -57,78 +57,85 @@ const Template27 = ({ answers, onInputChange }) => {
     return map;
   }, []);
 
-  const [inputs, setInputs] = useState({
-    functional: [],
-    emotional: [],
-    lifeChanging: [],
-    socialImpact: [],
-  });
-
   const handleChipClick = (category, value) => {
-    setInputs((prev) => {
-      if (prev[category].includes(value)) return prev; // Avoid duplicates
-      return {
-        ...prev,
-        [category]: [...prev[category], value],
-      };
-    });
-  };
-
-  const handleInputChange = (category, text) => {
-    const values = text
+    const currentValue = answers?.[`value_${category}_`] || "";
+    const currentValues = currentValue
       .split(",")
       .map((v) => v.trim())
       .filter((v) => v !== "");
-    setInputs((prev) => ({
-      ...prev,
-      [category]: values,
-    }));
+
+    if (currentValues.includes(value)) return; // Avoid duplicates
+
+    const newValues = [...currentValues, value];
+    const fieldName = `value_${category}_`;
+    // Create a synthetic event for onInputChange
+    const syntheticEvent = {
+      target: { value: newValues.join(", ") },
+    };
+    onInputChange(syntheticEvent, fieldName);
   };
 
-  const renderRow = (category) => (
-    <tr key={category}>
-      <td className="category-column">{category.replace(/([A-Z])/g, " $1")}</td>
-      <td className="chip-column">
-        <Stack direction="row" spacing={0.5} flexWrap="wrap">
-          {categories[category].map((label, idx) => (
-            <Chip
-              key={idx}
-              label={label}
-              color={chipColorMap[label]}
-              variant="outlined"
-              onClick={() => handleChipClick(category, label)}
-            />
-          ))}
-        </Stack>
-      </td>
-      <td className="input-column">
-        <TextField
-          multiline
-          rows={2}
-          variant="outlined"
-          fullWidth
-          value={inputs[category].join(", ")}
-          onChange={(e) => handleInputChange(category, e.target.value)}
-        />
-      </td>
-    </tr>
-  );
+  const handleInputChange = (category, text) => {
+    const fieldName = `value_${category}_`;
+    const syntheticEvent = {
+      target: { value: text },
+    };
+    onInputChange(syntheticEvent, fieldName);
+  };
+
+  const renderRow = (category) => {
+    const fieldName = `value_${category}_`;
+    const currentValue = answers?.[fieldName] || "";
+
+    return (
+      <tr key={category}>
+        <td className="category-column">
+          {category.replace(/([A-Z])/g, " $1")}
+        </td>
+        <td className="chip-column">
+          <Stack direction="row" spacing={0.5} flexWrap="wrap">
+            {categories[category].map((label, idx) => (
+              <Chip
+                key={idx}
+                label={label}
+                color={chipColorMap[label]}
+                variant="outlined"
+                onClick={() => handleChipClick(category, label)}
+              />
+            ))}
+          </Stack>
+        </td>
+        <td className="input-column">
+          <TextField
+            multiline
+            rows={2}
+            variant="outlined"
+            fullWidth
+            value={currentValue}
+            onChange={(e) => handleInputChange(category, e.target.value)}
+          />
+        </td>
+      </tr>
+    );
+  };
 
   return (
-    <div className="container">
-      <div className="header">
+    <div className="container" data-export-section="main-section">
+      <h3 className="header">
         Market Mapping and Competitive Landscape Matrix
+      </h3>
+      <div data-export-section="table">
+        <table className="table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>30 Elements of Value</th>
+              <th>What value your proposed invention offers</th>
+            </tr>
+          </thead>
+          <tbody>{Object.keys(categories).map(renderRow)}</tbody>
+        </table>
       </div>
-      <table className="table">
-        <thead>
-          <tr>
-            <th></th>
-            <th>30 Elements of Value</th>
-            <th>What value your proposed invention offers</th>
-          </tr>
-        </thead>
-        <tbody>{Object.keys(categories).map(renderRow)}</tbody>
-      </table>
     </div>
   );
 };

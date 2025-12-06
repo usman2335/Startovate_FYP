@@ -55,12 +55,12 @@ const Template11 = ({ answers, onInputChange }) => {
   return (
     <>
       {/* Article Matrix */}
-      <div className="container">
-        <div className="header">
+      <div className="container" data-export-section="article-section">
+        <h3 className="header">
           Article Matrix: Published Work in Research Journals and Conference
           Proceedings
-        </div>
-        <div className="search-container">
+        </h3>
+        <div className="search-container" data-export-section="text">
           <span className="search-label">Keywords:</span>
           <TextField
             id="outlined-search"
@@ -70,13 +70,15 @@ const Template11 = ({ answers, onInputChange }) => {
             onChange={(e) => onInputChange(e, "keywords_")}
           />
         </div>
-        {renderTable(articleHeaders, "article")}
+        <div data-export-section="table">
+          {renderTable(articleHeaders, "article")}
+        </div>
       </div>
 
       {/* Patent Matrix */}
-      <div className="container">
-        <div className="header">Patent Matrix</div>
-        <div className="search-container">
+      <div className="container" data-export-section="patent-section">
+        <h3 className="header">Patent Matrix</h3>
+        <div className="search-container" data-export-section="text">
           <span className="search-label">Keywords:</span>
           <TextField
             id="outlined-search"
@@ -86,7 +88,9 @@ const Template11 = ({ answers, onInputChange }) => {
             onChange={(e) => onInputChange(e, "patent_keywords_")}
           />
         </div>
-        {renderTable(patentHeaders, "patent")}
+        <div data-export-section="table">
+          {renderTable(patentHeaders, "patent")}
+        </div>
       </div>
     </>
   );

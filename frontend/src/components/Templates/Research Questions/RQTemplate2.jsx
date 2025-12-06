@@ -36,10 +36,11 @@ const Template2 = ({ answers, onInputChange }) => {
     <div
       className="template-container"
       style={{ maxWidth: "90%", margin: "0 auto" }}
+      data-export-section="main-section"
     >
-      <h2 style={{ color: "black", padding: "10px" }}>Synthesis Matrix</h2>
+      <h3 style={{ color: "black", padding: "10px" }}>Synthesis Matrix</h3>
 
-      <div style={{ marginBottom: "20px" }}>
+      <div style={{ marginBottom: "20px" }} data-export-section="text">
         <label
           htmlFor="keywords"
           style={{ display: "block", marginBottom: "10px", textAlign: "left" }}
@@ -56,11 +57,12 @@ const Template2 = ({ answers, onInputChange }) => {
         />
       </div>
 
-      <TableContainer
-        component={Paper}
-        style={{ borderRadius: "12px", overflow: "hidden" }}
-      >
-        <Table>
+      <div data-export-section="table">
+        <TableContainer
+          component={Paper}
+          style={{ borderRadius: "12px", overflow: "hidden" }}
+        >
+          <Table>
           <TableHead>
             <TableRow>
               <TableCell
@@ -114,6 +116,7 @@ const Template2 = ({ answers, onInputChange }) => {
           </TableBody>
         </Table>
       </TableContainer>
+      </div>
     </div>
   );
 };

@@ -142,6 +142,23 @@ export const captureTemplateAsImage = async (element, options = {}) => {
     useCORS: true,
     logging: false,
     backgroundColor: "#ffffff",
+    // Hide button groups and other UI elements in the cloned DOM before capture
+    onclone: (clonedDoc) => {
+      // Hide the button group (Reset, Auto Fill, Save buttons)
+      const buttonGroups = clonedDoc.querySelectorAll(".tem-button-group");
+      buttonGroups.forEach((group) => {
+        if (group && group.style) {
+          group.style.display = "none";
+        }
+      });
+      // Also hide any loading indicators or snackbars
+      const loadingIndicators = clonedDoc.querySelectorAll('[class*="CircularProgress"]');
+      loadingIndicators.forEach((indicator) => {
+        if (indicator && indicator.style) {
+          indicator.style.display = "none";
+        }
+      });
+    },
   };
 
   const canvas = await html2canvas(element, { ...defaultOptions, ...options });
@@ -614,16 +631,18 @@ const extractFormFieldsAsText = (
 
 /**
  * Extract table structure from DOM and convert to Word table
+ * @param {HTMLElement} tableElement - The table element to extract
+ * @param {Object} templateData - Optional template data to get radio/checkbox values
  */
-const extractTableFromDOM = (tableElement) => {
+const extractTableFromDOM = (tableElement, templateData = null) => {
   const rows = [];
   const tableRows = tableElement.querySelectorAll("tr");
 
-  tableRows.forEach((row) => {
+  tableRows.forEach((row, rowIndex) => {
     const cells = [];
     const rowCells = row.querySelectorAll("th, td");
 
-    rowCells.forEach((cell) => {
+    rowCells.forEach((cell, cellIndex) => {
       let cellText = "";
 
       // Extract text content
@@ -632,24 +651,72 @@ const extractTableFromDOM = (tableElement) => {
         .map((node) => node.textContent.trim())
         .filter((text) => text.length > 0);
 
-      // Check for input values
+      // Check for radio buttons (Material-UI Radio or native radio)
+      const radioInput = cell.querySelector('input[type="radio"]');
+      const materialRadio = cell.querySelector('[role="radio"]');
+      
+      // Check for checkbox
+      const checkbox = cell.querySelector('input[type="checkbox"]');
+      
+      // Check for text inputs
       const input = cell.querySelector(
         'input[type="text"], input[type="number"], textarea'
       );
-      const checkbox = cell.querySelector('input[type="checkbox"]');
 
-      if (checkbox) {
+      // Priority: Radio > Checkbox > Text Input > Text Content
+      if (radioInput || materialRadio) {
+        // Radio button cell - check if selected
+        let isChecked = false;
+        
+        // First check DOM state
+        if (radioInput) {
+          isChecked = radioInput.checked;
+        } else if (materialRadio) {
+          isChecked = 
+            materialRadio.getAttribute("aria-checked") === "true" ||
+            materialRadio.querySelector('input[type="radio"]')?.checked === true ||
+            materialRadio.classList.contains("Mui-checked");
+        }
+        
+        // If not checked in DOM, check saved data (for cases where DOM doesn't reflect saved state)
+        if (!isChecked && templateData?.content && rowIndex > 0) {
+          // Skip header row (rowIndex 0), first column is criterion name (cellIndex 0)
+          // For RQTemplate1: criterion_0, criterion_1, etc. store the option index (0-4)
+          // Column index 1 = option 0, column index 2 = option 1, etc.
+          const criterionIndex = rowIndex - 1; // Skip header row
+          const optionIndex = cellIndex - 1; // Skip first column (criterion name)
+          
+          if (optionIndex >= 0) {
+            const criterionKey = `criterion_${criterionIndex}`;
+            const savedValue = templateData.content[criterionKey];
+            // Check if saved value matches this column's option index
+            if (savedValue !== null && savedValue !== undefined && String(savedValue) === String(optionIndex)) {
+              isChecked = true;
+            }
+          }
+        }
+        
+        cellText = isChecked ? "✓" : "";
+      } else if (checkbox) {
         cellText = checkbox.checked ? "✓" : "";
       } else if (input) {
         cellText = input.value || "";
       } else {
-        cellText = textNodes.join(" ") || cell.textContent?.trim() || "";
+        // For header cells, use the text content
+        if (cell.tagName === "TH") {
+          cellText = cell.textContent?.trim() || "";
+        } else {
+          // For data cells, try to get text but exclude radio/checkbox labels
+          cellText = textNodes.join(" ") || cell.textContent?.trim() || "";
+        }
       }
 
-      // Remove label text if present
-      const label = cell.querySelector("label");
-      if (label && cellText.includes(label.textContent)) {
-        cellText = cellText.replace(label.textContent, "").trim();
+      // Remove label text if present (but keep tick marks)
+      if (cellText !== "✓") {
+        const label = cell.querySelector("label");
+        if (label && cellText.includes(label.textContent)) {
+          cellText = cellText.replace(label.textContent, "").trim();
+        }
       }
 
       cells.push(
@@ -774,16 +841,6 @@ export const generateWordDocument = async ({
     console.log(
       `Processing template ${i + 1}/${templateKeys.length}: ${templateKey}`
     );
-
-    // Add page break before each template (except the first)
-    if (i > 0) {
-      docChildren.push(
-        new Paragraph({
-          children: [new TextRun({ text: "" })],
-          pageBreakBefore: true,
-        })
-      );
-    }
 
     // Add template heading
     docChildren.push(
@@ -1002,13 +1059,91 @@ export const generateWordDocument = async ({
             case "table":
               const table = sectionElement.querySelector("table");
               if (table) {
-                docChildren.push(extractTableFromDOM(table));
+                docChildren.push(extractTableFromDOM(table, templateData));
                 docChildren.push(
                   new Paragraph({
                     children: [new TextRun({ text: "" })],
                     spacing: { after: 300 },
                   })
                 );
+              }
+              break;
+
+            case "section":
+              // Process a section container: extract heading, text, and table in order
+              // First, extract the heading (h2-h5) if it exists
+              const sectionHeading = sectionElement.querySelector("h2, h3, h4, h5");
+              if (sectionHeading) {
+                const headingKey = `${sectionHeading.tagName}-${sectionHeading.textContent?.trim()}`;
+                if (!processedHeadings.has(headingKey)) {
+                  processedHeadings.add(headingKey);
+                  const headingText = sectionHeading.textContent?.trim() || "";
+                  if (headingText) {
+                    templateLevelHeadingTexts.add(headingText);
+                    const style = getHeadingStyle(sectionHeading.tagName);
+                    docChildren.push(
+                      new Paragraph({
+                        children: [
+                          new TextRun({
+                            text: headingText,
+                            bold: style.bold,
+                            size: style.size,
+                            font: "Calibri",
+                          }),
+                        ],
+                        spacing: style.spacing,
+                      })
+                    );
+                  }
+                }
+              }
+
+              // Then extract text sections within this container (in DOM order)
+              const textSections = Array.from(sectionElement.querySelectorAll('[data-export-section="text"]'));
+              // Sort by DOM position to maintain order
+              textSections.sort((a, b) => {
+                const position = a.compareDocumentPosition(b);
+                if (position & Node.DOCUMENT_POSITION_FOLLOWING) return -1;
+                if (position & Node.DOCUMENT_POSITION_PRECEDING) return 1;
+                return 0;
+              });
+              
+              for (const textSection of textSections) {
+                const sectionLevelHeadingTexts = new Set();
+                const allProcessedHeadingTexts = new Set([
+                  ...templateLevelHeadingTexts,
+                  ...sectionLevelHeadingTexts,
+                ]);
+                const textParagraphs = extractFormFieldsAsText(
+                  textSection,
+                  templateData,
+                  templateConfig,
+                  allProcessedHeadingTexts
+                );
+                textParagraphs.forEach((para) => docChildren.push(para));
+              }
+
+              // Finally, extract tables within this container (in DOM order)
+              const tableSections = Array.from(sectionElement.querySelectorAll('[data-export-section="table"]'));
+              // Sort by DOM position to maintain order
+              tableSections.sort((a, b) => {
+                const position = a.compareDocumentPosition(b);
+                if (position & Node.DOCUMENT_POSITION_FOLLOWING) return -1;
+                if (position & Node.DOCUMENT_POSITION_PRECEDING) return 1;
+                return 0;
+              });
+              
+              for (const tableSection of tableSections) {
+                const table = tableSection.querySelector("table");
+                if (table) {
+                  docChildren.push(extractTableFromDOM(table, templateData));
+                  docChildren.push(
+                    new Paragraph({
+                      children: [new TextRun({ text: "" })],
+                      spacing: { after: 300 },
+                    })
+                  );
+                }
               }
               break;
 

@@ -5,14 +5,12 @@ import "../../../CSS/Template22.css";
 const Template22 = ({ answers, onInputChange }) => {
   return (
     <div className="container">
-      <div className="header">
-        <h4>
-          Evidence from news, reports and articles showing chance of potential
-          growth or decline of the industry hosting the existing solutions in
-          the market (e.g., CAGR)
-        </h4>
-      </div>
-      <div className="unique-textfield-container">
+      <h3 className="header">
+        Evidence from news, reports and articles showing chance of potential
+        growth or decline of the industry hosting the existing solutions in the
+        market (e.g., CAGR)
+      </h3>
+      <div className="unique-textfield-container" data-export-section="text">
         <TextField
           id="unique-textfield"
           placeholder="Enter Evidence..."

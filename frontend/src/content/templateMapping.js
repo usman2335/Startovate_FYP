@@ -793,13 +793,38 @@ const templateMapping = {
 
   "LiteratureSearch-Step1": {
     component: Template9,
-    renderAs: "table",
-    fields: [],
-    fieldHints: {},
+    renderAs: "image",
+    fields: [
+      "problem_synonym1_",
+      "problem_synonym2_",
+      "problem_synonym3_",
+      "solution_synonym1_",
+      "solution_synonym2_",
+      "solution_synonym3_",
+      "context_synonym1_",
+      "context_synonym2_",
+      "context_synonym3_",
+    ],
+    fieldHints: {
+      problem_synonym1_: "Problem - Synonym I",
+      problem_synonym2_: "Problem - Synonym II",
+      problem_synonym3_: "Problem - Synonym III",
+      solution_synonym1_: "Problem Solution - Synonym I",
+      solution_synonym2_: "Problem Solution - Synonym II",
+      solution_synonym3_: "Problem Solution - Synonym III",
+      context_synonym1_: "Context Of Application - Synonym I",
+      context_synonym2_: "Context Of Application - Synonym II",
+      context_synonym3_: "Context Of Application - Synonym III",
+    },
   },
   "LiteratureSearch-Step2": {
     component: Template10,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["gap_"],
     fieldHints: {
       gap_: "Research gap conceived through observations and discussions with stakeholders",
@@ -807,7 +832,16 @@ const templateMapping = {
   },
   "LiteratureSearch-Step3": {
     component: Template11,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="article-section"]',
+        type: "section",
+      },
+      {
+        selector: '[data-export-section="patent-section"]',
+        type: "section",
+      },
+    ],
     fields: ["keywords_", "patent_keywords_"],
     repeatedFields: [
       { prefix: "article", count: 30 },
@@ -832,7 +866,12 @@ const templateMapping = {
   },
   "LiteratureSearch-Step4": {
     component: Template12,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["comparison_"],
     fieldHints: {
       comparison_:
@@ -848,7 +887,12 @@ const templateMapping = {
 
   "ExistingSolutions-Step1": {
     component: Template14,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="main-section"]',
+        type: "section",
+      },
+    ],
     fields: ["keywords_"],
     repeatedFields: [
       { prefix: "existingSolutions", count: 5 },
@@ -870,7 +914,12 @@ const templateMapping = {
   },
   "ExistingSolutions-Step2": {
     component: Template15,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["similarProblems"],
     fieldHints: {
       similarProblems:
@@ -879,7 +928,12 @@ const templateMapping = {
   },
   "ExistingSolutions-Step3": {
     component: Template16,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="main-section"]',
+        type: "section",
+      },
+    ],
     fields: [],
     repeatedFields: [{ prefix: "limitationsObserved", count: 5 }],
     fieldHints: {
@@ -892,7 +946,12 @@ const templateMapping = {
   },
   "ExistingSolutions-Step4": {
     component: Template17,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="main-section"]',
+        type: "section",
+      },
+    ],
     fields: [],
     repeatedFields: [{ prefix: "patentDetails", count: 5 }],
     fieldHints: {
@@ -905,7 +964,12 @@ const templateMapping = {
   },
   "ExistingSolutions-Step5": {
     component: Template18,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="main-section"]',
+        type: "section",
+      },
+    ],
     fields: [],
     repeatedFields: [{ prefix: "companiesOffering", count: 5 }],
     fieldHints: {
@@ -918,7 +982,12 @@ const templateMapping = {
   },
   "ExistingSolutions-Step6": {
     component: Template19,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["justification_"],
     fieldHints: {
       justification_:
@@ -928,7 +997,12 @@ const templateMapping = {
 
   "MarketLandscape-Step1": {
     component: Template20,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="main-section"]',
+        type: "section",
+      },
+    ],
     fields: ["CAGR_"],
     repeatedFields: [{ prefix: "value", count: 5 }],
     fieldHints: {
@@ -942,15 +1016,42 @@ const templateMapping = {
   },
   "MarketLandscape-Step2": {
     component: Template21,
-    renderAs: "table",
-    fields: ["CAGR_"],
+    renderAs: [
+      {
+        selector: '[data-export-section="main-section"]',
+        type: "section",
+      },
+    ],
+    fields: [
+      "CAGR_",
+      "value_0_0",
+      "value_0_1",
+      "value_0_2",
+      "value_1_0",
+      "value_1_1",
+      "value_1_2",
+      "value_2_0",
+      "value_2_1",
+      "value_2_2",
+      "value_3_0",
+      "value_3_1",
+      "value_3_2",
+      "value_4_0",
+      "value_4_1",
+      "value_4_2",
+    ],
     fieldHints: {
       CAGR_: "Compound Annual Growth Rate (CAGR)",
     },
   },
   "MarketLandscape-Step3": {
     component: Template22,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["evidence_"],
     fieldHints: {
       evidence_:
@@ -959,7 +1060,12 @@ const templateMapping = {
   },
   "MarketLandscape-Step4": {
     component: Template23,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["identification_"],
     fieldHints: {
       identification_:
@@ -968,7 +1074,12 @@ const templateMapping = {
   },
   "MarketLandscape-Step5": {
     component: Template24,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["identification_"],
     fieldHints: {
       identification_:
@@ -977,7 +1088,12 @@ const templateMapping = {
   },
   "MarketLandscape-Step7": {
     component: Template26,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["probability_", "pay_"],
     fieldHints: {
       probability_:
@@ -988,13 +1104,33 @@ const templateMapping = {
 
   "Novelty-Step1": {
     component: Template27,
-    renderAs: "image",
-    fields: [],
-    fieldHints: {},
+    renderAs: [
+      {
+        selector: '[data-export-section="main-section"]',
+        type: "section",
+      },
+    ],
+    fields: [
+      "value_functional_",
+      "value_emotional_",
+      "value_lifeChanging_",
+      "value_socialImpact_",
+    ],
+    fieldHints: {
+      value_functional_: "Functional Value",
+      value_emotional_: "Emotional Value",
+      value_lifeChanging_: "Life Changing Value",
+      value_socialImpact_: "Social Impact Value",
+    },
   },
   "Novelty-Step2": {
     component: Template28,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["mapping_"],
     fieldHints: {
       mapping_:
@@ -1003,7 +1139,12 @@ const templateMapping = {
   },
   "Novelty-Step3": {
     component: Template29,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["discussions_"],
     fieldHints: {
       discussions_:
@@ -1013,9 +1154,25 @@ const templateMapping = {
 
   "ResearchQuestion-Step1": {
     component: RQTemplate1,
-    renderAs: "table",
-    fields: ["problemStatement_"],
-    repeatedFields: [{ prefix: "criterion", count: 10 }],
+    renderAs: [
+      {
+        selector: '[data-export-section="main-section"]',
+        type: "section",
+      },
+    ],
+    fields: [
+      "problemStatement_",
+      "criterion_0",
+      "criterion_1",
+      "criterion_2",
+      "criterion_3",
+      "criterion_4",
+      "criterion_5",
+      "criterion_6",
+      "criterion_7",
+      "criterion_8",
+      "criterion_9",
+    ],
     fieldHints: {
       problemStatement_: "Problem Statement Derived",
       criterion_0: "Feasible",
@@ -1035,7 +1192,12 @@ const templateMapping = {
   },
   "ResearchQuestion-Step2": {
     component: RQTemplate2,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="main-section"]',
+        type: "section",
+      },
+    ],
     fields: [
       "keywords_",
       "statement_1",
@@ -1053,7 +1215,12 @@ const templateMapping = {
   },
   "ResearchQuestion-Step3": {
     component: RQTemplate3,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="main-section"]',
+        type: "section",
+      },
+    ],
     fields: [
       "keywords_",
       "statement_1",
@@ -1071,7 +1238,12 @@ const templateMapping = {
   },
   "ResearchQuestion-Step4": {
     component: RQTemplate4,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["demonstration_"],
     fieldHints: {
       demonstration_:
@@ -1080,7 +1252,12 @@ const templateMapping = {
   },
   "ResearchQuestion-Step5": {
     component: RQTemplate5,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_: "Supportive Objectives and Tentative Hypothesis",
@@ -1088,7 +1265,12 @@ const templateMapping = {
   },
   "ResearchQuestion-Step6": {
     component: RQTemplate6,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["consistency_"],
     fieldHints: {
       consistency_:
@@ -1098,7 +1280,12 @@ const templateMapping = {
 
   "ResearchOutcome-Step1": {
     component: ROTemplate1,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:
@@ -1107,7 +1294,12 @@ const templateMapping = {
   },
   "ResearchOutcome-Step3": {
     component: ROTemplate3,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:
@@ -1116,7 +1308,12 @@ const templateMapping = {
   },
   "ResearchOutcome-Step4": {
     component: ROTemplate4,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:
@@ -1125,7 +1322,12 @@ const templateMapping = {
   },
   "ResearchOutcome-Step5": {
     component: ROTemplate5,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:
@@ -1135,7 +1337,12 @@ const templateMapping = {
 
   "ResearchMethodology-Step2": {
     component: RMTemplate2,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:
@@ -1144,7 +1351,12 @@ const templateMapping = {
   },
   "ResearchMethodology-Step4": {
     component: RMTemplate4,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:
@@ -1153,7 +1365,12 @@ const templateMapping = {
   },
   "ResearchMethodology-Step6": {
     component: RMTemplate6,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_: "Tentative details of Travel Outside lab if desired",
@@ -1162,7 +1379,12 @@ const templateMapping = {
 
   "KeyResources-Step2": {
     component: KMTemplate2,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:
@@ -1171,7 +1393,12 @@ const templateMapping = {
   },
   "KeyResources-Step4": {
     component: KMTemplate4,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:
@@ -1181,7 +1408,12 @@ const templateMapping = {
 
   "TeamCapacities-Step1": {
     component: TCTemplate1,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:
@@ -1190,7 +1422,12 @@ const templateMapping = {
   },
   "TeamCapacities-Step2": {
     component: TCTemplate2,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:
@@ -1199,7 +1436,12 @@ const templateMapping = {
   },
   "TeamCapacities-Step5": {
     component: TCTemplate5,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:
@@ -1208,7 +1450,12 @@ const templateMapping = {
   },
   "TeamCapacities-Step6": {
     component: TCTemplate6,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:

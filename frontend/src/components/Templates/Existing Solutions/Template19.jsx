@@ -5,11 +5,11 @@ import "../../../CSS/Template19.css";
 const Template19 = ({ answers, onInputChange }) => {
   return (
     <div className="container">
-      <h4>
+      <h3>
         Justification behind how the proposed invention can meet the highlighted
         limitations of the existing solutions.
-      </h4>
-      <div className="unique-textfield-container">
+      </h3>
+      <div className="unique-textfield-container" data-export-section="text">
         <TextField
           id="unique-textfield"
           multiline

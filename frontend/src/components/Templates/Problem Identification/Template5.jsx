@@ -316,9 +316,9 @@ const StakeholderMatrix = ({ canvasId, templateId }) => {
         {renderQuadrant("q4", "Low Interest, High Influence", "q4")}
       </div>
 
-      <div style={{ textAlign: "center", marginTop: "1rem" }}>
+      {/*<div style={{ textAlign: "center", marginTop: "1rem" }}>
         <Button onClick={handleExportAsImage}>Export to Word (as Image)</Button>
-      </div>
+      </div>*/}
     </>
   );
 };
