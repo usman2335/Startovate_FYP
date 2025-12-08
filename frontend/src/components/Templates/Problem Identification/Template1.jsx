@@ -47,12 +47,12 @@ const Template1 = ({ answers, onInputChange, canvasId, templateId }) => {
   return (
     <div id="template-capture">
       <div className="tem1-container">
-        <p className="tem1-description">
+        <h3 className="tem1-description">
           <strong>What</strong> real-world practical problem or unmet need will
           be solved or met by the proposed invention?
-        </p>
+        </h3>
 
-        <div className="tem1-form-container">
+        <div className="tem1-form-container" data-export-section="text">
           {[...Array(4)].map((_, index) => (
             <div
               className="tem1-row"

@@ -100,14 +100,15 @@ const Template2 = ({ answers, onInputChange, canvasId, templateId }) => {
       className="template-container"
       style={{ maxWidth: "90%", margin: "0 auto" }}
     >
-      <p className="template-description">
+      <h3 className="template-description">
         <strong>Incident, event or condition</strong> causing and characterizing
         the real-world practical problem.
-      </p>
+      </h3>
 
       <div
         className="template-form"
         style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
+        data-export-section="text"
       >
         <div className="template-column" style={{ flex: "1" }}>
           <label className="template-label">

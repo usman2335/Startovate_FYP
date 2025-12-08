@@ -618,7 +618,12 @@ import TCTemplate6 from "../components/Templates/Team Capacities/TCTemplate6";
 const templateMapping = {
   "ProblemIdentification-Step1": {
     component: Template1,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: [],
     repeatedFields: [
       { prefix: "why", count: 4 },
@@ -637,7 +642,12 @@ const templateMapping = {
   },
   "ProblemIdentification-Step2": {
     component: Template2,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["incident_", "feedback_"],
     fieldHints: {
       incident_: "Enter Incident, event, or condition here",
@@ -646,7 +656,12 @@ const templateMapping = {
   },
   "ProblemIdentification-Step3": {
     component: Template3,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["motivation_"],
     fieldHints: {
       motivation_: "Enter Motivation and Justification",
@@ -660,7 +675,16 @@ const templateMapping = {
   },
   "ProblemIdentification-Step6": {
     component: Template6,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+      {
+        selector: '[data-export-section="table"]',
+        type: "table",
+      },
+    ],
     fields: [
       "name_",
       "instAsso_",
@@ -742,7 +766,12 @@ const templateMapping = {
   },
   "ProblemIdentification-Step7": {
     component: Template7,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["committees_"],
     fieldHints: {
       committees_: "Supportive Associations/Foundations/Standards/Regulations",
@@ -750,7 +779,12 @@ const templateMapping = {
   },
   "ProblemIdentification-Step8": {
     component: Template8,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["code_"],
     fieldHints: {
       code_: "Code of relevant industry",
