@@ -20,7 +20,12 @@ export const saveTemplates = async (canvasId, templateId, answers) => {
 
 // Chatbot API functions - Updated to use Node.js backend as proxy
 
-export const sendChatMessage = async (query, topK = 3, context = {}, templateContext = {}) => {
+export const sendChatMessage = async (
+  query,
+  topK = 3,
+  context = {},
+  templateContext = {}
+) => {
   try {
     const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
     const requestPayload = {
@@ -120,6 +125,7 @@ export const getChatbotStatus = async () => {
  * @returns {Promise<Object>} - Returns chat history messages
  */
 export const getChatHistory = async (canvasId = null) => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_API_URL;
   try {
     const params = {};
     if (canvasId) {
@@ -128,10 +134,13 @@ export const getChatHistory = async (canvasId = null) => {
 
     console.log("📡 Calling getChatHistory API with params:", params);
 
-    const response = await axios.get(`${BACKEND_BASE_URL}/api/chatbot/history`, {
-      params,
-      withCredentials: true,
-    });
+    const response = await axios.get(
+      `${BACKEND_BASE_URL}/api/chatbot/history`,
+      {
+        params,
+        withCredentials: true,
+      }
+    );
 
     console.log("📡 getChatHistory API response:", response.data);
 
@@ -160,10 +169,13 @@ export const getChatHistory = async (canvasId = null) => {
  */
 export const clearChatHistory = async (canvasId = null) => {
   try {
-    const response = await axios.delete(`${BACKEND_BASE_URL}/api/chatbot/history`, {
-      data: { canvasId },
-      withCredentials: true,
-    });
+    const response = await axios.delete(
+      `${BACKEND_BASE_URL}/api/chatbot/history`,
+      {
+        data: { canvasId },
+        withCredentials: true,
+      }
+    );
 
     return response.data;
   } catch (error) {
