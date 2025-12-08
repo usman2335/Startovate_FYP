@@ -4,12 +4,12 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
   padding: 12px;
   border-radius: 50%;
   color: white;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
   transition: all 0.3s ease;
   z-index: 1000;
   width: 56px;
@@ -22,7 +22,8 @@
 
 .chatbot-floating-button:hover {
   transform: scale(1.1);
-  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4);
+  background: linear-gradient(135deg, #b91c1c 0%, #dc2626 100%);
 }
 
 .chatbot-floating-button:active {
@@ -34,7 +35,7 @@
   bottom: 80px;
   right: 20px;
   width: 384px;
-  height: 500px;
+  height: 600px;
   background: white;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
   border-radius: 16px;
@@ -60,13 +61,13 @@
 /* Pulse animation for attention */
 @keyframes pulse {
   0% {
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
   }
   50% {
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.6);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.6);
   }
   100% {
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
   }
 }
 
@@ -89,12 +90,12 @@
     right: 15px;
     width: calc(100vw - 30px);
     max-width: 384px;
-    height: 450px;
+    height: 550px;
   }
 }
 
 @media (max-width: 480px) {
   .chatbot-floating-window {
-    height: 400px;
+    height: 500px;
   }
 }

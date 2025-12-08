@@ -7,7 +7,7 @@ exports.createSession = async (req, res) => {
       ui_mode: "embedded",
       line_items: [
         {
-          price: "price_1STkH5BJek7IFMS7gPweWRcd", // Replace with real price ID
+          price: "price_1RZXrNEQHPOtDYyWIRF7ERJv", // Replace with real price ID
           quantity: 1,
         },
       ],
