@@ -106,7 +106,7 @@ const SignupPage = () => {
       <SignupCard />
 
       <div className="signup-form">
-        <h1>Logo</h1>
+        <img src={"/assets/inventLogo.png"} alt="Logo" />
         <h2>Create your account now</h2>
 
         <form className="form1" onSubmit={handleSubmit}>
