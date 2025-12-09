@@ -182,7 +182,6 @@ const CanvasPage = () => {
 
   const handleSaveIdeaDescription = (description) => {
     setIdeaDescription(description);
-    // TODO: Implement auto-fill logic here after saving
     alert(
       "Idea description saved! Auto-fill functionality will be implemented soon!"
     );
@@ -198,7 +197,6 @@ const CanvasPage = () => {
     const checklistCategory = checklistData[selectedComponent];
 
     if (checklistCategory) {
-      // Find the correct step using the pointId
       const selectedPoint = checklistCategory.find(
         (point) => point.id === pointId
       );
