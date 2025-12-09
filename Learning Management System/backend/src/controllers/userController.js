@@ -66,8 +66,8 @@ const login = async (req, res) => {
     console.log("hellow token:", token);
     res.cookie("token", token, {
       httpOnly: true, // Prevents client-side access (XSS protection)
-      secure: false, // Set to false for localhost development
-      sameSite: "Lax", // More permissive for localhost
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax", // CSRF protection
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
     res.status(200).json({
@@ -85,6 +85,12 @@ const login = async (req, res) => {
 };
 // ✅ Public: Logout
 const logout = (req, res) => {
+  res.cookie("token", "", {
+    httpOnly: true,
+    secure: true, // Use only in production with HTTPS
+    sameSite: "Strict",
+    expires: new Date(0), // Expire immediately
+  });
   res.status(200).json({ message: "Logout successful" });
 };
 
