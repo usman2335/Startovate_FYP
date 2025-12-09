@@ -18,13 +18,16 @@ A comprehensive PDF parsing solution for the LCI ChatBot project, compatible wit
    ```bash
    pip install -r requirements_core.txt
    ```
-   
+
+
+
+
    **Note**: For full functionality including table extraction, you may need additional system dependencies:
    - **Ghostscript** (for Camelot table extraction)
    - **Java** (for Tabula table extraction)
    - **Poppler** (for Unstructured advanced parsing)
 
-3. **Test installation**:
+2. **Test installation**:
    ```bash
    python test_parser.py
    ```

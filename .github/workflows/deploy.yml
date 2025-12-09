@@ -84,6 +84,12 @@ jobs:
             --name startovate-chatbot \
             --restart unless-stopped \
             -p 80:8000 \
+            -e MISTRAL_API_KEY="${{ secrets.MISTRAL_API_KEY }}" \
+            -e MONGO_URI="${{ secrets.MONGO_URI }}" \
+            -e DB_NAME="${{ secrets.DB_NAME }}" \
+            -e QDRANT_URL="${{ secrets.QDRANT_URL }}" \
+            -e QDRANT_API_KEY="${{ secrets.QDRANT_API_KEY }}" \
+            -e QDRANT_COLLECTION_NAME="${{ secrets.QDRANT_COLLECTION_NAME }}" \
             $IMAGE_URI:latest
 
           echo "✅ Deployment commands completed."
