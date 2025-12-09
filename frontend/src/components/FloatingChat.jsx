@@ -1,12 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Send, Bot, User, Loader2, X, Minimize2, Trash2 } from "lucide-react";
-import { sendChatMessage, getChatbotStatus, getChatHistory, clearChatHistory } from "../utils/api";
+import { Send, Bot, User, Loader2, Minimize2 } from "lucide-react";
+import {
+  sendChatMessage,
+  getChatbotStatus,
+  getChatHistory,
+  clearChatHistory,
+} from "../utils/api";
 import { useChatbotContext } from "../context/chatbotContext";
 import { formatChatbotResponse, typeText } from "../utils/chatbotTextProcessor";
 import "../CSS/FloatingChat.css";
 
 const FloatingChat = ({ onClose }) => {
-  const { context, getContextSummary, getTemplateContext } = useChatbotContext();
+  const { context, getContextSummary, getTemplateContext } =
+    useChatbotContext();
 
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState("");
@@ -27,13 +33,16 @@ const FloatingChat = ({ onClose }) => {
   // Load chat history and check connection on component mount
   useEffect(() => {
     console.log("🚀 FloatingChat useEffect triggered - initializing chat");
-    
+
     const initializeChat = async () => {
       // Check connection
       try {
         const status = await getChatbotStatus();
         setIsConnected(status.success && status.data.status === "online");
-        console.log("🔌 Connection status:", status.success ? "online" : "offline");
+        console.log(
+          "🔌 Connection status:",
+          status.success ? "online" : "offline"
+        );
       } catch (error) {
         console.log("Chatbot backend not available:", error.message);
         setIsConnected(false);
@@ -45,14 +54,18 @@ const FloatingChat = ({ onClose }) => {
         console.log("🔍 Loading chat history for canvasId:", context.canvasId);
         const history = await getChatHistory(context.canvasId);
         console.log("📥 Received history:", JSON.stringify(history, null, 2));
-        
+
         console.log("🔍 Checking history:", {
           hasHistory: history.hasHistory,
           messagesLength: history.messages?.length,
-          messages: history.messages
+          messages: history.messages,
         });
 
-        if (history.hasHistory && history.messages && history.messages.length > 0) {
+        if (
+          history.hasHistory &&
+          history.messages &&
+          history.messages.length > 0
+        ) {
           console.log("📝 Converting messages to UI format...");
           // Convert database messages to UI format
           const formattedMessages = history.messages.map((msg, index) => {
@@ -66,7 +79,9 @@ const FloatingChat = ({ onClose }) => {
           });
           console.log("📝 Formatted messages:", formattedMessages);
           setMessages(formattedMessages);
-          console.log(`✅ Loaded ${formattedMessages.length} messages from history`);
+          console.log(
+            `✅ Loaded ${formattedMessages.length} messages from history`
+          );
           console.log("✅ Messages state should now be:", formattedMessages);
         } else {
           console.log("ℹ️ No history found, showing welcome message");
@@ -75,9 +90,7 @@ const FloatingChat = ({ onClose }) => {
             {
               id: 1,
               text: `Hello! I'm your LCI assistant. ${
-                context.canvasId
-                  ? `I can see you're working on a canvas. `
-                  : ""
+                context.canvasId ? `I can see you're working on a canvas. ` : ""
               }How can I help you today?`,
               sender: "bot",
               timestamp: new Date(),
@@ -122,7 +135,12 @@ const FloatingChat = ({ onClose }) => {
       console.log("Context being sent:", getContextSummary());
       const templateContext = getTemplateContext();
       console.log("Template context:", templateContext);
-      const data = await sendChatMessage(inputMessage, 3, context, templateContext);
+      const data = await sendChatMessage(
+        inputMessage,
+        3,
+        context,
+        templateContext
+      );
       console.log("Received response from chatbot:", data);
 
       const botMessage = {
@@ -206,7 +224,11 @@ const FloatingChat = ({ onClose }) => {
   };
 
   const handleClearHistory = async () => {
-    if (!window.confirm("Are you sure you want to clear your chat history? This cannot be undone.")) {
+    if (
+      !window.confirm(
+        "Are you sure you want to clear your chat history? This cannot be undone."
+      )
+    ) {
       return;
     }
 
@@ -250,15 +272,15 @@ const FloatingChat = ({ onClose }) => {
           </div>
         </div>
         <div className="floating-chat-actions">
-          <button 
-            className="action-btn" 
+          <button
+            className="action-btn"
             onClick={handleClearHistory}
             title="Clear chat history"
           >
-            <Trash2 size={16} />
+            🗑️
           </button>
           <button className="action-btn" onClick={onClose}>
-            <X size={16} />
+            ×
           </button>
         </div>
       </div>
@@ -290,29 +312,29 @@ const FloatingChat = ({ onClose }) => {
           </div>
         ) : (
           messages.map((message) => (
-          <div
-            key={message.id}
-            className={`floating-message ${message.sender}`}
-          >
-            <div className="floating-message-avatar">
-              {message.sender === "user" ? (
-                <User size={16} />
-              ) : (
-                <Bot size={16} />
-              )}
-            </div>
-            <div className="floating-message-content">
-              <div
-                className="floating-message-text"
-                dangerouslySetInnerHTML={{
-                  __html: message.text,
-                }}
-              />
-              <div className="floating-message-time">
-                {formatTime(message.timestamp)}
+            <div
+              key={message.id}
+              className={`floating-message ${message.sender}`}
+            >
+              <div className="floating-message-avatar">
+                {message.sender === "user" ? (
+                  <User size={16} />
+                ) : (
+                  <Bot size={16} />
+                )}
+              </div>
+              <div className="floating-message-content">
+                <div
+                  className="floating-message-text"
+                  dangerouslySetInnerHTML={{
+                    __html: message.text,
+                  }}
+                />
+                <div className="floating-message-time">
+                  {formatTime(message.timestamp)}
+                </div>
               </div>
             </div>
-          </div>
           ))
         )}
         {isLoading && (

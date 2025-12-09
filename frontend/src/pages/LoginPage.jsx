@@ -71,8 +71,8 @@ const LoginPage = () => {
       <SignupCard />
 
       <div className="signup-form">
-        <h1>Logo</h1>
-        <h2>Create your account now</h2>
+        <img src={"/assets/inventLogo.png"} alt="Logo" />
+        <h2 className="mt-10">Login to your account</h2>
 
         <form className="form1" onSubmit={handleSubmit}>
           <div className="signup-input-container">

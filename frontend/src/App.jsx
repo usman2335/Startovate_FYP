@@ -20,7 +20,6 @@ function App() {
       <AuthProvider>
         <Router>
           <ChatbotProvider>
-            <ChatbotFloating />
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/homepage" element={<LandingPage />} />

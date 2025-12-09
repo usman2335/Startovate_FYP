@@ -37,6 +37,7 @@ import {
   fetchTemplateData,
 } from "../utils/exportUtils";
 import { useChatbotContext } from "../context/chatbotContext";
+import ChatbotFloating from "../components/ChatbotFloating";
 
 const CanvasPage = () => {
   const { setContext } = useChatbotContext();
@@ -276,6 +277,8 @@ const CanvasPage = () => {
   return (
     <>
       <div style={{ position: "absolute", top: "-9999px", left: "-9999px" }}>
+        <ChatbotFloating />
+
         {isCapturing && (
           <div id="capture-area" ref={captureRef}>
             <TemplateComponent
@@ -391,26 +394,23 @@ const CanvasPage = () => {
                 isBlurred={false}
                 onComponentClick={handleComponentClick}
               />
-              <div className="flex gap-4">
+              <div className="canvas-action-buttons">
                 <Button
-                  padding="1% 2%"
-                  color="#f1f1f1"
-                  fontSize={"1.1em"}
                   label={
                     ideaDescription
-                      ? "🤖 Edit Idea & Auto-fill"
-                      : "🤖 Set Idea & Auto-fill"
+                      ? "Edit Idea & Auto-fill"
+                      : "Set Idea & Auto-fill"
                   }
                   onClick={handleAutoFill}
                   className="autofill-btn"
+                  variant="primary"
                 />
                 <Button
-                  padding="1% 2%"
-                  color="#f1f1f1"
-                  fontSize={"1.1em"}
-                  label="📸 Capture All Templates"
+                  label="Capture All Templates"
                   onClick={handleCaptureAllTemplates}
                   className="capture-all-btn"
+                  variant="secondary"
+                  disabled={isExporting}
                 />
               </div>
             </div>

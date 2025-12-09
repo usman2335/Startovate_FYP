@@ -7,6 +7,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -41,7 +42,7 @@ const Navbar = () => {
     <>
       <div className={`wrapper flex ${scrolling ? "navbar-scrolled" : ""}`}>
         <div>
-          <h1>Logo</h1>
+          <img src={"/assets/inventLogo.png"} alt="Logo" className="logo" />
         </div>
         <div className="nav-links">
           <NavLink to="/" className="nav-link">
@@ -60,12 +61,6 @@ const Navbar = () => {
               Canvas
             </span>
           )}
-          <NavLink to="/Dashboard" className="nav-link">
-            Dashboard
-          </NavLink>
-          <NavLink to="/chat" className="nav-link">
-            LCI Assistant
-          </NavLink>
         </div>
         <div className="login-signup-btns flex">
           {user ? (
