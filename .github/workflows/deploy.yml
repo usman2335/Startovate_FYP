@@ -27,7 +27,7 @@ jobs:
     - name: Build Docker image
       run: |
         # Build Docker image from the lci_chatbot folder
-        docker build -t ${{ secrets.ECR_REPOSITORY }} ./lci_chatbot
+        docker build -t ${{ secrets.ECR_REPOSITORY }} ./LCI_ChatBot
 
     - name: Tag Docker image for ECR
       run: |
