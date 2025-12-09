@@ -10,7 +10,7 @@ connectDB();
 // Middlewares
 app.use(
   cors({
-    origin: "http://localhost:5173", // frontend port (change if needed)
+    origin: "https://lms-frontend-a3y.pages.dev", // frontend port (change if needed)
     credentials: true,
   })
 );
