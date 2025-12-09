@@ -10,11 +10,6 @@ const Checklist = ({
 }) => {
   const steps = checklistData[selectedComponent] || [];
 
-  const completedSteps = steps.filter((step) => step.completed).length;
-  const progressPercentage = steps.length
-    ? (completedSteps / steps.length) * 100
-    : 0;
-
   return (
     <div className="checklist-container">
       <div className="checklist-box">
@@ -22,23 +17,16 @@ const Checklist = ({
           label="IN PROGRESS"
           className="custom-chip"
           style={{
-            backgroundColor: "#FFD7E4",
-            color: "#ED1717",
-            fontWeight: "bold",
+            backgroundColor: "rgba(220, 38, 38, 0.1)",
+            color: "#dc2626",
+            fontWeight: 600,
+            fontFamily: "Poppins, sans-serif",
+            fontSize: "0.75em",
+            textTransform: "uppercase",
+            letterSpacing: "0.1em",
+            border: "1px solid rgba(220, 38, 38, 0.2)",
           }}
         />
-
-        <div className="checklist-header">
-          <div className="progress-bar-wrapper">
-            <div
-              className="progress-bar"
-              style={{ width: `${progressPercentage}%` }}
-            ></div>
-          </div>
-          <div className="progress-percent">
-            {progressPercentage.toFixed(0)}% Completed
-          </div>
-        </div>
 
         <div className="steps-container">
           {steps.length > 0 ? (
@@ -49,21 +37,13 @@ const Checklist = ({
                 <div key={step.id} className={`step`}>
                   <div className="step-info">
                     <span className="step-icon">
-                      {step.completed ? (
-                        <img
-                          src="/assets/checkmak.png"
-                          alt="Completed"
-                          className="icon-size"
-                        />
-                      ) : (
-                        <img
-                          src="/assets/crossmark.png"
-                          alt="Not Completed"
-                          className="icon-size"
-                        />
-                      )}
+                      <img
+                        src="/assets/crossmark.png"
+                        alt="Not Completed"
+                        className="icon-size"
+                      />
                     </span>
-                    <div>
+                    <div className="step-content">
                       <h3 className="step-title">{step.title}</h3>
                       <p className="step-description">{step.description}</p>
                     </div>

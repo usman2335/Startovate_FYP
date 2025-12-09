@@ -360,36 +360,83 @@ const CanvasPage = () => {
                 <div className="canvas-heading">
                   <Typography
                     sx={{
+                      fontFamily: "Poppins, sans-serif",
                       marginBottom: 1,
-                      fontSize: "2em",
-                      fontWeight: 600,
+                      fontSize: "2.2em",
+                      fontWeight: 700,
                       textAlign: "center",
+                      color: "#1f1f1f",
+                      letterSpacing: "-0.02em",
+                      background:
+                        "linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
                     }}
                   >
                     Lean Canvas For Invention
                   </Typography>
                 </div>
                 <div className="canvas-title">
-                  <Typography
-                    sx={{
-                      marginBottom: 1,
-                      fontSize: "1.5em",
-                      fontWeight: 600,
-                      maxWidth: "500px",
-                      textAlign: "right",
-                    }}
-                  >
-                    {`${researchTitle}`}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      marginBottom: 1,
-                      fontSize: "1.1em",
-                      fontWeight: 400,
-                    }}
-                  >
-                    {`${authorName}`}
-                  </Typography>
+                  <div className="canvas-title-section">
+                    <Typography
+                      sx={{
+                        fontFamily: "Poppins, sans-serif",
+                        fontSize: "0.75em",
+                        fontWeight: 600,
+                        color: "#dc2626",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.1em",
+                        marginBottom: "4px",
+                        textAlign: "right",
+                      }}
+                    >
+                      Title
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontFamily: "Poppins, sans-serif",
+                        fontSize: "1.3em",
+                        fontWeight: 600,
+                        maxWidth: "500px",
+                        textAlign: "right",
+                        color: "#1f1f1f",
+                        lineHeight: 1.3,
+                        letterSpacing: "-0.01em",
+                      }}
+                    >
+                      {`${researchTitle}`}
+                    </Typography>
+                  </div>
+                  <div className="canvas-author-section">
+                    <Typography
+                      sx={{
+                        fontFamily: "Poppins, sans-serif",
+                        fontSize: "0.75em",
+                        fontWeight: 600,
+                        color: "#dc2626",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.1em",
+                        marginBottom: "4px",
+                        marginTop: "16px",
+                        textAlign: "right",
+                      }}
+                    >
+                      Author
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontFamily: "Poppins, sans-serif",
+                        fontSize: "1em",
+                        fontWeight: 500,
+                        color: "#1f1f1f",
+                        textAlign: "right",
+                        letterSpacing: "0.01em",
+                      }}
+                    >
+                      {`${authorName}`}
+                    </Typography>
+                  </div>
                 </div>
               </div>
               <LeanCanvas
@@ -456,37 +503,24 @@ const CanvasPage = () => {
               <div className="canvas-heading">
                 <Typography
                   sx={{
+                    fontFamily: "Poppins, sans-serif",
                     marginBottom: 1,
-                    fontSize: "2em",
-                    fontWeight: 600,
+                    fontSize: "2.2em",
+                    fontWeight: 700,
                     textAlign: "center",
+                    color: "#1f1f1f",
+                    letterSpacing: "-0.02em",
+                    background:
+                      "linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
                   }}
                 >
-                  LCI Checklist - I: {selectedComponent}
+                  LCI Checklist - {selectedComponent}
                 </Typography>
               </div>
-              <div className="canvas-title">
-                <Typography
-                  sx={{
-                    marginBottom: 1,
-                    fontSize: "1.5em",
-                    fontWeight: 600,
-                    maxWidth: "500px",
-                    textAlign: "right",
-                  }}
-                >
-                  {`${researchTitle}`}
-                </Typography>
-                <Typography
-                  sx={{
-                    marginBottom: 1,
-                    fontSize: "1.1em",
-                    fontWeight: 400,
-                  }}
-                >
-                  {`${authorName}`}
-                </Typography>
-              </div>
+              <div style={{ width: "20%" }}></div>
             </div>
             <Checklist
               selectedComponent={selectedComponent}
