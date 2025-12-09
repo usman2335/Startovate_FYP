@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main  # or your production branch
+    paths:
+      - 'LCI_ChatBot/**'
+
 
 env:
   ACTIONS_RUNNER_DEBUG: true
