@@ -1,5 +1,4 @@
 import { Link, NavLink } from "react-router-dom";
-import logo from "../../public/assets/Logo.png";
 import {
   AppstoreOutlined,
   WalletOutlined,
@@ -46,7 +45,7 @@ const Sidebar = () => {
   return (
     <div className="hidden md:block md:w-64 bg-#F7E1E1 text-white h-screen p-6 space-y-4">
       <img
-        src={logo} // ✅ Use src, not path
+        src={"/assets/Logo.png"}
         alt="Logo"
         className={`h-auto w-auto ${className}`}
       />
