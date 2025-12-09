@@ -555,37 +555,24 @@ const CanvasPage = () => {
               <div className="canvas-heading">
                 <Typography
                   sx={{
+                    fontFamily: "Poppins, sans-serif",
                     marginBottom: 1,
-                    fontSize: "2em",
-                    fontWeight: 600,
+                    fontSize: "2.2em",
+                    fontWeight: 700,
                     textAlign: "center",
+                    color: "#1f1f1f",
+                    letterSpacing: "-0.02em",
+                    background:
+                      "linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
                   }}
                 >
-                  LCI Checklist - I: {selectedComponent}
+                  LCI Checklist - {selectedComponent}
                 </Typography>
               </div>
-              <div className="canvas-title">
-                <Typography
-                  sx={{
-                    marginBottom: 1,
-                    fontSize: "1.5em",
-                    fontWeight: 600,
-                    maxWidth: "500px",
-                    textAlign: "right",
-                  }}
-                >
-                  {`${researchTitle}`}
-                </Typography>
-                <Typography
-                  sx={{
-                    marginBottom: 1,
-                    fontSize: "1.1em",
-                    fontWeight: 400,
-                  }}
-                >
-                  {`${authorName}`}
-                </Typography>
-              </div>
+              <div style={{ width: "20%" }}></div>
             </div>
             <TemplateComponent
               templateKey={templateKey}

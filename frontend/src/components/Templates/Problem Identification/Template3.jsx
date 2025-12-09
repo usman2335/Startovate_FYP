@@ -77,37 +77,36 @@ const Template3 = ({ answers, onInputChange, canvasId, templateId }) => {
   };
 
   return (
-    <div className="container" style={{ maxWidth: "90%", margin: "0 auto" }}>
-      <h3 className="description" style={{ textAlign: "center" }}>
-        <strong>Motivation and justification</strong> of the proposed invention
-        for solving the real-world practical problem.
-      </h3>
-
-      <div
-        className="template-form"
-        style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
-        data-export-section="text"
-      >
-        <div className="column" style={{ width: "100%" }}>
-          <label>
-            <strong>Enter Motivation and Justification:</strong>
-          </label>
-          <TextField
-            placeholder="Write your motivation and justification here..."
-            multiline
-            fullWidth
-            minRows={4}
-            variant="outlined"
-            sx={{ backgroundColor: "#fff" }}
-            value={answers?.[`motivation_`] || ""}
-            onChange={(e) => onInputChange(e, `motivation_`)}
-          />
+    <div className="">
+      <div className="heading-section">
+        <div className="description-wrapper">
+          <h3 className="description">
+            <span className="description-highlight">
+              Motivation and justification
+            </span>{" "}
+            of the proposed invention for solving the real-world practical
+            problem.
+          </h3>
         </div>
+      </div>
 
-        <div style={{ marginTop: "1rem" }}>
-          <Button onClick={handleExportToWord}>
-            Export to Word (Editable)
-          </Button>
+      <div className="content-section">
+        <div className="template-form" data-export-section="text">
+          <div className="column">
+            <label className="template-label">
+              <strong>Enter Motivation and Justification:</strong>
+            </label>
+            <TextField
+              placeholder="Write your motivation and justification here..."
+              multiline
+              fullWidth
+              minRows={3}
+              variant="outlined"
+              sx={{ backgroundColor: "#fff" }}
+              value={answers?.[`motivation_`] || ""}
+              onChange={(e) => onInputChange(e, `motivation_`)}
+            />
+          </div>
         </div>
       </div>
     </div>

@@ -96,21 +96,18 @@ const Template2 = ({ answers, onInputChange, canvasId, templateId }) => {
   };
 
   return (
-    <div
-      className="template-container"
-      style={{ maxWidth: "90%", margin: "0 auto" }}
-    >
-      <h3 className="template-description">
-        <strong>Incident, event or condition</strong> causing and characterizing
-        the real-world practical problem.
-      </h3>
+    <div className="template-container">
+      <div className="template-description-wrapper">
+        <h3 className="template-description">
+          <span className="template-description-highlight">
+            Incident, event or condition
+          </span>{" "}
+          causing and characterizing the real-world practical problem.
+        </h3>
+      </div>
 
-      <div
-        className="template-form"
-        style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
-        data-export-section="text"
-      >
-        <div className="template-column" style={{ flex: "1" }}>
+      <div className="template-form" data-export-section="text">
+        <div className="template-column">
           <label className="template-label">
             <strong>Enter Incident, event, or condition here:</strong>
           </label>
@@ -118,7 +115,7 @@ const Template2 = ({ answers, onInputChange, canvasId, templateId }) => {
             id="incident-textarea"
             placeholder="Describe the event/condition..."
             multiline
-            minRows={4}
+            minRows={3}
             variant="outlined"
             fullWidth
             sx={{ backgroundColor: "#fff" }}
@@ -127,7 +124,7 @@ const Template2 = ({ answers, onInputChange, canvasId, templateId }) => {
           />
         </div>
 
-        <div className="template-column" style={{ flex: "1" }}>
+        <div className="template-column">
           <label className="template-label">
             <strong>Feedback:</strong>
           </label>
@@ -135,19 +132,13 @@ const Template2 = ({ answers, onInputChange, canvasId, templateId }) => {
             id="feedback-textarea"
             placeholder="Write your feedback here..."
             multiline
-            minRows={4}
+            minRows={3}
             variant="outlined"
             fullWidth
             sx={{ backgroundColor: "#fff" }}
             value={answers?.[`feedback_`] || ""}
             onChange={(e) => onInputChange(e, `feedback_`)}
           />
-        </div>
-
-        <div style={{ marginTop: "1rem" }}>
-          <Button onClick={handleExportToWord}>
-            Export to Word (Editable)
-          </Button>
         </div>
       </div>
     </div>
