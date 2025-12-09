@@ -61,7 +61,7 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
         script: |
-          IMAGE_URI: ${{ secrets.ECR_REPOSITORY }}        
+          IMAGE_URI="${{ secrets.ECR_REPOSITORY }}"
           echo "🌐 Starting EC2 deployment..."
           echo "Working dir: ${{ secrets.APP_DIR }}"
           echo "Pulling Docker image: $IMAGE_URI:latest"
