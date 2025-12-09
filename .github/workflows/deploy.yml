@@ -5,14 +5,20 @@ on:
     branches:
       - main  # or your production branch
 
+env:
+  ACTIONS_RUNNER_DEBUG: true
+  ACTIONS_STEP_DEBUG: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
+    # -----------------------------
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    # -----------------------------
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
@@ -20,25 +26,33 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
+    # -----------------------------
     - name: Login to Amazon ECR
       id: ecr-login
       uses: aws-actions/amazon-ecr-login@v1
 
+    # -----------------------------
     - name: Build Docker image
       run: |
-        # Build Docker image from the lci_chatbot folder
-        docker build -t ${{ secrets.ECR_REPOSITORY }} ./LCI_ChatBot
+        echo "📦 Building Docker image from ./LCI_ChatBot..."
+        docker build --progress=plain -t ${{ secrets.ECR_REPOSITORY }} ./LCI_ChatBot
+        docker images
 
+    # -----------------------------
     - name: Tag Docker image for ECR
       run: |
         IMAGE_URI=$(aws ecr describe-repositories --repository-names ${{ secrets.ECR_REPOSITORY }} --query 'repositories[0].repositoryUri' --output text)
+        echo "📌 IMAGE_URI=$IMAGE_URI"
         docker tag ${{ secrets.ECR_REPOSITORY }}:latest $IMAGE_URI:latest
         echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
 
+    # -----------------------------
     - name: Push Docker image to ECR
       run: |
+        echo "🚀 Pushing Docker image to ECR: $IMAGE_URI:latest"
         docker push $IMAGE_URI:latest
 
+    # -----------------------------
     - name: Deploy on EC2 via SSH
       uses: appleboy/ssh-action@v0.1.6
       with:
@@ -47,12 +61,30 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
         script: |
+          echo "🌐 Starting EC2 deployment..."
+          echo "Working dir: ${{ secrets.APP_DIR }}"
+          echo "Pulling Docker image: $IMAGE_URI:latest"
+
+          set -x   # Enable debug mode
+
           cd ${{ secrets.APP_DIR }}
-          docker pull $IMAGE_URI:latest
+
+          echo "Stopping existing container if any..."
           docker stop startovate-chatbot || true
+
+          echo "Removing existing container if any..."
           docker rm startovate-chatbot || true
+
+          echo "Running new container..."
           docker run -d \
             --name startovate-chatbot \
             --restart unless-stopped \
             -p 80:8000 \
             $IMAGE_URI:latest
+
+          echo "✅ Deployment commands completed."
+          echo "Current containers:"
+          docker ps
+
+          echo "Last 20 logs of chatbot container:"
+          docker logs startovate-chatbot --tail 20
