@@ -21,11 +21,12 @@ if (-not $qdrantRunning) {
 }
 
 Write-Host "Starting ChatBot API with Uvicorn..." -ForegroundColor Green
+Write-Host "🔍 Auto-setup will check and initialize embeddings if needed" -ForegroundColor Cyan
 Write-Host "🌐 Server will be available at: http://localhost:8000" -ForegroundColor Cyan
 Write-Host "📊 Health check: http://localhost:8000/health" -ForegroundColor Cyan
 Write-Host "📚 API docs: http://localhost:8000/docs" -ForegroundColor Cyan
 Write-Host "Press Ctrl+C to stop the server" -ForegroundColor Yellow
 Write-Host ""
 
-# Start the server
+# Start the server (auto-setup will run automatically)
 uvicorn main:app --host 0.0.0.0 --port 8000 --reload

@@ -21,6 +21,43 @@ def log_memory(stage=""):
     mem = process.memory_info()
     print(f"[MEMORY] {stage} - RSS: {mem.rss / 1024**2:.2f} MB, VMS: {mem.vms / 1024**2:.2f} MB")
 
+# ============================
+# 🚀 Auto-Start Qdrant & Setup Embeddings
+# ============================
+def initialize_qdrant_and_embeddings():
+    """Initialize Qdrant server and embeddings"""
+    try:
+        # Step 1: Start Qdrant server if needed
+        from qdrant_server_manager import start_qdrant_if_needed
+        print("🔍 Ensuring Qdrant server is running...")
+        
+        if not start_qdrant_if_needed():
+            print("❌ Failed to start Qdrant server")
+            return False
+        
+        # Step 2: Setup embeddings if needed
+        from auto_setup import run_auto_setup
+        print("🔍 Checking if embeddings setup is needed...")
+        
+        # Check if embeddings exist
+        from auto_setup import check_embeddings_exist
+        if not check_embeddings_exist():
+            print("📦 Running automatic embeddings setup...")
+            success = run_auto_setup()
+            if not success:
+                print("❌ Auto-setup failed - chatbot will run without LCI knowledge")
+                return False
+        else:
+            print("✅ Embeddings already available")
+        
+        print("🎉 Qdrant and embeddings ready!")
+        return True
+        
+    except Exception as e:
+        print(f"⚠️ Initialization error: {e}")
+        print("💡 Chatbot will run without LCI knowledge - manual setup may be needed")
+        return False
+
 # Optional dependencies - handle gracefully if not available
 try:
     from pymongo import MongoClient
@@ -36,6 +73,10 @@ try:
     from qdrant_search import search_chunks_qdrant as search_chunks_sentence_transformer
     SEARCH_AVAILABLE = True
     print("✅ Using Qdrant for semantic search (lazy-loaded model)")
+    
+    # Initialize Qdrant server and embeddings
+    initialize_qdrant_and_embeddings()
+    
 except Exception as e:
     print(f"❌ Error: Qdrant not available: {e}")
     print("💡 Make sure Qdrant is configured in .env and running")
@@ -92,6 +133,15 @@ app = FastAPI(
 )
 log_memory("After FastAPI startup")
 
+# Add shutdown handler for Qdrant server
+@app.on_event("shutdown")
+def shutdown_event():
+    """Gracefully shutdown Qdrant server when FastAPI shuts down"""
+    try:
+        from qdrant_server_manager import stop_qdrant
+        stop_qdrant()
+    except Exception as e:
+        print(f"⚠️ Error during shutdown: {e}")
 
 app.add_middleware(
     CORSMiddleware,
