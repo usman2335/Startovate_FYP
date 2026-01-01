@@ -169,7 +169,7 @@ const AdminHome = () => {
     },
     height: 300,
     legend: { position: "bottom" },
-    color: ["#1890ff", "#52c41a", "#faad14"],
+    color: ["#dc2626", "#b91c1c", "#991b1b"],
     interactions: [{ type: "element-active" }],
   };
 
@@ -188,7 +188,7 @@ const AdminHome = () => {
     xField: "month",
     yField: "students",
     height: 300,
-    color: "#1890ff",
+    color: "#dc2626",
     columnStyle: {
       radius: [4, 4, 0, 0],
     },
@@ -206,7 +206,7 @@ const AdminHome = () => {
     xField: "month",
     yField: "teachers",
     height: 300,
-    color: "#52c41a",
+    color: "#b91c1c",
     point: {
       size: 5,
       shape: "diamond",
@@ -261,14 +261,14 @@ const AdminHome = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-[#fafafa]">
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-red-600 via-orange-600 to-red-500 rounded-3xl mx-6 mt-6 mb-8 shadow-xl">
+      <div className="bg-gradient-to-r from-[#dc2626] to-[#b91c1c] rounded-2xl mx-4 md:mx-6 mt-4 md:mt-6 mb-6 md:mb-8 shadow-premium-red">
         <div className="px-8 py-12">
           <div className="flex items-center justify-between">
             <div className="text-white">
               <h1 className="text-4xl font-bold mb-2">Welcome back, Admin!</h1>
-              <p className="text-xl text-blue-100 mb-4">
+              <p className="text-xl text-red-100 mb-4">
                 Manage your learning platform with ease
               </p>
               <div className="flex items-center space-x-4">
@@ -322,7 +322,7 @@ const AdminHome = () => {
         <Row gutter={[24, 24]}>
           <Col xs={24} sm={12} lg={6}>
             <Card
-              className="h-full hover-lift bg-gradient-to-br from-blue-500 to-blue-600 border-0 shadow-lg"
+              className="h-full hover-lift bg-gradient-to-br from-[#dc2626] to-[#b91c1c] border-0 shadow-premium-red"
               bodyStyle={{ padding: "24px" }}
             >
               <div className="flex items-center justify-between text-white">
@@ -332,7 +332,7 @@ const AdminHome = () => {
                       <TeamOutlined className="w-6 h-6" />
                     </div>
                     <div>
-                      <Text className="text-blue-100 text-sm font-medium">
+                      <Text className="text-red-100 text-sm font-medium">
                         Total Teachers
                       </Text>
                       <Title level={2} className="text-white mb-0 mt-1">
@@ -430,8 +430,8 @@ const AdminHome = () => {
               className="shadow-lg border-0 rounded-2xl"
               title={
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <BarChartOutlined className="w-5 h-5 text-blue-600" />
+                  <div className="p-2 bg-red-100 rounded-lg">
+                    <BarChartOutlined className="w-5 h-5 text-[#dc2626]" />
                   </div>
                   <Title level={4} className="mb-0">
                     Student Enrollment Trends

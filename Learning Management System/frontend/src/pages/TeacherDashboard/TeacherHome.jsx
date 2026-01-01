@@ -127,7 +127,7 @@ const TeacherHome = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
         <Spin size="large" />
       </div>
     );
@@ -135,7 +135,7 @@ const TeacherHome = () => {
 
   if (!stats) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
         <Empty description="Failed to load dashboard data" />
       </div>
     );
@@ -165,26 +165,26 @@ const TeacherHome = () => {
     xAxis: { label: { autoHide: true, autoRotate: false } },
     yAxis: { max: 100 },
     height: 300,
-    color: "#73c0de",
+    color: "#dc2626",
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-[#fafafa]">
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-red-600 via-orange-600 to-red-500 rounded-3xl mx-6 mt-6 mb-8">
-        <div className="px-8 py-12 text-white">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-6">
+      <div className="bg-gradient-to-r from-[#dc2626] to-[#b91c1c] rounded-2xl mx-4 md:mx-6 mt-4 md:mt-6 mb-6 md:mb-8 shadow-premium-red">
+        <div className="px-6 md:px-8 py-8 md:py-12 text-white">
+          <div className="flex items-center justify-between flex-col md:flex-row">
+            <div className="flex items-center space-x-4 md:space-x-6 mb-4 md:mb-0">
               <Avatar
                 size={80}
                 className="bg-white bg-opacity-20 border-4 border-white border-opacity-30"
                 icon={<UserOutlined className="text-white text-2xl" />}
               />
               <div>
-                <h1 className="text-4xl font-bold mb-2">
+                <h1 className="text-heading-1 text-white mb-2">
                   {getGreeting()}, {stats.userName}!
                 </h1>
-                <p className="text-xl text-blue-100 mb-4">
+                <p className="text-xl text-red-100 mb-4">
                   Welcome to your teaching dashboard
                 </p>
                 <div className="flex items-center space-x-4">

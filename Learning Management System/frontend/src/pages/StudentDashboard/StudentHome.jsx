@@ -101,11 +101,11 @@ const StudentHome = () => {
   const getAnnouncementIcon = (type) => {
     switch (type) {
       case "course":
-        return <BookOutlined className="w-5 h-5 text-blue-500" />;
+        return <BookOutlined className="w-5 h-5 text-[#dc2626]" />;
       case "deadline":
-        return <ClockCircleOutlined className="w-5 h-5 text-red-500" />;
+        return <ClockCircleOutlined className="w-5 h-5 text-[#dc2626]" />;
       case "event":
-        return <CalendarOutlined className="w-5 h-5 text-green-500" />;
+        return <CalendarOutlined className="w-5 h-5 text-[#b91c1c]" />;
       default:
         return <BellOutlined className="w-5 h-5 text-gray-500" />;
     }
@@ -141,17 +141,17 @@ const StudentHome = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-[#fafafa]">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-red-600 via-orange-600 to-red-500 rounded-3xl mx-6 mt-6 mb-8 animate-fade-in-up">
+      <div className="relative overflow-hidden bg-gradient-to-r from-[#dc2626] to-[#b91c1c] rounded-2xl mx-4 md:mx-6 mt-4 md:mt-6 mb-6 md:mb-8 shadow-premium-red animate-fade-in-up">
         <div className="absolute inset-0 bg-black opacity-10"></div>
-        <div className="relative px-8 py-12">
-          <div className="flex items-center justify-between">
-            <div className="text-white">
-              <h1 className="text-4xl font-bold mb-2">
+        <div className="relative px-6 md:px-8 py-8 md:py-12">
+          <div className="flex items-center justify-between flex-col md:flex-row">
+            <div className="text-white mb-4 md:mb-0">
+              <h1 className="text-heading-1 text-white mb-2">
                 {getGreeting()}, {stats.userName}!
               </h1>
-              <p className="text-xl text-blue-100 mb-4">
+              <p className="text-xl text-red-100 mb-4">
                 Continue learning and track your progress
               </p>
               <div className="flex items-center space-x-4">

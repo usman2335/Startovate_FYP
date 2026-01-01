@@ -72,15 +72,15 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="signup-container">
+    <div className="signup-container bg-[#fafafa] min-h-screen">
       {/* Background Vector */}
       <div className="vector-background"></div>
 
       <SignupCard />
 
       <div className="signup-form">
-        <h1>Logo</h1>
-        <h2>Create your account now</h2>
+        <h1 className="text-heading-1 text-[#dc2626]">Logo</h1>
+        <h2 className="text-heading-3 text-[#dc2626]">Login to your account</h2>
 
         <form className="form1" onSubmit={handleSubmit}>
           <div className="signup-input-container">
@@ -124,8 +124,11 @@ const LoginPage = () => {
           />
         </form>
 
-        <p style={{ marginTop: "3%" }}>
-          Create an New Account? <a href="/Signup">Sign Up</a>
+        <p className="text-body-sm mt-6 text-center">
+          Create a New Account?{" "}
+          <a href="/Signup" className="text-[#dc2626] font-semibold hover:text-[#b91c1c] transition-colors">
+            Sign Up
+          </a>
         </p>
       </div>
     </div>

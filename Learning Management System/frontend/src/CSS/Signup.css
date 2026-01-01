@@ -47,13 +47,14 @@
   width: 55%;
   min-width: 400px;
   border-radius: 60px;
-  background: linear-gradient(to bottom right, #e60073, #ff4d4d);
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
   transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
-  color: #ffedce;
+  color: #ffffff;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
+  box-shadow: 0 20px 25px -5px rgba(220, 38, 38, 0.2), 0 10px 10px -5px rgba(220, 38, 38, 0.1);
 }
 
 .signup-input-label {
@@ -71,26 +72,36 @@
 }
 .signup-role-select {
   width: 100%;
-  padding: 12px;
+  padding: 12px 16px;
   font-size: 16px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
   margin-top: 5px;
+  transition: all 0.3s ease;
+  font-family: "Poppins", sans-serif;
+}
+
+.signup-role-select:focus {
+  border-color: #dc2626;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
 }
 
 .signup-form h1 {
-  color: #b22222;
+  color: #dc2626;
   font-size: 50px;
   padding-bottom: 0px;
   align-self: center;
+  font-weight: 700;
   /* padding-right: 110px; */
 }
 
 .signup-form h2 {
-  color: #b22222;
+  color: #dc2626;
   font-size: 28px;
   padding-bottom: 0px;
   align-self: center;
+  font-weight: 600;
   /* padding-right: 110px; */
   padding-bottom: 30px;
 }
@@ -111,8 +122,13 @@
 }
 
 .signup-form a {
-  color: #e60073;
-  font-weight: bold;
+  color: #dc2626;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.signup-form a:hover {
+  color: #b91c1c;
 }
 
 /* Start Your Journey text */
@@ -138,8 +154,9 @@
 }
 
 .Signupcard:hover {
-  background: linear-gradient(90deg, #ee343b 0.17%, #ed2568 100%);
-  transform: scale(1.1);
+  background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+  transform: translateY(-4px);
+  box-shadow: 0 25px 30px -5px rgba(220, 38, 38, 0.3), 0 15px 15px -5px rgba(220, 38, 38, 0.15);
   color: white;
 }
 
@@ -149,9 +166,9 @@
   height: 500px; /* Adjusted height */
   left: 10px;
   top: 116px;
-  opacity: 0.1;
-  border: 20px solid #b32113;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  opacity: 0.08;
+  border: 20px solid #dc2626;
+  box-shadow: 0px 4px 4px rgba(220, 38, 38, 0.15);
   border-radius: 2px;
   transform: rotate(-35deg); /* Rotates in the opposite direction */
   z-index: -1; /* Ensures it stays in the background */

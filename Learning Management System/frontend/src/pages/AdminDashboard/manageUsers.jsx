@@ -191,21 +191,16 @@ const ManageUsers = () => {
   };
 
   return (
-    <div style={{ padding: 24 }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: 16,
-        }}
-      >
-        <h2>Manage Users</h2>
+    <div className="p-4 md:p-6 bg-[#fafafa] min-h-screen">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-heading-2 text-[#1f1f1f]">Manage Users</h2>
         <Button type="primary" icon={<PlusOutlined />} onClick={handleAddAdmin}>
           Add Admin
         </Button>
       </div>
+      <div className="bg-white rounded-xl shadow-premium p-4 md:p-6">
 
-      <div style={{ marginBottom: 16 }}>
+      <div className="mb-4">
         <Select
           value={filteredRole}
           onChange={setFilteredRole}
@@ -218,6 +213,7 @@ const ManageUsers = () => {
       </div>
 
       <Table columns={columns} dataSource={filteredUsers} rowKey="_id" />
+      </div>
     </div>
   );
 };

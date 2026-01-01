@@ -1,20 +1,14 @@
-import { Link, NavLink } from "react-router-dom";
-import logo from "../../public/assets/logo.png";
+import { NavLink } from "react-router-dom";
+import logo from "../../public/assets/inventlogo.png";
 import {
   AppstoreOutlined,
   WalletOutlined,
   TransactionOutlined,
-  LineChartOutlined,
-  ReadOutlined,
-  BulbOutlined,
-  SettingOutlined,
   MessageOutlined,
 } from "@ant-design/icons";
-import Button from "../components/Button";
 import Logout from "./LogoutButton";
 
 const StudentSidebar = () => {
-  const className = "h-10 pl-2";
   const menuItems = [
     {
       name: "Home",
@@ -40,76 +34,42 @@ const StudentSidebar = () => {
   ];
 
   return (
-    <div className="hidden md:block md:w-64 bg-#F7E1E1 text-white h-screen p-6 space-y-4">
-      <img
-        src={logo} // ✅ Use src, not path
-        alt="Logo"
-        className={`h-auto w-auto ${className}`}
-      />
-      <ul className="space-y-2 mt-6">
-        {menuItems.map((item) => (
-          <li key={item.path}>
-            <NavLink
-              to={item.path}
-              end={item.end}
-              className={({ isActive }) =>
-                `flex items-center gap-2 p-2 rounded  ${
-                  isActive
-                    ? "text-primary-blue font-semibold"
-                    : "text-text-grey font-normal hover:scale-105"
-                }`
-              }
-            >
-              {({ isActive }) => (
-                <>
-                  <span
-                    className={`text-2xl rounded ${
-                      isActive
-                        ? "filter drop-shadow-[0_4px_1.1px_rgba(58,61,242,0.25)]"
-                        : ""
-                    }`}
-                  >
-                    {item.icon}
-                  </span>
-                  <span
-                    className={`rounded ${
-                      isActive
-                        ? "text-shadow-[0_4px_1.1px_rgba(58,61,242,0.25)]"
-                        : ""
-                    }`}
-                  >
-                    {item.name}
-                  </span>
-                </>
-              )}
-            </NavLink>
+    <div className="hidden md:flex md:flex-col md:w-64 bg-white border-r border-[#e5e7eb] h-screen shadow-premium">
+      {/* Logo Section */}
+      <div className="p-6 border-b border-[#e5e7eb]">
+        <img src={logo} alt="Logo" className="h-10 w-auto" />
+      </div>
 
-            {item.subItems && (
-              <ul className="ml-8 mt-1 space-y-1">
-                {item.subItems.map((subItem) => (
-                  <li key={subItem.path}>
-                    <NavLink
-                      to={subItem.path}
-                      className={({ isActive }) =>
-                        `block text-sm p-1 rounded ${
-                          isActive
-                            ? "text-primary-blue font-semibold"
-                            : "text-text-grey hover:underline"
-                        }`
-                      }
-                    >
-                      {subItem.name}
-                    </NavLink>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
-        <li className="mt-6">
-          <Logout />
-        </li>
-      </ul>
+      {/* Navigation Menu */}
+      <nav className="flex-1 p-4 overflow-y-auto">
+        <ul className="space-y-1">
+          {menuItems.map((item) => (
+            <li key={item.path}>
+              <NavLink
+                to={item.path}
+                end={item.end}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                    isActive
+                      ? "bg-gradient-to-r from-[#dc2626] to-[#b91c1c] text-white shadow-premium-red font-semibold"
+                      : "text-[#535353] hover:bg-[#fee2e2] hover:text-[#dc2626] font-medium"
+                  }`
+                }
+              >
+                <span className="text-xl flex items-center justify-center">
+                  {item.icon}
+                </span>
+                <span className="text-sm">{item.name}</span>
+              </NavLink>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      {/* Logout Section */}
+      <div className="p-4 border-t border-[#e5e7eb]">
+        <Logout />
+      </div>
     </div>
   );
 };

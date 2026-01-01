@@ -119,8 +119,8 @@ const MyCourses = () => {
   };
 
   return (
-    <div className="w-full px-8 py-10">
-      <span className="text-2xl font-semibold text-gray-800 mb-6 block">
+    <div className="w-full px-4 md:px-8 py-6 md:py-10 bg-[#fafafa] min-h-screen">
+      <span className="text-heading-2 text-[#1f1f1f] mb-6 block">
         My Courses
       </span>
 

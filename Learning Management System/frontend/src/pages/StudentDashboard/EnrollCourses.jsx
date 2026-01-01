@@ -98,8 +98,8 @@ const EnrollCourses = () => {
   };
 
   return (
-    <div className="w-full px-6 sm:px-12 py-10">
-      <h2 className="text-2xl font-semibold mb-8 text-center">
+    <div className="w-full px-4 md:px-6 lg:px-12 py-6 md:py-10 bg-[#fafafa] min-h-screen">
+      <h2 className="text-heading-2 text-[#1f1f1f] mb-6 md:mb-8 text-center">
         Available Courses
       </h2>
 

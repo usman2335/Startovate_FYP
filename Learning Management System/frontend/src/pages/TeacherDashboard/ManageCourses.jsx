@@ -358,48 +358,40 @@ const TeacherManageCourses = () => {
   ];
 
   return (
-    <div style={{ padding: 24 }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "24px",
-        }}
-      >
+    <div className="p-4 md:p-6 bg-[#fafafa] min-h-screen">
+      <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 style={{ margin: 0, fontSize: "28px", fontWeight: "bold" }}>
+          <h1 className="text-heading-2 text-[#1f1f1f] mb-2">
             📚 Your Courses
           </h1>
-          <p style={{ margin: "8px 0 0 0", color: "#666", fontSize: "14px" }}>
+          <p className="text-body-sm text-[#535353]">
             Manage your course content, pricing, and settings
           </p>
         </div>
-        <div style={{ textAlign: "right" }}>
-          <div
-            style={{ fontSize: "16px", fontWeight: "bold", color: "#1890ff" }}
-          >
+        <div className="text-right">
+          <div className="text-heading-4 text-[#dc2626] font-bold">
             {courses.length} Course{courses.length !== 1 ? "s" : ""}
           </div>
-          <div style={{ fontSize: "12px", color: "#999" }}>
+          <div className="text-helper">
             {courses.filter((c) => c.isApproved).length} Approved
           </div>
         </div>
       </div>
-
-      <Table
-        columns={columns}
-        dataSource={courses}
-        rowKey="_id"
-        pagination={{
-          pageSize: 10,
-          showSizeChanger: true,
-          showQuickJumper: true,
-          showTotal: (total, range) =>
-            `${range[0]}-${range[1]} of ${total} courses`,
-        }}
-        scroll={{ x: 1000 }}
-      />
+      <div className="bg-white rounded-xl shadow-premium p-4 md:p-6">
+        <Table
+          columns={columns}
+          dataSource={courses}
+          rowKey="_id"
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total, range) =>
+              `${range[0]}-${range[1]} of ${total} courses`,
+          }}
+          scroll={{ x: 1000 }}
+        />
+      </div>
 
       <Modal
         title={

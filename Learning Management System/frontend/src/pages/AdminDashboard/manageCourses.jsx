@@ -130,12 +130,11 @@ const ManageCourses = () => {
   ];
 
   return (
-    <div style={{ padding: 24 }}>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <h2>Manage Courses</h2>
+    <div className="p-4 md:p-6 bg-[#fafafa] min-h-screen">
+      <h2 className="text-heading-2 text-[#1f1f1f] mb-6">Manage Courses</h2>
+      <div className="bg-white rounded-xl shadow-premium p-4 md:p-6">
+        <Table columns={columns} dataSource={courses} rowKey="_id" />
       </div>
-
-      <Table columns={columns} dataSource={courses} rowKey="_id" />
 
       <Modal
         title={editingCourse ? "Edit Course" : "Add Course"}

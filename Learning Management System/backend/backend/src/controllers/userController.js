@@ -9,14 +9,18 @@ const generateToken = (userId) => {
   });
 };
 
-// ✅ Public: Student Signup
+// ✅ Public: Student/Teacher Signup
 const signup = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ error: "All fields are required" });
     }
+
+    // Validate role - only allow "student" or "teacher" for public signup
+    const allowedRoles = ["student", "teacher"];
+    const userRole = role && allowedRoles.includes(role) ? role : "student";
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -30,7 +34,7 @@ const signup = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role: "student", // default role for signup
+      role: userRole, // Use role from request or default to "student"
     });
 
     res.status(201).json({
