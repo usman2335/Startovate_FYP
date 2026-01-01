@@ -135,7 +135,7 @@ const StudentFeedbackPage = () => {
 
         notification.success({
           message: "Feedback Deleted Successfully! 🗑️",
-          description: `Your feedback for "${deletingFeedback.course.title}" has been deleted.`,
+          description: `Your feedback for "${deletingFeedback.course?.title || 'the course'}" has been deleted.`,
           duration: 4,
           placement: "topRight",
           style: {
@@ -205,10 +205,10 @@ const StudentFeedbackPage = () => {
       key: "courseTitle",
       render: (text, record) => (
         <div>
-          <Text strong>{text}</Text>
+          <Text strong>{text || "Unknown Course"}</Text>
           <br />
           <Text type="secondary" style={{ fontSize: "12px" }}>
-            Instructor: {record.course.instructorName}
+            Instructor: {record.course?.instructorName || "Unknown"}
           </Text>
         </div>
       ),
@@ -336,7 +336,7 @@ const StudentFeedbackPage = () => {
           <Card>
             <Statistic
               title="Courses Reviewed"
-              value={new Set(feedback.map((f) => f.course._id)).size}
+              value={new Set(feedback.filter((f) => f.course?._id).map((f) => f.course._id)).size}
               prefix={<UserOutlined />}
             />
           </Card>
