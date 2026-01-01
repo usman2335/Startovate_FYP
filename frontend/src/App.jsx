@@ -13,6 +13,7 @@ import ReturnPage from "./pages/ReturnPage.jsx";
 import EasypaisaPayment from "./pages/EasypaisaPayment.jsx";
 import ThankYouPage from "./pages/EasypaisaThankyou.jsx";
 import ChatbotFloating from "./components/ChatbotFloating.jsx";
+import TailwindTest from "./components/TailwindTest.jsx";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
               <Route path="/return" element={<ReturnPage />} />
               <Route path="/easypaisa" element={<EasypaisaPayment />} />
               <Route path="/thankyou" element={<ThankYouPage />} />
+              <Route path="/tailwind-test" element={<TailwindTest />} />
             </Routes>
           </ChatbotProvider>
         </Router>

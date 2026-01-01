@@ -17,7 +17,6 @@ const ProblemInvestigation = ({ answers, onInputChange }) => {
   return (
     <div className="container">
       <h2>Problem Investigation Script</h2>
-
       <h3>Introduction by an Academic Inventor</h3>
 
       {/* Wrap form sections with data attribute */}
@@ -27,7 +26,8 @@ const ProblemInvestigation = ({ answers, onInputChange }) => {
           sx={{
             display: "flex",
             width: "100%",
-            gap: "10px",
+            gap: "15px",
+            marginBottom: "20px",
           }}
           noValidate
           autoComplete="off"
@@ -55,6 +55,7 @@ const ProblemInvestigation = ({ answers, onInputChange }) => {
           sx={{
             display: "flex",
             width: "100%",
+            marginBottom: "20px",
           }}
           noValidate
           autoComplete="off"
@@ -74,6 +75,7 @@ const ProblemInvestigation = ({ answers, onInputChange }) => {
           sx={{
             width: "100%",
             display: "flex",
+            marginBottom: "20px",
           }}
           noValidate
           autoComplete="off"
@@ -92,6 +94,7 @@ const ProblemInvestigation = ({ answers, onInputChange }) => {
           sx={{
             display: "flex",
             width: "100%",
+            marginBottom: "20px",
           }}
           noValidate
           autoComplete="off"
@@ -101,6 +104,7 @@ const ProblemInvestigation = ({ answers, onInputChange }) => {
             label="Two Minute Story"
             multiline
             fullWidth
+            minRows={3}
             value={answers?.[`twominstory_`] || ""}
             onChange={(e) => onInputChange(e, `twominstory_`)}
           />
@@ -110,6 +114,7 @@ const ProblemInvestigation = ({ answers, onInputChange }) => {
           sx={{
             display: "flex",
             width: "100%",
+            marginBottom: "20px",
           }}
           noValidate
           autoComplete="off"
@@ -119,6 +124,7 @@ const ProblemInvestigation = ({ answers, onInputChange }) => {
             label="What is required from this interview?"
             multiline
             fullWidth
+            minRows={3}
             value={answers?.[`whatIsRequired_`] || ""}
             onChange={(e) => onInputChange(e, `whatIsRequired_`)}
           />
@@ -134,8 +140,9 @@ const ProblemInvestigation = ({ answers, onInputChange }) => {
           sx={{
             display: "flex",
             flexDirection: "column",
-            gap: "10px",
+            gap: "15px",
             width: "100%",
+            marginBottom: "24px",
           }}
           noValidate
           autoComplete="off"
@@ -147,6 +154,7 @@ const ProblemInvestigation = ({ answers, onInputChange }) => {
               label={`Problem ${num}`}
               multiline
               fullWidth
+              minRows={2}
               onChange={(e) => onInputChange(e, `problem_${num}`)}
               value={answers?.[`problem_${num}`] || ""}
             />
@@ -164,6 +172,7 @@ const ProblemInvestigation = ({ answers, onInputChange }) => {
           sx={{
             display: "flex",
             width: "100%",
+            marginBottom: "24px",
           }}
           noValidate
           autoComplete="off"
@@ -171,6 +180,8 @@ const ProblemInvestigation = ({ answers, onInputChange }) => {
           <TextField
             multiline
             fullWidth
+            minRows={3}
+            placeholder="Enter your response here..."
             value={answers?.[`threeMainProblems_`] || ""}
             onChange={(e) => onInputChange(e, `threeMainProblems_`)}
           />
@@ -192,6 +203,7 @@ const ProblemInvestigation = ({ answers, onInputChange }) => {
           sx={{
             display: "flex",
             width: "100%",
+            marginBottom: "24px",
           }}
           noValidate
           autoComplete="off"
@@ -199,6 +211,8 @@ const ProblemInvestigation = ({ answers, onInputChange }) => {
           <TextField
             multiline
             fullWidth
+            minRows={3}
+            placeholder="Enter your response here..."
             value={answers?.[`limitations_`] || ""}
             onChange={(e) => onInputChange(e, `limitations_`)}
           />

@@ -47,10 +47,13 @@ const Template1 = ({ answers, onInputChange, canvasId, templateId }) => {
   return (
     <div id="template-capture">
       <div className="tem1-container">
-        <h3 className="tem1-description">
-          <strong>What</strong> real-world practical problem or unmet need will
-          be solved or met by the proposed invention?
-        </h3>
+        <div className="tem1-description-wrapper">
+          <h3 className="tem1-description">
+            <span className="tem1-description-highlight">What</span> real-world
+            practical problem or unmet need will be solved or met by the
+            proposed invention?
+          </h3>
+        </div>
 
         <div className="tem1-form-container" data-export-section="text">
           {[...Array(4)].map((_, index) => (
@@ -59,45 +62,38 @@ const Template1 = ({ answers, onInputChange, canvasId, templateId }) => {
               key={index}
               style={{ flexDirection: "column", marginBottom: "20px" }}
             >
-              <div className="tem1-column" style={{ width: "100%" }}>
-                <label className="tem1-label">
-                  <strong>Why?</strong> Explore a root cause
-                </label>
-                <TextField
-                  className="tem1-input"
-                  multiline
-                  size="small"
-                  variant="outlined"
-                  fullWidth
-                  placeholder="Explain the reason behind the problem"
-                  onChange={(e) => onInputChange(e, `why_${index}`)}
-                  value={answers?.[`why_${index}`] || ""}
-                />
-              </div>
+              <label className="tem1-label">
+                <strong>Why?</strong> Explore a root cause
+              </label>
+              <TextField
+                className="tem1-input"
+                multiline
+                minRows={3}
+                size="small"
+                variant="outlined"
+                fullWidth
+                placeholder="Explain the reason behind the problem"
+                onChange={(e) => onInputChange(e, `why_${index}`)}
+                value={answers?.[`why_${index}`] || ""}
+              />
 
-              <div
-                className="tem1-column"
-                style={{ width: "100%", marginTop: "10px" }}
-              >
-                <label className="tem1-label">
-                  <strong>References</strong>
-                </label>
-                <TextField
-                  className="tem1-input"
-                  multiline
-                  size="small"
-                  variant="outlined"
-                  fullWidth
-                  placeholder="Cite any references or sources"
-                  onChange={(e) => onInputChange(e, `references_${index}`)}
-                  value={answers?.[`references_${index}`] || ""}
-                />
-              </div>
+              <label className="tem1-label" style={{ marginTop: "16px" }}>
+                <strong>References</strong>
+              </label>
+              <TextField
+                className="tem1-input"
+                multiline
+                minRows={3}
+                size="small"
+                variant="outlined"
+                fullWidth
+                placeholder="Cite any references or sources"
+                onChange={(e) => onInputChange(e, `references_${index}`)}
+                value={answers?.[`references_${index}`] || ""}
+              />
             </div>
           ))}
         </div>
-
-        <Button onClick={handleExportToWord}>Export to Word (Editable)</Button>
       </div>
     </div>
   );

@@ -7,145 +7,148 @@
   margin-top: 1%;
 }
 .checklist-box {
-  padding: 20px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px 24px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 245, 245, 0.98) 100%
+  );
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.1);
   width: 100%;
-  /* max-width: 600px; */
-  /* margin: auto; */
+  backdrop-filter: blur(10px);
 }
 .custom-chip {
-  /* color: #ED1717 !important; 
-    background-color: #FFD7E4 !important;
-    font-weight: bold; */
-  margin-bottom: 2%;
-}
-
-.checklist-header {
-  text-align: center;
-  margin-bottom: 15px;
-}
-.chip-progress {
-  text-align: right;
-}
-
-.checklist-status {
-  color: red;
-  font-size: 1em;
-  font-weight: bold;
-}
-
-.progress-bar-wrapper {
-  width: 100%;
-  background: #ddd;
-  border-radius: 5px;
-  height: 10px;
-  overflow: hidden;
-}
-
-.progress-bar {
-  height: 10px;
-  background: red;
-}
-
-.progress-percent {
-  color: gray;
-  font-size: 14px;
-  text-align: right;
-  margin-top: 5px;
+  margin-bottom: 16px;
 }
 
 .steps-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0;
 }
 
 .step {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 14px 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 12px;
+  margin-bottom: 4px;
+}
+
+.step:hover {
+  background: rgba(220, 38, 38, 0.03);
+  transform: translateX(4px);
 }
 
 .step-info {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  flex: 1;
 }
-.icon-size {
-  width: 36px;
-  height: 36px;
 
-  margin-right: 55%;
+.icon-size {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
 }
+
 .step-icon {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-size: 14px;
-  font-weight: bold;
+  flex-shrink: 0;
 }
 
-.step-icon.check {
-  background: #28a745;
-}
-
-.step-icon.cross {
-  background: #dc3545;
+.step-content {
+  flex: 1;
+  min-width: 0;
 }
 
 .step-title {
-  font-weight: bold;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-size: 1.05em;
+  color: #1f1f1f;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
 }
 
 .step-description {
-  color: gray;
-  font-size: 1em;
-  width: 100%;
+  font-family: "Poppins", sans-serif;
+  color: #4b5563;
+  font-size: 0.9em;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0;
+  letter-spacing: 0.01em;
 }
 
 .step-button {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 16px;
-  font-weight: 500;
+  gap: 6px;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.85em;
+  font-weight: 600;
   padding: 10px 20px;
   border: none;
-  border-radius: 999px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
 /* Edit button style */
 .step-button.edit {
-  background: linear-gradient(to right, #4af04f, #7dff81);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
 }
 
 .step-button.edit:hover {
-  background: linear-gradient(to right, #52e052, #42c842);
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  transform: translateY(-2px);
 }
 
 /* Start button style */
 .step-button.start {
-  background: linear-gradient(to right, #e85a51, #ff6347);
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
   color: white;
 }
 
 .step-button.start:hover {
-  background: linear-gradient(to right, #e85a51, #e05040);
+  background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+  transform: translateY(-2px);
 }
 
 /* Icon styling */
 .icon {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
+}
+
+.no-steps {
+  font-family: "Poppins", sans-serif;
+  color: #6b7280;
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 1em;
+}
+
+/* Divider styling */
+.steps-container .MuiDivider-root {
+  margin: 4px 0;
+  border-color: rgba(220, 38, 38, 0.1);
 }

@@ -13,12 +13,13 @@
 }
 
 .tem1-container {
-  width: 60%;
+  width: 90%;
+  max-width: 1200px;
   margin: auto;
   text-align: center;
-  font-family: Arial, sans-serif;
+  font-family: "Poppins", sans-serif;
   position: relative;
-  padding: 20px;
+  padding: 32px 40px;
 }
 
 .tem1-title {
@@ -28,46 +29,139 @@
 }
 
 .tem1-highlight {
-  color: red;
+  color: #dc2626;
   font-weight: bold;
 }
 
+.tem1-description-wrapper {
+  margin-bottom: 32px;
+  padding: 24px 32px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 245, 245, 0.98) 100%
+  );
+  border-radius: 16px;
+  border: 1px solid rgba(220, 38, 38, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(10px);
+}
+
 .tem1-description {
-  font-size: 16px;
-  margin-top: 10px;
-  margin-bottom: 20px;
+  font-family: "Poppins", sans-serif;
+  font-size: 1.3em;
+  font-weight: 500;
+  margin: 0;
+  color: #1f1f1f;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
+.tem1-description-highlight {
+  color: #dc2626;
+  font-weight: 700;
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .tem1-form-container {
-  padding: 20px;
-  border-radius: 10px;
-  margin-top: 20px;
-  border: 1px solid #d0b5b5;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 24px;
-  background-color: #fff;
+  padding: 32px 40px;
+  border-radius: 16px;
+  margin-top: 24px;
+  border: 1px solid rgba(220, 38, 38, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(255, 250, 250, 1) 100%
+  );
+  backdrop-filter: blur(10px);
 }
 
 .tem1-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 15px;
+  margin-bottom: 24px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  border: 1px solid rgba(220, 38, 38, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tem1-row:hover {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.1);
+  transform: translateY(-2px);
 }
 
 .tem1-column {
-  width: 48%;
+  width: 100%;
   text-align: left;
 }
 
 .tem1-label {
   display: block;
-  font-size: 14px;
-  margin-bottom: 5px;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.9em;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #1f1f1f;
+  letter-spacing: 0.02em;
+}
+
+.tem1-label strong {
+  color: #dc2626;
+  font-weight: 700;
 }
 
 .tem1-input {
   width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  padding: 12px 16px;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  border-radius: 8px;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.95em;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tem1-input:focus {
+  outline: none;
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.tem1-input::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+.tem1-container .button {
+  margin-top: 32px;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Material-UI TextField styling */
+.tem1-input .MuiOutlinedInput-root {
+  font-family: "Poppins", sans-serif;
+  border-radius: 8px;
+}
+
+.tem1-input .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: rgba(220, 38, 38, 0.4);
+}
+
+.tem1-input
+  .MuiOutlinedInput-root.Mui-focused
+  .MuiOutlinedInput-notchedOutline {
+  border-color: #dc2626;
+  border-width: 2px;
+}
+
+.tem1-input .MuiInputBase-input {
+  font-family: "Poppins", sans-serif;
+  font-size: 0.95em;
+  padding: 10px 16px;
 }
