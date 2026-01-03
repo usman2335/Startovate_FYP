@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  app-backend:
+    build: ./app-backend
+    container_name: startovate-app-backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./app-backend/.env
+    restart: unless-stopped
+    networks:
+      - startovate-network
+
+  lms-backend:
+    build: ./lms-backend
+    container_name: startovate-lms-backend
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./lms-backend/.env
+    restart: unless-stopped
+    networks:
+      - startovate-network
+
+networks:
+  startovate-network:
+    driver: bridge

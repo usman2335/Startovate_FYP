@@ -1,0 +1,20 @@
+service:
+  host: 127.0.0.1
+  http_port: 6333
+  grpc_port: 6334
+
+storage:
+  storage_path: ./storage
+
+log_level: INFO
+
+# Disable telemetry for privacy
+telemetry_disabled: true
+
+# Performance settings
+cluster:
+  enabled: false
+
+# CORS settings for web dashboard
+cors:
+  allow_any_origin: true

@@ -1,0 +1,41 @@
+const express = require("express");
+const router = express.Router();
+const {
+  signup,
+  login,
+  logout,
+  getUser,
+  createUser,
+  //getUsers,
+  getAllUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
+} = require("../controllers/userController");
+
+const protect = require("../middleware/authMiddleware");
+const {
+  getAdminDashboardStats,
+  getTeacherDashboardStats,
+} = require("../controllers/courseController");
+
+// ✅ Public Authentication Routes
+router.get("/", getAllUsers); // Get currently logged-in user
+router.post("/", createUser);
+
+router.get("/getUser", protect, getUser);
+router.post("/signup", signup);
+router.post("/login", login);
+router.post("/logout", logout);
+router.get("/dashboard", protect, getAdminDashboardStats);
+router.get("/teacher/dashboard", protect, getTeacherDashboardStats);
+
+//delete
+router.delete("/:id", deleteUser);
+// updating user
+router.put("/:id", updateUser);
+
+//adding the superadmin
+router.post("/createAdmin", createUser); // Create user (admin or student)
+
+module.exports = router;

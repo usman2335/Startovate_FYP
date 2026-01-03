@@ -1,0 +1,13 @@
+{
+  "total_chunks": 467,
+  "embedding_dimension": 384,
+  "model_name": "all-MiniLM-L6-v2",
+  "method": "SentenceTransformer",
+  "similarity_metric": "cosine",
+  "files_created": [
+    "sentence_transformer_embeddings.npy",
+    "sentence_transformer_model_info.pkl",
+    "sentence_transformer_metadata.pkl",
+    "sentence_transformer_summary.json"
+  ]
+}

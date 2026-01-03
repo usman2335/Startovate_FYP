@@ -1,0 +1,22 @@
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+venv/
+env/
+*.venv/
+
+# Logs
+*.log
+
+# Local config / secrets
+.env
+
+# Git files
+.git
+.gitignore
+
+# OS files
+.DS_Store

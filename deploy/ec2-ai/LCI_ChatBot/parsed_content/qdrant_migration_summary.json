@@ -1,0 +1,10 @@
+{
+  "migration_status": "completed",
+  "collection_name": "lci_knowledge_base",
+  "points_migrated": 467,
+  "embedding_dimension": 384,
+  "source_files": [
+    "sentence_transformer_embeddings.npy",
+    "sentence_transformer_metadata.pkl"
+  ]
+}
