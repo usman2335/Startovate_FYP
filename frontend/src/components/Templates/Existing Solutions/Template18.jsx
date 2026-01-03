@@ -5,14 +5,15 @@ import "../../../CSS/Template18.css";
 
 const Template18 = ({ answers, onInputChange }) => {
   return (
-    <div className="container">
+    <div className="container" data-export-section="main-section">
       {/* Header Section */}
-      <div className="header">
+      <h3 className="header">
         Listing of companies licensing patents for offering existing solutions.
-      </div>
+      </h3>
 
       {/* Table Section */}
-      <table className="table">
+      <div data-export-section="table">
+        <table className="table">
         <thead>
           {/* Market Matrix Row */}
           <tr className="table-title-row">
@@ -50,6 +51,7 @@ const Template18 = ({ answers, onInputChange }) => {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 };

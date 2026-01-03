@@ -5,11 +5,11 @@ import "../../../CSS/Template12.css";
 const Template12 = ({ answers, onInputChange }) => {
   return (
     <div className="container">
-      <h4>
+      <h3>
         Comparisons of Findings, similarities and differences in featues of
         exsisting researches
-      </h4>
-      <div className="unique-textfield-container">
+      </h3>
+      <div className="unique-textfield-container" data-export-section="text">
         <TextField
           id="unique-textfield"
           multiline

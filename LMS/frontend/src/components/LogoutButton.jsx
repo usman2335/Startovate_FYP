@@ -38,7 +38,15 @@ const Logout = () => {
   };
 
   return (
-    <Button danger type="primary" onClick={handleLogout}>
+    <Button
+      danger
+      type="primary"
+      onClick={handleLogout}
+      className="w-full bg-gradient-to-r from-[#dc2626] to-[#b91c1c] border-none shadow-premium-red hover:from-[#b91c1c] hover:to-[#991b1b] font-semibold"
+      style={{
+        height: "40px",
+      }}
+    >
       Logout
     </Button>
   );

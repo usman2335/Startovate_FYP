@@ -73,116 +73,58 @@ const EasypaisaCoursePayment = () => {
     }
   };
 
-  if (!course) return <p style={{ textAlign: "center" }}>Loading course...</p>;
+  if (!course) return (
+    <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
+      <p className="text-body text-[#535353]">Loading course...</p>
+    </div>
+  );
 
   return (
-    <div
-      style={{
-        backgroundColor: "#f0f4f8",
-        minHeight: "100vh",
-        padding: "2rem",
-        fontFamily: "Segoe UI, sans-serif",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: "700px",
-          margin: "auto",
-          backgroundColor: "#fff",
-          padding: "2rem",
-          borderRadius: "12px",
-          boxShadow: "0 10px 30px rgba(0, 0, 0, 0.08)",
-        }}
-      >
+    <div className="min-h-screen bg-[#fafafa] p-4 md:p-8 font-['Poppins',sans-serif]">
+      <div className="max-w-2xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-premium">
         <button
           onClick={() => navigate(-1)}
-          style={{
-            marginBottom: "1rem",
-            backgroundColor: "#e0e7ff",
-            border: "none",
-            padding: "6px 12px",
-            borderRadius: "6px",
-            fontWeight: "bold",
-            cursor: "pointer",
-          }}
+          className="mb-4 bg-[#fee2e2] hover:bg-[#fecaca] text-[#dc2626] border-none px-4 py-2 rounded-lg font-semibold cursor-pointer transition-colors"
         >
           ← Back
         </button>
 
-        <h2
-          style={{
-            textAlign: "center",
-            color: "#1f2937",
-            fontSize: "2rem",
-            fontWeight: "bold",
-            marginBottom: "1rem",
-          }}
-        >
+        <h2 className="text-heading-2 text-center text-[#1f1f1f] mb-6">
           Easypaisa Payment
         </h2>
 
         {/* Course Info */}
-        <div
-          style={{
-            backgroundColor: "#f9fafb",
-            padding: "1.5rem",
-            borderRadius: "10px",
-            marginTop: "1rem",
-            marginBottom: "2rem",
-            border: "1px solid #e5e7eb",
-            boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
-          }}
-        >
-          <h3
-            style={{
-              margin: "0 0 0.5rem",
-              color: "#111827",
-              fontSize: "1.3rem",
-            }}
-          >
+        <div className="bg-[#f9fafb] p-6 rounded-lg mt-4 mb-8 border border-[#e5e7eb] shadow-sm">
+          <h3 className="text-heading-4 text-[#1f1f1f] mb-2">
             {course.title}
           </h3>
-          <p style={{ margin: 0, color: "#4b5563", fontSize: "0.95rem" }}>
+          <p className="text-body-sm text-[#535353] mb-4">
             {course.description}
           </p>
-          <p
-            style={{ marginTop: "1rem", color: "#374151", fontSize: "0.95rem" }}
-          >
-            <strong>Instructor:</strong> {course.instructorName}
+          <p className="text-body-sm text-[#535353] mb-2">
+            <strong className="text-[#1f1f1f]">Instructor:</strong> {course.instructorName}
           </p>
-          <p
-            style={{
-              color: "#111827",
-              fontSize: "1.05rem",
-              fontWeight: "bold",
-            }}
-          >
+          <p className="text-heading-4 text-[#dc2626]">
             <strong>Price:</strong> PKR {course.price}
           </p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: "1.2rem" }}>
-            <label style={{ fontWeight: "bold" }}>Transaction ID</label>
+          <div className="mb-5">
+            <label className="text-label text-[#1f1f1f] mb-2 block">Transaction ID</label>
             <input
               type="text"
               value={transactionId}
               onChange={(e) => setTransactionId(e.target.value)}
               required
               placeholder="e.g. T123456789"
-              style={{
-                width: "100%",
-                padding: "0.7rem",
-                borderRadius: "6px",
-                border: "1px solid #d1d5db",
-                marginTop: "0.3rem",
-              }}
+              className="input-premium w-full"
             />
           </div>
 
-          <div style={{ marginBottom: "1.2rem" }} className="flex flex-col">
-            <label style={{ fontWeight: "bold" }}>
+          <div className="mb-5 flex flex-col">
+            <label className="text-label text-[#1f1f1f] mb-2">
               Upload Screenshot of Payment
             </label>
             <Upload
@@ -193,7 +135,7 @@ const EasypaisaCoursePayment = () => {
               maxCount={1}
               accept="image/*"
             >
-              <Button icon={<UploadOutlined />}>
+              <Button icon={<UploadOutlined />} type="default">
                 Click to Upload Screenshot
               </Button>
             </Upload>
@@ -201,30 +143,14 @@ const EasypaisaCoursePayment = () => {
 
           <button
             type="submit"
-            style={{
-              width: "100%",
-              padding: "0.75rem",
-              backgroundColor: "#10b981",
-              color: "#fff",
-              fontWeight: "bold",
-              border: "none",
-              borderRadius: "8px",
-              fontSize: "1rem",
-              cursor: "pointer",
-            }}
+            className="btn-primary-red w-full"
           >
             Submit Payment
           </button>
         </form>
 
         {message && (
-          <p
-            style={{
-              marginTop: "1rem",
-              textAlign: "center",
-              color: "#1f2937",
-            }}
-          >
+          <p className="mt-4 text-center text-body text-[#1f1f1f]">
             {message}
           </p>
         )}

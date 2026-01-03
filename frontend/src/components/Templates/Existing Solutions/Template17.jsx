@@ -5,14 +5,15 @@ import "../../../CSS/Template17.css";
 
 const Template17 = ({ answers, onInputChange }) => {
   return (
-    <div className="container">
+    <div className="container" data-export-section="main-section">
       {/* Header Section */}
-      <div className="header">
+      <h3 className="header">
         Patents associated with the existing solutions and their market status.
-      </div>
+      </h3>
 
       {/* Table Section */}
-      <table className="table">
+      <div data-export-section="table">
+        <table className="table">
         <thead>
           {/* Market Matrix Row */}
           <tr className="table-title-row">
@@ -48,6 +49,7 @@ const Template17 = ({ answers, onInputChange }) => {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 };

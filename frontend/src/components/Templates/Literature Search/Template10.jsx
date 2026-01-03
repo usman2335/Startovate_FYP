@@ -5,11 +5,11 @@ import "../../../CSS/Template10.css";
 const Template10 = ({ answers, onInputChange }) => {
   return (
     <div className="container">
-      <h4>
+      <h3>
         Research gap conceived through observations and discussions with
         stakeholders.
-      </h4>
-      <div className="unique-textfield-container">
+      </h3>
+      <div className="unique-textfield-container" data-export-section="text">
         <TextField
           id="unique-textfield"
           multiline

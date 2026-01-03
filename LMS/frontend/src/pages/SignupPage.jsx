@@ -28,15 +28,21 @@ const SignupPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => {
+      const updated = {
+        ...prev,
+        [name]: value,
+      };
+      // Log role changes for debugging
+      if (name === "role") {
+        console.log("Role changed to:", value);
+      }
+      return updated;
+    });
     setErrors((prevErrors) => ({
       ...prevErrors,
       [name]: validateField(name, value),
     }));
-    console.log(formData);
   };
 
   const validateField = (name, value) => {
@@ -75,14 +81,17 @@ const SignupPage = () => {
     }
 
     try {
+      const signupData = {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role,
+      };
+      console.log("Submitting signup with role:", formData.role);
+
       const response = await axios.post(
         `${BACKEND_BASE_URL}/api/users/signup`,
-        {
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          role: formData.role,
-        }
+        signupData
       );
 
       Swal.fire({
@@ -108,13 +117,15 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="signup-container">
+    <div className="signup-container bg-[#fafafa] min-h-screen">
       <div className="vector-background"></div>
       <SignupCard />
 
       <div className="signup-form">
-        <h1>Logo</h1>
-        <h2>Create your account now</h2>
+        <h1 className="text-heading-1 text-[#dc2626]">Logo</h1>
+        <h2 className="text-heading-3 text-[#dc2626]">
+          Create your account now
+        </h2>
 
         <form className="form1" onSubmit={handleSubmit}>
           <div className="signup-input-container">
@@ -200,8 +211,14 @@ const SignupPage = () => {
           />
         </form>
 
-        <p style={{ marginTop: "3%" }}>
-          Already have an account? <a href="/login">Login</a>
+        <p className="text-body-sm mt-6 text-center">
+          Already have an account?{" "}
+          <a
+            href="/login"
+            className="text-[#dc2626] font-semibold hover:text-[#b91c1c] transition-colors"
+          >
+            Login
+          </a>
         </p>
       </div>
     </div>

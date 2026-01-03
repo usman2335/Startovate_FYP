@@ -1,24 +1,26 @@
 .button {
   cursor: pointer;
-  background: linear-gradient(90deg, #ed2567 0%, #ee343b 100%);
-  border-radius: 50px;
-  /* padding: 10% 30%; */
-  border: 0.1px;
-  /* color: white; */
-  font-size: large;
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
   white-space: nowrap;
-  color: #f1f1f1;
-  font-family: Poppins;
-  font-weight: 300;
-  transition: 0.5s;
-  /* min-width: 120px; */
+  color: #ffffff;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);
 }
 .button span {
-  color: #f1f1f1;
+  color: #ffffff;
   width: 100%;
 }
 .button:hover {
-  box-shadow: rgba(255, 69, 125, 0.4) 0px 5px, rgba(255, 69, 125, 0.3) 0px 10px,
-    rgba(255, 69, 125, 0.2) 0px 15px, rgba(255, 69, 125, 0.1) 0px 20px,
-    rgba(255, 69, 125, 0.05) 0px 25px;
+  background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+  box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3);
+  transform: translateY(-1px);
+}
+.button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);
 }

@@ -5,13 +5,11 @@ import "../../../CSS/Template28.css";
 const Template28 = ({ answers, onInputChange }) => {
   return (
     <div className="container">
-      <div className="header">
-        <h4>
-          Mapping between identified problem and novelty feature(s) of proposed
-          invention
-        </h4>
-      </div>
-      <div className="unique-textfield-container">
+      <h3 className="header">
+        Mapping between identified problem and novelty feature(s) of proposed
+        invention
+      </h3>
+      <div className="unique-textfield-container" data-export-section="text">
         <TextField
           id="unique-textfield"
           placeholder="Enter Here ..."

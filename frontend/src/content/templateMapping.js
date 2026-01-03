@@ -608,12 +608,22 @@ import ROTemplate5 from "../components/Templates/Research Outcomes/ROTemplate5";
 import RMTemplate2 from "../components/Templates/Research Methadology/RMTemplate2";
 import RMTemplate4 from "../components/Templates/Research Methadology/RMTemplate4";
 import RMTemplate6 from "../components/Templates/Research Methadology/RMTemplate6";
+import KMTemplate1 from "../components/Templates/Key Resources/KMTemplate1";
 import KMTemplate2 from "../components/Templates/Key Resources/KMTemplate2";
+import KMTemplate3 from "../components/Templates/Key Resources/KMTemplate3";
 import KMTemplate4 from "../components/Templates/Key Resources/KMTemplate4";
+import KMTemplate5 from "../components/Templates/Key Resources/KMTemplate5";
 import TCTemplate1 from "../components/Templates/Team Capacities/TCTemplate1";
 import TCTemplate2 from "../components/Templates/Team Capacities/TCTemplate2";
+import TCTemplate3 from "../components/Templates/Team Capacities/TCTemplate3";
+import TCTemplate4 from "../components/Templates/Team Capacities/TCTemplate4";
 import TCTemplate5 from "../components/Templates/Team Capacities/TCTemplate5";
 import TCTemplate6 from "../components/Templates/Team Capacities/TCTemplate6";
+import FTemplate1 from "../components/Templates/Funding/FTemplate1";
+import FTemplate2 from "../components/Templates/Funding/FTemplate2";
+import FTemplate3 from "../components/Templates/Funding/FTemplate3";
+import FTemplate4 from "../components/Templates/Funding/FTemplate4";
+import FTemplate5 from "../components/Templates/Funding/FTemplate5";
 
 const templateMapping = {
   "ProblemIdentification-Step1": {
@@ -793,13 +803,38 @@ const templateMapping = {
 
   "LiteratureSearch-Step1": {
     component: Template9,
-    renderAs: "table",
-    fields: [],
-    fieldHints: {},
+    renderAs: "image",
+    fields: [
+      "problem_synonym1_",
+      "problem_synonym2_",
+      "problem_synonym3_",
+      "solution_synonym1_",
+      "solution_synonym2_",
+      "solution_synonym3_",
+      "context_synonym1_",
+      "context_synonym2_",
+      "context_synonym3_",
+    ],
+    fieldHints: {
+      problem_synonym1_: "Problem - Synonym I",
+      problem_synonym2_: "Problem - Synonym II",
+      problem_synonym3_: "Problem - Synonym III",
+      solution_synonym1_: "Problem Solution - Synonym I",
+      solution_synonym2_: "Problem Solution - Synonym II",
+      solution_synonym3_: "Problem Solution - Synonym III",
+      context_synonym1_: "Context Of Application - Synonym I",
+      context_synonym2_: "Context Of Application - Synonym II",
+      context_synonym3_: "Context Of Application - Synonym III",
+    },
   },
   "LiteratureSearch-Step2": {
     component: Template10,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["gap_"],
     fieldHints: {
       gap_: "Research gap conceived through observations and discussions with stakeholders",
@@ -807,7 +842,16 @@ const templateMapping = {
   },
   "LiteratureSearch-Step3": {
     component: Template11,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="article-section"]',
+        type: "section",
+      },
+      {
+        selector: '[data-export-section="patent-section"]',
+        type: "section",
+      },
+    ],
     fields: ["keywords_", "patent_keywords_"],
     repeatedFields: [
       { prefix: "article", count: 30 },
@@ -832,7 +876,12 @@ const templateMapping = {
   },
   "LiteratureSearch-Step4": {
     component: Template12,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["comparison_"],
     fieldHints: {
       comparison_:
@@ -848,7 +897,12 @@ const templateMapping = {
 
   "ExistingSolutions-Step1": {
     component: Template14,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="main-section"]',
+        type: "section",
+      },
+    ],
     fields: ["keywords_"],
     repeatedFields: [
       { prefix: "existingSolutions", count: 5 },
@@ -870,7 +924,12 @@ const templateMapping = {
   },
   "ExistingSolutions-Step2": {
     component: Template15,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["similarProblems"],
     fieldHints: {
       similarProblems:
@@ -879,7 +938,12 @@ const templateMapping = {
   },
   "ExistingSolutions-Step3": {
     component: Template16,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="main-section"]',
+        type: "section",
+      },
+    ],
     fields: [],
     repeatedFields: [{ prefix: "limitationsObserved", count: 5 }],
     fieldHints: {
@@ -892,7 +956,12 @@ const templateMapping = {
   },
   "ExistingSolutions-Step4": {
     component: Template17,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="main-section"]',
+        type: "section",
+      },
+    ],
     fields: [],
     repeatedFields: [{ prefix: "patentDetails", count: 5 }],
     fieldHints: {
@@ -905,7 +974,12 @@ const templateMapping = {
   },
   "ExistingSolutions-Step5": {
     component: Template18,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="main-section"]',
+        type: "section",
+      },
+    ],
     fields: [],
     repeatedFields: [{ prefix: "companiesOffering", count: 5 }],
     fieldHints: {
@@ -918,7 +992,12 @@ const templateMapping = {
   },
   "ExistingSolutions-Step6": {
     component: Template19,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["justification_"],
     fieldHints: {
       justification_:
@@ -928,7 +1007,12 @@ const templateMapping = {
 
   "MarketLandscape-Step1": {
     component: Template20,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="main-section"]',
+        type: "section",
+      },
+    ],
     fields: ["CAGR_"],
     repeatedFields: [{ prefix: "value", count: 5 }],
     fieldHints: {
@@ -942,15 +1026,42 @@ const templateMapping = {
   },
   "MarketLandscape-Step2": {
     component: Template21,
-    renderAs: "table",
-    fields: ["CAGR_"],
+    renderAs: [
+      {
+        selector: '[data-export-section="main-section"]',
+        type: "section",
+      },
+    ],
+    fields: [
+      "CAGR_",
+      "value_0_0",
+      "value_0_1",
+      "value_0_2",
+      "value_1_0",
+      "value_1_1",
+      "value_1_2",
+      "value_2_0",
+      "value_2_1",
+      "value_2_2",
+      "value_3_0",
+      "value_3_1",
+      "value_3_2",
+      "value_4_0",
+      "value_4_1",
+      "value_4_2",
+    ],
     fieldHints: {
       CAGR_: "Compound Annual Growth Rate (CAGR)",
     },
   },
   "MarketLandscape-Step3": {
     component: Template22,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["evidence_"],
     fieldHints: {
       evidence_:
@@ -959,7 +1070,12 @@ const templateMapping = {
   },
   "MarketLandscape-Step4": {
     component: Template23,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["identification_"],
     fieldHints: {
       identification_:
@@ -968,7 +1084,12 @@ const templateMapping = {
   },
   "MarketLandscape-Step5": {
     component: Template24,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["identification_"],
     fieldHints: {
       identification_:
@@ -977,7 +1098,12 @@ const templateMapping = {
   },
   "MarketLandscape-Step7": {
     component: Template26,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["probability_", "pay_"],
     fieldHints: {
       probability_:
@@ -988,13 +1114,33 @@ const templateMapping = {
 
   "Novelty-Step1": {
     component: Template27,
-    renderAs: "image",
-    fields: [],
-    fieldHints: {},
+    renderAs: [
+      {
+        selector: '[data-export-section="main-section"]',
+        type: "section",
+      },
+    ],
+    fields: [
+      "value_functional_",
+      "value_emotional_",
+      "value_lifeChanging_",
+      "value_socialImpact_",
+    ],
+    fieldHints: {
+      value_functional_: "Functional Value",
+      value_emotional_: "Emotional Value",
+      value_lifeChanging_: "Life Changing Value",
+      value_socialImpact_: "Social Impact Value",
+    },
   },
   "Novelty-Step2": {
     component: Template28,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["mapping_"],
     fieldHints: {
       mapping_:
@@ -1003,7 +1149,12 @@ const templateMapping = {
   },
   "Novelty-Step3": {
     component: Template29,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["discussions_"],
     fieldHints: {
       discussions_:
@@ -1013,9 +1164,25 @@ const templateMapping = {
 
   "ResearchQuestion-Step1": {
     component: RQTemplate1,
-    renderAs: "table",
-    fields: ["problemStatement_"],
-    repeatedFields: [{ prefix: "criterion", count: 10 }],
+    renderAs: [
+      {
+        selector: '[data-export-section="main-section"]',
+        type: "section",
+      },
+    ],
+    fields: [
+      "problemStatement_",
+      "criterion_0",
+      "criterion_1",
+      "criterion_2",
+      "criterion_3",
+      "criterion_4",
+      "criterion_5",
+      "criterion_6",
+      "criterion_7",
+      "criterion_8",
+      "criterion_9",
+    ],
     fieldHints: {
       problemStatement_: "Problem Statement Derived",
       criterion_0: "Feasible",
@@ -1035,7 +1202,12 @@ const templateMapping = {
   },
   "ResearchQuestion-Step2": {
     component: RQTemplate2,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="main-section"]',
+        type: "section",
+      },
+    ],
     fields: [
       "keywords_",
       "statement_1",
@@ -1053,7 +1225,12 @@ const templateMapping = {
   },
   "ResearchQuestion-Step3": {
     component: RQTemplate3,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="main-section"]',
+        type: "section",
+      },
+    ],
     fields: [
       "keywords_",
       "statement_1",
@@ -1071,7 +1248,12 @@ const templateMapping = {
   },
   "ResearchQuestion-Step4": {
     component: RQTemplate4,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["demonstration_"],
     fieldHints: {
       demonstration_:
@@ -1080,7 +1262,12 @@ const templateMapping = {
   },
   "ResearchQuestion-Step5": {
     component: RQTemplate5,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_: "Supportive Objectives and Tentative Hypothesis",
@@ -1088,7 +1275,12 @@ const templateMapping = {
   },
   "ResearchQuestion-Step6": {
     component: RQTemplate6,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["consistency_"],
     fieldHints: {
       consistency_:
@@ -1098,7 +1290,12 @@ const templateMapping = {
 
   "ResearchOutcome-Step1": {
     component: ROTemplate1,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:
@@ -1107,7 +1304,12 @@ const templateMapping = {
   },
   "ResearchOutcome-Step3": {
     component: ROTemplate3,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:
@@ -1116,7 +1318,12 @@ const templateMapping = {
   },
   "ResearchOutcome-Step4": {
     component: ROTemplate4,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:
@@ -1125,7 +1332,12 @@ const templateMapping = {
   },
   "ResearchOutcome-Step5": {
     component: ROTemplate5,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:
@@ -1135,7 +1347,12 @@ const templateMapping = {
 
   "ResearchMethodology-Step2": {
     component: RMTemplate2,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:
@@ -1144,7 +1361,12 @@ const templateMapping = {
   },
   "ResearchMethodology-Step4": {
     component: RMTemplate4,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:
@@ -1153,35 +1375,219 @@ const templateMapping = {
   },
   "ResearchMethodology-Step6": {
     component: RMTemplate6,
-    renderAs: "table",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_: "Tentative details of Travel Outside lab if desired",
     },
   },
 
+  "KeyResources-Step1": {
+    component: KMTemplate1,
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
+    fields: [],
+    repeatedFields: [
+      { prefix: "tangible", count: 3 },
+      { prefix: "intangible", count: 3 },
+      { prefix: "available", count: 3 },
+      { prefix: "notAvailable", count: 3 },
+    ],
+    fieldHints: {
+      tangible_0:
+        "Tangible resource 1 - List resources required to meet key deliverables",
+      tangible_1:
+        "Tangible resource 2 - List resources required to meet key deliverables",
+      tangible_2:
+        "Tangible resource 3 - List resources required to meet key deliverables",
+      intangible_0:
+        "Intangible resource 1 - List resources required to meet key deliverables",
+      intangible_1:
+        "Intangible resource 2 - List resources required to meet key deliverables",
+      intangible_2:
+        "Intangible resource 3 - List resources required to meet key deliverables",
+      available_0:
+        "Available resource 1 - Resources available in academic and innovation labs",
+      available_1:
+        "Available resource 2 - Resources available in academic and innovation labs",
+      available_2:
+        "Available resource 3 - Resources available in academic and innovation labs",
+      notAvailable_0:
+        "Not available resource 1 - Resources not available and required to be purchased",
+      notAvailable_1:
+        "Not available resource 2 - Resources not available and required to be purchased",
+      notAvailable_2:
+        "Not available resource 3 - Resources not available and required to be purchased",
+    },
+  },
   "KeyResources-Step2": {
     component: KMTemplate2,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:
         "List of equipment (e.g., 3D printers, 3D Scanners, mechanical and electrical labs, laser cutting, water jet cutter, engraving, simulators and software, CAD/CAM, Solidworks, materials and supplies)",
     },
   },
+  "KeyResources-Step3": {
+    component: KMTemplate3,
+    renderAs: [
+      {
+        selector: '[data-export-section="table"]',
+        type: "table",
+      },
+    ],
+    fields: [],
+    repeatedFields: [{ prefix: "row", count: 8 }],
+    fieldHints: {
+      row_0_deliverable: "Key Deliverable 1",
+      row_0_university: "Available at University - Row 1",
+      row_0_industry: "Available at Industry - Row 1",
+      row_0_innovationLab: "Available at Innovation Lab - Row 1",
+      row_0_online: "Available Online - Row 1",
+      row_0_purchaseFrom: "Not Available - Purchase from - Row 1",
+      row_0_rentFrom: "Not Available - Rent from - Row 1",
+      row_1_deliverable: "Key Deliverable 2",
+      row_1_university: "Available at University - Row 2",
+      row_1_industry: "Available at Industry - Row 2",
+      row_1_innovationLab: "Available at Innovation Lab - Row 2",
+      row_1_online: "Available Online - Row 2",
+      row_1_purchaseFrom: "Not Available - Purchase from - Row 2",
+      row_1_rentFrom: "Not Available - Rent from - Row 2",
+      row_2_deliverable: "Key Deliverable 3",
+      row_2_university: "Available at University - Row 3",
+      row_2_industry: "Available at Industry - Row 3",
+      row_2_innovationLab: "Available at Innovation Lab - Row 3",
+      row_2_online: "Available Online - Row 3",
+      row_2_purchaseFrom: "Not Available - Purchase from - Row 3",
+      row_2_rentFrom: "Not Available - Rent from - Row 3",
+      row_3_deliverable: "Key Deliverable 4",
+      row_3_university: "Available at University - Row 4",
+      row_3_industry: "Available at Industry - Row 4",
+      row_3_innovationLab: "Available at Innovation Lab - Row 4",
+      row_3_online: "Available Online - Row 4",
+      row_3_purchaseFrom: "Not Available - Purchase from - Row 4",
+      row_3_rentFrom: "Not Available - Rent from - Row 4",
+      row_4_deliverable: "Key Deliverable 5",
+      row_4_university: "Available at University - Row 5",
+      row_4_industry: "Available at Industry - Row 5",
+      row_4_innovationLab: "Available at Innovation Lab - Row 5",
+      row_4_online: "Available Online - Row 5",
+      row_4_purchaseFrom: "Not Available - Purchase from - Row 5",
+      row_4_rentFrom: "Not Available - Rent from - Row 5",
+      row_5_deliverable: "Key Deliverable 6",
+      row_5_university: "Available at University - Row 6",
+      row_5_industry: "Available at Industry - Row 6",
+      row_5_innovationLab: "Available at Innovation Lab - Row 6",
+      row_5_online: "Available Online - Row 6",
+      row_5_purchaseFrom: "Not Available - Purchase from - Row 6",
+      row_5_rentFrom: "Not Available - Rent from - Row 6",
+      row_6_deliverable: "Key Deliverable 7",
+      row_6_university: "Available at University - Row 7",
+      row_6_industry: "Available at Industry - Row 7",
+      row_6_innovationLab: "Available at Innovation Lab - Row 7",
+      row_6_online: "Available Online - Row 7",
+      row_6_purchaseFrom: "Not Available - Purchase from - Row 7",
+      row_6_rentFrom: "Not Available - Rent from - Row 7",
+      row_7_deliverable: "Key Deliverable 8",
+      row_7_university: "Available at University - Row 8",
+      row_7_industry: "Available at Industry - Row 8",
+      row_7_innovationLab: "Available at Innovation Lab - Row 8",
+      row_7_online: "Available Online - Row 8",
+      row_7_purchaseFrom: "Not Available - Purchase from - Row 8",
+      row_7_rentFrom: "Not Available - Rent from - Row 8",
+    },
+  },
   "KeyResources-Step4": {
     component: KMTemplate4,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:
         "Justifications behind advancing research within university premises and/or access to resources outside world",
     },
   },
+  "KeyResources-Step5": {
+    component: KMTemplate5,
+    renderAs: [
+      {
+        selector: '[data-export-section="table"]',
+        type: "table",
+      },
+    ],
+    fields: [],
+    repeatedFields: [{ prefix: "row", count: 8 }],
+    fieldHints: {
+      row_0_resourceRequired: "Resource Required 1",
+      row_0_name: "Name of Collaborator/Researcher 1",
+      row_0_institutionalAssociation: "Institutional Association - Row 1",
+      row_0_contact: "Contact Information - Row 1",
+      row_0_expectedOutcome: "Expected Outcome - Row 1",
+      row_1_resourceRequired: "Resource Required 2",
+      row_1_name: "Name of Collaborator/Researcher 2",
+      row_1_institutionalAssociation: "Institutional Association - Row 2",
+      row_1_contact: "Contact Information - Row 2",
+      row_1_expectedOutcome: "Expected Outcome - Row 2",
+      row_2_resourceRequired: "Resource Required 3",
+      row_2_name: "Name of Collaborator/Researcher 3",
+      row_2_institutionalAssociation: "Institutional Association - Row 3",
+      row_2_contact: "Contact Information - Row 3",
+      row_2_expectedOutcome: "Expected Outcome - Row 3",
+      row_3_resourceRequired: "Resource Required 4",
+      row_3_name: "Name of Collaborator/Researcher 4",
+      row_3_institutionalAssociation: "Institutional Association - Row 4",
+      row_3_contact: "Contact Information - Row 4",
+      row_3_expectedOutcome: "Expected Outcome - Row 4",
+      row_4_resourceRequired: "Resource Required 5",
+      row_4_name: "Name of Collaborator/Researcher 5",
+      row_4_institutionalAssociation: "Institutional Association - Row 5",
+      row_4_contact: "Contact Information - Row 5",
+      row_4_expectedOutcome: "Expected Outcome - Row 5",
+      row_5_resourceRequired: "Resource Required 6",
+      row_5_name: "Name of Collaborator/Researcher 6",
+      row_5_institutionalAssociation: "Institutional Association - Row 6",
+      row_5_contact: "Contact Information - Row 6",
+      row_5_expectedOutcome: "Expected Outcome - Row 6",
+      row_6_resourceRequired: "Resource Required 7",
+      row_6_name: "Name of Collaborator/Researcher 7",
+      row_6_institutionalAssociation: "Institutional Association - Row 7",
+      row_6_contact: "Contact Information - Row 7",
+      row_6_expectedOutcome: "Expected Outcome - Row 7",
+      row_7_resourceRequired: "Resource Required 8",
+      row_7_name: "Name of Collaborator/Researcher 8",
+      row_7_institutionalAssociation: "Institutional Association - Row 8",
+      row_7_contact: "Contact Information - Row 8",
+      row_7_expectedOutcome: "Expected Outcome - Row 8",
+    },
+  },
 
   "TeamCapacities-Step1": {
     component: TCTemplate1,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:
@@ -1190,16 +1596,104 @@ const templateMapping = {
   },
   "TeamCapacities-Step2": {
     component: TCTemplate2,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:
         "Names and association of each team member with its department, university and industry",
     },
   },
+  "TeamCapacities-Step3": {
+    component: TCTemplate3,
+    renderAs: [
+      {
+        selector: '[data-export-section="table"]',
+        type: "table",
+      },
+    ],
+    fields: [],
+    repeatedFields: [{ prefix: "row", count: 4 }],
+    fieldHints: {
+      row_0_deliverable: "Key Deliverable - Row 1",
+      row_0_thinkingOriented: "Thinking Oriented Tasks - Row 1",
+      row_0_actionOriented: "Action Oriented Tasks - Row 1",
+      row_0_peopleOriented: "People Oriented Tasks - Row 1",
+      row_1_deliverable: "Key Deliverable - Row 2",
+      row_1_thinkingOriented: "Thinking Oriented Tasks - Row 2",
+      row_1_actionOriented: "Action Oriented Tasks - Row 2",
+      row_1_peopleOriented: "People Oriented Tasks - Row 2",
+      row_2_deliverable: "Key Deliverable - Row 3",
+      row_2_thinkingOriented: "Thinking Oriented Tasks - Row 3",
+      row_2_actionOriented: "Action Oriented Tasks - Row 3",
+      row_2_peopleOriented: "People Oriented Tasks - Row 3",
+      row_3_deliverable: "Key Deliverable - Row 4",
+      row_3_thinkingOriented: "Thinking Oriented Tasks - Row 4",
+      row_3_actionOriented: "Action Oriented Tasks - Row 4",
+      row_3_peopleOriented: "People Oriented Tasks - Row 4",
+    },
+  },
+  "TeamCapacities-Step4": {
+    component: TCTemplate4,
+    renderAs: [
+      {
+        selector: '[data-export-section="table"]',
+        type: "table",
+      },
+    ],
+    fields: [],
+    repeatedFields: [{ prefix: "row", count: 6 }],
+    fieldHints: {
+      row_0_deliverable: "Key Deliverable - Row 1",
+      row_0_requiredSkills: "Required Skills & Capacities - Row 1",
+      row_0_presenceStatus: "Status (Present/Absent) - Row 1",
+      row_0_teamMemberName: "Team Member Name (if Present) - Row 1",
+      row_0_absenceReason: "Reason for Absence - Row 1",
+      row_0_actionPlan: "Action Plan (if Absent) - Row 1",
+      row_1_deliverable: "Key Deliverable - Row 2",
+      row_1_requiredSkills: "Required Skills & Capacities - Row 2",
+      row_1_presenceStatus: "Status (Present/Absent) - Row 2",
+      row_1_teamMemberName: "Team Member Name (if Present) - Row 2",
+      row_1_absenceReason: "Reason for Absence - Row 2",
+      row_1_actionPlan: "Action Plan (if Absent) - Row 2",
+      row_2_deliverable: "Key Deliverable - Row 3",
+      row_2_requiredSkills: "Required Skills & Capacities - Row 3",
+      row_2_presenceStatus: "Status (Present/Absent) - Row 3",
+      row_2_teamMemberName: "Team Member Name (if Present) - Row 3",
+      row_2_absenceReason: "Reason for Absence - Row 3",
+      row_2_actionPlan: "Action Plan (if Absent) - Row 3",
+      row_3_deliverable: "Key Deliverable - Row 4",
+      row_3_requiredSkills: "Required Skills & Capacities - Row 4",
+      row_3_presenceStatus: "Status (Present/Absent) - Row 4",
+      row_3_teamMemberName: "Team Member Name (if Present) - Row 4",
+      row_3_absenceReason: "Reason for Absence - Row 4",
+      row_3_actionPlan: "Action Plan (if Absent) - Row 4",
+      row_4_deliverable: "Key Deliverable - Row 5",
+      row_4_requiredSkills: "Required Skills & Capacities - Row 5",
+      row_4_presenceStatus: "Status (Present/Absent) - Row 5",
+      row_4_teamMemberName: "Team Member Name (if Present) - Row 5",
+      row_4_absenceReason: "Reason for Absence - Row 5",
+      row_4_actionPlan: "Action Plan (if Absent) - Row 5",
+      row_5_deliverable: "Key Deliverable - Row 6",
+      row_5_requiredSkills: "Required Skills & Capacities - Row 6",
+      row_5_presenceStatus: "Status (Present/Absent) - Row 6",
+      row_5_teamMemberName: "Team Member Name (if Present) - Row 6",
+      row_5_absenceReason: "Reason for Absence - Row 6",
+      row_5_actionPlan: "Action Plan (if Absent) - Row 6",
+    },
+  },
   "TeamCapacities-Step5": {
     component: TCTemplate5,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:
@@ -1208,11 +1702,168 @@ const templateMapping = {
   },
   "TeamCapacities-Step6": {
     component: TCTemplate6,
-    renderAs: "image",
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
     fields: ["objectives_"],
     fieldHints: {
       objectives_:
         "Motivation of each team member including PI towards proposed invention and commercialization process",
+    },
+  },
+
+  // Funding Templates
+  "Funding-Step1": {
+    component: FTemplate1,
+    renderAs: [
+      {
+        selector: '[data-export-section="text"]',
+        type: "text",
+      },
+    ],
+    fields: ["amount", "justification"],
+    fieldHints: {
+      amount: "Total funding required for the research process ($)",
+      justification: "Justification for the requested funding amount",
+    },
+  },
+  "Funding-Step2": {
+    component: FTemplate2,
+    renderAs: [
+      {
+        selector: '[data-export-section="table"]',
+        type: "table",
+      },
+    ],
+    fields: [],
+    repeatedFields: [{ prefix: "row", count: 6 }],
+    fieldHints: {
+      row_0_keyDeliverable: "Key Deliverable - Row 1",
+      row_0_resource: "Resource / Equipment - Row 1",
+      row_0_quantity: "Quantity - Row 1",
+      row_0_cost: "Estimated Cost ($) - Row 1",
+      row_1_keyDeliverable: "Key Deliverable - Row 2",
+      row_1_resource: "Resource / Equipment - Row 2",
+      row_1_quantity: "Quantity - Row 2",
+      row_1_cost: "Estimated Cost ($) - Row 2",
+      row_2_keyDeliverable: "Key Deliverable - Row 3",
+      row_2_resource: "Resource / Equipment - Row 3",
+      row_2_quantity: "Quantity - Row 3",
+      row_2_cost: "Estimated Cost ($) - Row 3",
+      row_3_keyDeliverable: "Key Deliverable - Row 4",
+      row_3_resource: "Resource / Equipment - Row 4",
+      row_3_quantity: "Quantity - Row 4",
+      row_3_cost: "Estimated Cost ($) - Row 4",
+      row_4_keyDeliverable: "Key Deliverable - Row 5",
+      row_4_resource: "Resource / Equipment - Row 5",
+      row_4_quantity: "Quantity - Row 5",
+      row_4_cost: "Estimated Cost ($) - Row 5",
+      row_5_keyDeliverable: "Key Deliverable - Row 6",
+      row_5_resource: "Resource / Equipment - Row 6",
+      row_5_quantity: "Quantity - Row 6",
+      row_5_cost: "Estimated Cost ($) - Row 6",
+    },
+  },
+  "Funding-Step3": {
+    component: FTemplate3,
+    renderAs: [
+      {
+        selector: '[data-export-section="table"]',
+        type: "table",
+      },
+    ],
+    fields: [],
+    repeatedFields: [{ prefix: "row", count: 6 }],
+    fieldHints: {
+      row_0_role: "Role - Row 1",
+      row_0_skill: "Skill / Capacity - Row 1",
+      row_0_duration: "Duration - Row 1",
+      row_0_cost: "Cost ($) - Row 1",
+      row_1_role: "Role - Row 2",
+      row_1_skill: "Skill / Capacity - Row 2",
+      row_1_duration: "Duration - Row 2",
+      row_1_cost: "Cost ($) - Row 2",
+      row_2_role: "Role - Row 3",
+      row_2_skill: "Skill / Capacity - Row 3",
+      row_2_duration: "Duration - Row 3",
+      row_2_cost: "Cost ($) - Row 3",
+      row_3_role: "Role - Row 4",
+      row_3_skill: "Skill / Capacity - Row 4",
+      row_3_duration: "Duration - Row 4",
+      row_3_cost: "Cost ($) - Row 4",
+      row_4_role: "Role - Row 5",
+      row_4_skill: "Skill / Capacity - Row 5",
+      row_4_duration: "Duration - Row 5",
+      row_4_cost: "Cost ($) - Row 5",
+      row_5_role: "Role - Row 6",
+      row_5_skill: "Skill / Capacity - Row 6",
+      row_5_duration: "Duration - Row 6",
+      row_5_cost: "Cost ($) - Row 6",
+    },
+  },
+  "Funding-Step4": {
+    component: FTemplate4,
+    renderAs: [
+      {
+        selector: '[data-export-section="table"]',
+        type: "table",
+      },
+    ],
+    fields: [],
+    repeatedFields: [{ prefix: "row", count: 5 }],
+    fieldHints: {
+      row_0_activity: "Activity - Row 1",
+      row_0_stakeholder: "Stakeholder - Row 1",
+      row_0_purpose: "Purpose - Row 1",
+      row_0_cost: "Cost ($) - Row 1",
+      row_1_activity: "Activity - Row 2",
+      row_1_stakeholder: "Stakeholder - Row 2",
+      row_1_purpose: "Purpose - Row 2",
+      row_1_cost: "Cost ($) - Row 2",
+      row_2_activity: "Activity - Row 3",
+      row_2_stakeholder: "Stakeholder - Row 3",
+      row_2_purpose: "Purpose - Row 3",
+      row_2_cost: "Cost ($) - Row 3",
+      row_3_activity: "Activity - Row 4",
+      row_3_stakeholder: "Stakeholder - Row 4",
+      row_3_purpose: "Purpose - Row 4",
+      row_3_cost: "Cost ($) - Row 4",
+      row_4_activity: "Activity - Row 5",
+      row_4_stakeholder: "Stakeholder - Row 5",
+      row_4_purpose: "Purpose - Row 5",
+      row_4_cost: "Cost ($) - Row 5",
+    },
+  },
+  "Funding-Step5": {
+    component: FTemplate5,
+    renderAs: [
+      {
+        selector: '[data-export-section="table"]',
+        type: "table",
+      },
+    ],
+    fields: [],
+    repeatedFields: [{ prefix: "trl", count: 8 }],
+    fieldHints: {
+      trl_0_budget: "Budget for Basic Principles ($)",
+      trl_0_fundingSource: "Funding Source for Basic Principles",
+      trl_1_budget: "Budget for Technology Concept ($)",
+      trl_1_fundingSource: "Funding Source for Technology Concept",
+      trl_2_budget: "Budget for Proof of Concept ($)",
+      trl_2_fundingSource: "Funding Source for Proof of Concept",
+      trl_3_budget: "Budget for Laboratory Validation ($)",
+      trl_3_fundingSource: "Funding Source for Laboratory Validation",
+      trl_4_budget: "Budget for Model Demonstration ($)",
+      trl_4_fundingSource: "Funding Source for Model Demonstration",
+      trl_5_budget: "Budget for Functional Prototype ($)",
+      trl_5_fundingSource: "Funding Source for Functional Prototype",
+      trl_6_budget: "Budget for Test Qualified ($)",
+      trl_6_fundingSource: "Funding Source for Test Qualified",
+      trl_7_budget: "Budget for Commercial Evaluation ($)",
+      trl_7_fundingSource: "Funding Source for Commercial Evaluation",
     },
   },
 };

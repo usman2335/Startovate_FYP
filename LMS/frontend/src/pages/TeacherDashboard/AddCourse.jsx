@@ -43,9 +43,10 @@ const AddCoursePage = ({ onCourseAdded }) => {
   };
 
   return (
-    <div style={{ padding: "24px 48px", maxWidth: 1000, margin: "auto" }}>
-      <Title level={2}>Add New Course</Title>
-      <Divider />
+    <div className="p-4 md:p-6 lg:p-12 bg-[#fafafa] min-h-screen">
+      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-premium p-6 md:p-8">
+        <Title level={2} className="text-heading-2 text-[#1f1f1f] mb-4">Add New Course</Title>
+        <Divider />
 
       <Form
         form={form}
@@ -215,6 +216,7 @@ const AddCoursePage = ({ onCourseAdded }) => {
           </Button>
         </Form.Item>
       </Form>
+      </div>
     </div>
   );
 };
