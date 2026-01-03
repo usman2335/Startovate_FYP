@@ -122,7 +122,9 @@ const SignupPage = () => {
       <SignupCard />
 
       <div className="signup-form">
-        <h1 className="text-heading-1 text-[#dc2626]">Logo</h1>
+        <h1 className="text-heading-1 text-[#dc2626]">
+          <img src={"/assets/inventLogo.png"} alt="Logo" />
+        </h1>
         <h2 className="text-heading-3 text-[#dc2626]">
           Create your account now
         </h2>

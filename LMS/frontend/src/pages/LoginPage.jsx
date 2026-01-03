@@ -79,7 +79,7 @@ const LoginPage = () => {
       <SignupCard />
 
       <div className="signup-form">
-        <h1 className="text-heading-1 text-[#dc2626]">Logo</h1>
+        <img src={"/assets/inventLogo.png"} alt="Logo" />
         <h2 className="text-heading-3 text-[#dc2626]">Login to your account</h2>
 
         <form className="form1" onSubmit={handleSubmit}>
@@ -126,7 +126,10 @@ const LoginPage = () => {
 
         <p className="text-body-sm mt-6 text-center">
           Create a New Account?{" "}
-          <a href="/Signup" className="text-[#dc2626] font-semibold hover:text-[#b91c1c] transition-colors">
+          <a
+            href="/Signup"
+            className="text-[#dc2626] font-semibold hover:text-[#b91c1c] transition-colors"
+          >
             Sign Up
           </a>
         </p>
