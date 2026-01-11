@@ -41,52 +41,52 @@ const Template20 = ({ answers, onInputChange }) => {
             </tr>
           </thead>
           <tbody>
-            {[...Array(5)].map((_, index) => (
-              <tr key={index}>
-                <td>{index + 1}</td> {/* Auto-fills No. Column */}
+            {[...Array(5)].map((_, rowIndex) => (
+              <tr key={rowIndex}>
+                <td>{rowIndex + 1}</td> {/* Auto-fills No. Column */}
                 <td>
                   <TextField
-                    id="unique-textfield"
                     multiline
                     className="unique-textfield"
-                    value={answers?.[`value_${index}`] || ""}
-                    onChange={(e) => onInputChange(e, `value_${index}`)}
+                    placeholder="Enter company name..."
+                    value={answers?.[`company_name_${rowIndex}`] || ""}
+                    onChange={(e) => onInputChange(e, `company_name_${rowIndex}`)}
                   />
                 </td>
                 <td>
                   <TextField
-                    id="unique-textfield"
                     multiline
                     className="unique-textfield"
-                    value={answers?.[`value_${index}`] || ""}
-                    onChange={(e) => onInputChange(e, `value_${index}`)}
+                    placeholder="Enter website, brochures, etc..."
+                    value={answers?.[`company_resources_${rowIndex}`] || ""}
+                    onChange={(e) => onInputChange(e, `company_resources_${rowIndex}`)}
                   />
                 </td>
                 <td>
                   <TextField
-                    id="unique-textfield"
                     multiline
                     className="unique-textfield"
-                    value={answers?.[`value_${index}`] || ""}
-                    onChange={(e) => onInputChange(e, `value_${index}`)}
+                    placeholder="Enter market size and revenue..."
+                    value={answers?.[`market_size_${rowIndex}`] || ""}
+                    onChange={(e) => onInputChange(e, `market_size_${rowIndex}`)}
                   />
                 </td>
                 <td>
                   <TextField
-                    id="unique-textfield"
                     multiline
                     className="unique-textfield"
-                    value={answers?.[`value_${index}`] || ""}
-                    onChange={(e) => onInputChange(e, `value_${index}`)}
+                    placeholder="Enter customer segment..."
+                    value={answers?.[`customer_segment_${rowIndex}`] || ""}
+                    onChange={(e) => onInputChange(e, `customer_segment_${rowIndex}`)}
                   />
                 </td>
                 <td>
                   <TextField
-                    id="unique-textfield"
                     multiline
                     className="unique-textfield"
-                    value={answers?.[`value_${index}`] || ""}
-                    onChange={(e) => onInputChange(e, `value_${index}`)}
+                    placeholder="Enter SWOT and PEST analysis..."
+                    value={answers?.[`swot_pest_${rowIndex}`] || ""}
+                    onChange={(e) => onInputChange(e, `swot_pest_${rowIndex}`)}
                   />
                 </td>
               </tr>

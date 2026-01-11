@@ -33,7 +33,8 @@ const FTemplate3 = ({ answers, onInputChange }) => {
                   style={{
                     border: "1px solid #ccc",
                     padding: "10px",
-                    backgroundColor: "#f5f5f5",
+                    backgroundColor: "#dc2626",
+                    color: "#ffffff",
                     fontWeight: "bold",
                   }}
                 >

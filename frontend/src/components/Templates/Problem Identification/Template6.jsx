@@ -252,17 +252,12 @@ const ProblemInvestigation = ({ answers, onInputChange }) => {
                 <td>
                   <label>
                     <input
-                      type="checkbox"
+                      type="radio"
+                      name={`intensity_${problem.id}`}
                       checked={
-                        answers?.[`intensity_high_${problem.id}`] || false
+                        answers?.[`intensity_high_${problem.id}`] === true
                       }
-                      onChange={(e) =>
-                        onInputChange(
-                          e,
-                          `intensity_high_${problem.id}`,
-                          e.target.checked
-                        )
-                      }
+                      onChange={(e) => onInputChange(e, `intensity_high_${problem.id}`, true)}
                     />
                     High
                   </label>
@@ -270,17 +265,12 @@ const ProblemInvestigation = ({ answers, onInputChange }) => {
                 <td>
                   <label>
                     <input
-                      type="checkbox"
+                      type="radio"
+                      name={`intensity_${problem.id}`}
                       checked={
-                        answers?.[`intensity_moderate_${problem.id}`] || false
+                        answers?.[`intensity_moderate_${problem.id}`] === true
                       }
-                      onChange={(e) =>
-                        onInputChange(
-                          e,
-                          `intensity_moderate_${problem.id}`,
-                          e.target.checked
-                        )
-                      }
+                      onChange={(e) => onInputChange(e, `intensity_moderate_${problem.id}`, true)}
                     />{" "}
                     Moderate
                   </label>
@@ -288,17 +278,12 @@ const ProblemInvestigation = ({ answers, onInputChange }) => {
                 <td>
                   <label>
                     <input
-                      type="checkbox"
+                      type="radio"
+                      name={`intensity_${problem.id}`}
                       checked={
-                        answers?.[`intensity_low_${problem.id}`] || false
+                        answers?.[`intensity_low_${problem.id}`] === true
                       }
-                      onChange={(e) =>
-                        onInputChange(
-                          e,
-                          `intensity_low_${problem.id}`,
-                          e.target.checked
-                        )
-                      }
+                      onChange={(e) => onInputChange(e, `intensity_low_${problem.id}`, true)}
                     />{" "}
                     Low
                   </label>
