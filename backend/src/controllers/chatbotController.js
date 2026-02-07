@@ -447,34 +447,59 @@ exports.autofillFields = async (req, res) => {
     // Parse templateKey to get component name and step number
     let componentName, stepNumber;
     try {
+      console.log(`🔍 [AUTOFILL] Parsing templateKey: ${templateKey}`);
       const parsed = parseTemplateKey(templateKey);
       componentName = parsed.componentName;
       stepNumber = parsed.stepNumber;
+      console.log(`🔍 [AUTOFILL] Parsed result: componentName="${componentName}", stepNumber=${stepNumber}`);
     } catch (error) {
+      console.error(`❌ [AUTOFILL] Template key parsing failed: ${error.message}`);
       return res.status(400).json({
         success: false,
         error: error.message,
       });
     }
 
-    // Fetch step description from database
-    const stepDescription = await StepDescription.findOne({
-      componentName: componentName,
-      stepNumber: stepNumber,
-    });
-
-    if (!stepDescription) {
-      return res.status(404).json({
-        success: false,
-        error: `Step description not found for ${componentName} - Step ${stepNumber}`,
-      });
-    }
-
-    console.log("Fetched step description:", {
-      componentName,
-      stepNumber,
-      description: stepDescription.description,
-    });
+    // Use detailed fallback descriptions for all templates (especially Funding templates)
+    const fallbackDescriptions = {
+      // Funding Templates
+      "Funding-Step1": "Total Grant Desired for Research Process - Determine the total funding required for your research project and provide justification for the requested amount. Consider direct costs (equipment, materials, personnel) and indirect costs (overhead, administration).",
+      
+      "Funding-Step2": "Tangible Resources & Equipment Budget - Budget for physical resources and equipment required for different key deliverables. List all tangible resources needed (lab equipment, materials, hardware, software licenses) and associate each resource with specific key deliverables.",
+      
+      "Funding-Step3": "Skills & Capacities Budget (Intangible Resources) - Budget for human resources, skills, and expertise required for the research. Identify all roles needed (researchers, technicians, consultants, students) and define the specific skills and capacities required for each role.",
+      
+      "Funding-Step4": "Visits & Stakeholder Meetings Budget - Budget for travel, visits, and meetings with stakeholders to discover end-user needs and industrial interest. Plan visits to potential end-users, industry partners, and collaborators including conference attendance.",
+      
+      "Funding-Step5": "Funding with respect to Technology Readiness Level (TRL) - Map funding requirements to different stages of technology development from basic principles (TRL 1) to commercial evaluation (TRL 8). Consider progressive funding as you advance through TRL stages.",
+      
+      // Market Landscape Templates
+      "MarketLandscape-Step1": "Market Mapping and Competitive Landscape Matrix - Analyze competitors, their market size, customer segments, and SWOT/PEST analysis to understand the competitive landscape.",
+      
+      "MarketLandscape-Step2": "Market Size and Growth Analysis - Evaluate the total addressable market, serviceable addressable market, and compound annual growth rate for your industry sector.",
+      
+      "MarketLandscape-Step3": "Customer Segment Analysis - Identify and analyze different customer segments, their needs, pain points, and willingness to pay for your solution.",
+      
+      "MarketLandscape-Step4": "Market Entry Strategy - Develop strategies for entering the market, including positioning, pricing, and go-to-market approaches.",
+      
+      "MarketLandscape-Step5": "Competitive Advantage Analysis - Identify your unique value proposition and sustainable competitive advantages in the marketplace.",
+      
+      // Problem Identification Templates
+      "ProblemIdentification-Step1": "5 Whys Root Cause Analysis - Use the 5 Whys technique to identify the root causes of problems and gather supporting references.",
+      
+      "ProblemIdentification-Step2": "Problem Context and Feedback - Document the incident, event, or condition that led to problem identification and gather stakeholder feedback.",
+      
+      "ProblemIdentification-Step3": "Motivation and Justification - Explain the motivation for addressing this problem and justify why it's worth solving.",
+      
+      "ProblemIdentification-Step6": "Problem Investigation Script - Conduct structured interviews with stakeholders to validate problems, assess their intensity, and rank them by urgency.",
+      
+      // Default fallback
+      "default": "Template for systematic analysis and documentation of research and business development activities."
+    };
+    
+    const description = fallbackDescriptions[templateKey] || fallbackDescriptions["default"];
+    
+    console.log(`✅ [AUTOFILL] Using detailed fallback description for ${templateKey}: ${description.substring(0, 100)}...`);
 
     // Fetch idea description from canvas if canvasId is provided
     let ideaDescription = "";
@@ -518,7 +543,7 @@ exports.autofillFields = async (req, res) => {
     // Prepare request payload for FastAPI - matches the AutoFillRequest schema
     const requestPayload = {
       templateKey,
-      stepDescription: stepDescription.description,
+      stepDescription: description,
       ideaDescription: ideaDescription,
       fieldHints: fieldHints,
       repeatedFields: repeatedFields || [],

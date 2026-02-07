@@ -463,17 +463,39 @@ exports.autofillFields = async (req, res) => {
       stepNumber: stepNumber,
     });
 
+    let description;
     if (!stepDescription) {
-      return res.status(404).json({
-        success: false,
-        error: `Step description not found for ${componentName} - Step ${stepNumber}`,
-      });
+      console.log(`⚠️ [AUTOFILL] Step description not found for ${componentName} - Step ${stepNumber}, using fallback`);
+      
+      // Fallback descriptions for templates not in database
+      const fallbackDescriptions = {
+        // Funding Templates
+        "Funding-Step1": "Total Grant Desired for Research Process - Determine the total funding required for your research project and provide justification for the requested amount. Consider direct costs (equipment, materials, personnel) and indirect costs (overhead, administration).",
+        
+        "Funding-Step2": "Tangible Resources & Equipment Budget - Budget for physical resources and equipment required for different key deliverables. List all tangible resources needed (lab equipment, materials, hardware, software licenses) and associate each resource with specific key deliverables.",
+        
+        "Funding-Step3": "Skills & Capacities Budget (Intangible Resources) - Budget for human resources, skills, and expertise required for the research. Identify all roles needed (researchers, technicians, consultants, students) and define the specific skills and capacities required for each role.",
+        
+        "Funding-Step4": "Visits & Stakeholder Meetings Budget - Budget for travel, visits, and meetings with stakeholders to discover end-user needs and industrial interest. Plan visits to potential end-users, industry partners, and collaborators including conference attendance.",
+        
+        "Funding-Step5": "Funding with respect to Technology Readiness Level (TRL) - Map funding requirements to different stages of technology development from basic principles (TRL 1) to commercial evaluation (TRL 8). Consider progressive funding as you advance through TRL stages.",
+        
+        // Default fallback
+        "default": "Template for systematic analysis and documentation of research and business development activities."
+      };
+      
+      description = fallbackDescriptions[templateKey] || fallbackDescriptions["default"];
+      console.log(`✅ [AUTOFILL] Using fallback description: ${description.substring(0, 50)}...`);
+    } else {
+      description = stepDescription.description;
+      console.log(`✅ [AUTOFILL] Found step description in database: ${description.substring(0, 50)}...`);
     }
 
-    console.log("Fetched step description:", {
+    console.log("Using step description:", {
       componentName,
       stepNumber,
-      description: stepDescription.description,
+      description: description.substring(0, 100) + "...",
+      foundInDB: !!stepDescription
     });
 
     // Fetch idea description from canvas if canvasId is provided
@@ -518,7 +540,7 @@ exports.autofillFields = async (req, res) => {
     // Prepare request payload for FastAPI - matches the AutoFillRequest schema
     const requestPayload = {
       templateKey,
-      stepDescription: stepDescription.description,
+      stepDescription: description,
       ideaDescription: ideaDescription,
       fieldHints: fieldHints,
       repeatedFields: repeatedFields || [],
