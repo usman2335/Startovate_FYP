@@ -175,6 +175,7 @@ def call_llm(provider: str, messages: List[dict], model: Optional[str] = None) -
             "model": model or MISTRAL_MODEL,
             "messages": messages,
             "temperature": 0.7,
+            "max_tokens": 4000,  # Ensure we get complete responses
         }
 
         print(f"📤 DEBUG call_llm: Sending request to {BASE_URL}")
@@ -624,6 +625,10 @@ Remember: Every answer should clearly relate to the specific business idea provi
         # Parse LLM response as JSON
         try:
             print("🧹 [AUTOFILL] Cleaning LLM response...")
+            print(f"📄 [AUTOFILL] Raw response length: {len(llm_response)}")
+            print(f"📄 [AUTOFILL] Raw response (first 500 chars): {llm_response[:500]}")
+            print(f"📄 [AUTOFILL] Raw response (last 200 chars): {llm_response[-200:]}")
+            
             # Remove any potential markdown code blocks
             cleaned_response = llm_response.strip()
             if cleaned_response.startswith("```json"):
@@ -635,7 +640,25 @@ Remember: Every answer should clearly relate to the specific business idea provi
             cleaned_response = cleaned_response.strip()
 
             print("📄 [AUTOFILL] Parsing JSON...")
-            print(f"   - Cleaned response preview: {cleaned_response[:100]}...")
+            print(f"   - Cleaned response length: {len(cleaned_response)}")
+            print(f"   - Cleaned response preview: {cleaned_response[:200]}...")
+            print(f"   - Cleaned response ending: {cleaned_response[-100:]}")
+
+            # Try to fix incomplete JSON by finding the last complete field
+            if not cleaned_response.endswith('}'):
+                print("⚠️ [AUTOFILL] JSON appears incomplete, attempting to fix...")
+                # Find the last complete field by looking for the last comma or opening brace
+                last_comma = cleaned_response.rfind(',')
+                last_brace = cleaned_response.rfind('{')
+                
+                if last_comma > last_brace:
+                    # Truncate at the last comma and add closing brace
+                    cleaned_response = cleaned_response[:last_comma] + '}'
+                    print(f"🔧 [AUTOFILL] Fixed incomplete JSON, new length: {len(cleaned_response)}")
+                elif last_brace >= 0:
+                    # If we have an opening brace but no comma, just add closing brace
+                    cleaned_response = cleaned_response + '}'
+                    print(f"🔧 [AUTOFILL] Added missing closing brace")
 
             # Parse JSON safely
             answers = json.loads(cleaned_response)
@@ -773,23 +796,26 @@ def construct_autofill_prompt(
     if idea_description and idea_description.strip():
         prompt_parts.append("1. ⚠️ CRITICAL: All your answers MUST be directly based on the USER'S IDEA/BUSINESS CONCEPT provided above.")
         prompt_parts.append("2. ⚠️ CRITICAL: Do NOT generate generic or random answers. Everything must be specific to the user's idea.")
-        prompt_parts.append("3. Analyze the user's idea carefully and tailor each field to match their specific business concept.")
+        prompt_parts.append("3. Keep each field answer CONCISE (1-2 sentences max) to avoid truncation.")
         prompt_parts.append("4. Use the current answers as context to maintain consistency with the user's idea.")
-        prompt_parts.append("5. If a field already has a value, improve it while staying true to the user's concept.")
-        prompt_parts.append("6. Make the answers specific, relevant, and professional - always aligned with the user's idea.")
-        prompt_parts.append("7. For repeated fields, generate multiple instances that fit the user's business concept.")
-        prompt_parts.append("8. Return ONLY a JSON object with field names as keys and generated values as values.")
+        prompt_parts.append("5. Make the answers specific, relevant, and professional - always aligned with the user's idea.")
+        prompt_parts.append("6. For repeated fields, generate multiple instances that fit the user's business concept.")
+        prompt_parts.append("7. For intensity fields, respond with ONLY one word: 'high', 'moderate', or 'low'.")
+        prompt_parts.append("8. Return ONLY a valid JSON object with field names as keys and generated values as values.")
         prompt_parts.append("9. Do NOT include any explanations, markdown formatting, or code blocks.")
-        prompt_parts.append("10. Ensure the JSON is valid and properly formatted.")
+        prompt_parts.append("10. Ensure the JSON is valid and properly formatted with proper quotes and commas.")
+        prompt_parts.append("11. IMPORTANT: Keep responses brief to ensure complete JSON generation.")
     else:
         prompt_parts.append("1. Generate appropriate values for all fields listed above.")
-        prompt_parts.append("2. Use the current answers as context to maintain consistency.")
-        prompt_parts.append("3. If a field already has a value, you may improve it or keep it as is.")
+        prompt_parts.append("2. Keep each field answer CONCISE (1-2 sentences max) to avoid truncation.")
+        prompt_parts.append("3. Use the current answers as context to maintain consistency.")
         prompt_parts.append("4. Make the answers specific, relevant, and professional.")
         prompt_parts.append("5. For repeated fields, generate multiple instances if appropriate.")
-        prompt_parts.append("6. Return ONLY a JSON object with field names as keys and generated values as values.")
-        prompt_parts.append("7. Do NOT include any explanations, markdown formatting, or code blocks.")
-        prompt_parts.append("8. Ensure the JSON is valid and properly formatted.")
+        prompt_parts.append("6. For intensity fields, respond with ONLY one word: 'high', 'moderate', or 'low'.")
+        prompt_parts.append("7. Return ONLY a valid JSON object with field names as keys and generated values as values.")
+        prompt_parts.append("8. Do NOT include any explanations, markdown formatting, or code blocks.")
+        prompt_parts.append("9. Ensure the JSON is valid and properly formatted with proper quotes and commas.")
+        prompt_parts.append("10. IMPORTANT: Keep responses brief to ensure complete JSON generation.")
     prompt_parts.append("")
     prompt_parts.append("Example format:")
     prompt_parts.append('{')
