@@ -1,5 +1,4 @@
 import { NavLink } from "react-router-dom";
-import logo from "../../public/assets/inventlogo.png";
 import {
   AppstoreOutlined,
   WalletOutlined,
@@ -37,7 +36,7 @@ const StudentSidebar = () => {
     <div className="hidden md:flex md:flex-col md:w-64 bg-white border-r border-[#e5e7eb] h-screen shadow-premium">
       {/* Logo Section */}
       <div className="p-6 border-b border-[#e5e7eb]">
-        <img src={logo} alt="Logo" className="h-10 w-auto" />
+        <img src="/assets/inventLogo.png" alt="Logo" className="h-10 w-auto" />
       </div>
 
       {/* Navigation Menu */}
